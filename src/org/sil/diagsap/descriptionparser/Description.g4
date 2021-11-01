@@ -14,84 +14,57 @@
 grammar Description;
 
 @header {
-	package org.sil.lingtree.descriptionparser.antlr4generated;
+	package org.sil.diagsap.descriptionparser.antlr4generated;
 }
-description  : node EOF
+description  : '(' node ')' EOF
              | EOF {notifyErrorListeners("missingOpeningParen");}
-             | {notifyErrorListeners("missingOpeningParen");} content
-             | node {notifyErrorListeners("contentAfterCompletedTree");} content
-             | node {notifyErrorListeners("contentAfterCompletedTree");} node
-             | {notifyErrorListeners("missingOpeningParen");} content node EOF
-             | {notifyErrorListeners("missingOpeningParen");} type    node EOF
-             | node closeParen {notifyErrorListeners("tooManyCloseParens");}
+             | node ')' {notifyErrorListeners("missingOpeningParen");}
+             | '(' node ')' {notifyErrorListeners("contentAfterCompletedTree");} content
+             | '(' node ')' {notifyErrorListeners("contentAfterCompletedTree");} node
+             | '(' node ')' ')' {notifyErrorListeners("tooManyCloseParens");}
              ;
 
 // we allow empty nodes that just have parens (hence, both type and content are optional)
-node : openParen type? content? node* closeParen
-	 | openParen type? content? node* closeParen {notifyErrorListeners("missingOpeningParen");} content
-     | openParen type? content? node*             {notifyErrorListeners("missingClosingParen");}
-     |           type  content?                   {notifyErrorListeners("missingOpeningParen");}
+node : '(' node ')' '(' node ')'
+     | '(' content ')' '(' node ')'
+     | '(' node ')' '(' content ')'
+     | '(' content ')' '(' content ')'
+     | '(' content ')'
+     | node ')' '(' node ')' {notifyErrorListeners("missingOpeningParen");}
+     | node ')' '(' content ')' {notifyErrorListeners("missingOpeningParen");}
+     | '(' node ')' {notifyErrorListeners("missingOpeningParen");} node ')'
+     | '(' node ')' {notifyErrorListeners("missingOpeningParen");} content ')'
+     | '(' node '(' node ')' {notifyErrorListeners("missingClosingParen");}
+     | '(' node '(' content ')' {notifyErrorListeners("missingClosingParen");}
+     | '(' node ')' '(' node  {notifyErrorListeners("missingClosingParen");}
+     | '(' node ')' '(' content {notifyErrorListeners("missingClosingParen");}
+     | content ')' {notifyErrorListeners("missingOpeningParen");}
+     | '(' content {notifyErrorListeners("missingClosingParen");}
      ;
 
-openParen : '('
-          ;
-          
-closeParen : ')'
-           ;
-
-type : nodeType lineType
-     | lineType nodeType
-     | nodeType nodeType          {notifyErrorListeners("tooManyNodeTypes");}
-     | lineType lineType          {notifyErrorListeners("tooManyLineTypes");}
-     | nodeType lineType nodeType {notifyErrorListeners("tooManyNodeTypes");}
-     | lineType nodeType lineType {notifyErrorListeners("tooManyLineTypes");}
-     | lineType         
-     | nodeType         
-     ;
-
-lineType : OMIT
-         | TRIANGLE
-         ;
-
-nodeType : LEX
-         | GLOSS
-         | EMPTY
-         ;
-        
-content : (TEXT | TEXTWITHSPACES | BACKSLASH | SLASH)+ subscript superscript
-        | (TEXT | TEXTWITHSPACES | BACKSLASH | SLASH)+ superscript subscript
-        | (TEXT | TEXTWITHSPACES | BACKSLASH | SLASH)+ subscript
-        | (TEXT | TEXTWITHSPACES | BACKSLASH | SLASH)+ superscript
-        | (TEXT | TEXTWITHSPACES | BACKSLASH | SLASH)+
-        | subscript superscript
-        | superscript subscript
-        | subscript
-        | superscript
+content : //(TEXT | BACKSLASH)+
+          TEXT
+        | infixindex
+        | TEXT infix TEXT*
+        |      infix TEXT
         ;
 
-subscript : SUBSCRIPT       (TEXT | TEXTWITHSPACES | BACKSLASH | SLASH)+
-		  | SUBSCRIPTITALIC (TEXT | TEXTWITHSPACES | BACKSLASH | SLASH)+
-		  | SUBSCRIPT       {notifyErrorListeners("missingContentAfterSubscript");}
-		  | SUBSCRIPTITALIC {notifyErrorListeners("missingContentAfterSubscript");}
-		  ;
+infix : openWedge TEXT closeWedge;
 
-superscript : SUPERSCRIPT       (TEXT | TEXTWITHSPACES | BACKSLASH | SLASH)+
-		    | SUPERSCRIPTITALIC (TEXT | TEXTWITHSPACES | BACKSLASH | SLASH)+
-		    | SUPERSCRIPT       {notifyErrorListeners("missingContentAfterSuperscript");}
-		    | SUPERSCRIPTITALIC {notifyErrorListeners("missingContentAfterSuperscript");}
-		    ;
+openWedge : '<';
 
-OMIT : '\\O';
-TRIANGLE : '\\T';
+closeWedge : '>';
 
-LEX   : '\\L';
-GLOSS : '\\G';
-EMPTY : '\\E'; // empty element (like a trace or non-overt pronoun)
-
-SUBSCRIPT : '/s' ;
-SUBSCRIPTITALIC : '/_' ;
-SUPERSCRIPT : '/S' ;
-SUPERSCRIPTITALIC : '/^' ;
+infixindex : '\\1'
+           | '\\2'
+           | '\\3'
+           | '\\4'
+           | '\\5'
+           | '\\6'
+           | '\\7'
+           | '\\8'
+           | '\\9'
+           ;
 
 // Node text content, with exception of backslash or forward slash sequences.
 // Those are handled via BACKSLASH and SLASH
@@ -99,13 +72,15 @@ SUPERSCRIPTITALIC : '/^' ;
 // match the longest sequence (so we'll never see \O, \T, \L, \G, /s, or /S).
 TEXT : (
 	   [,.;:^!?@#$%&'"a-zA-Z0-9\u0080-\uFFFF+-]
-     | [_*=<>]
+     | [_*=]
      | '['
      | ']'
      | '{'
      | '}'
      | '\\('
      | '\\)'
+     | '\\<'
+     | '\\>'
 //     | '/'
      | '~'
      | '`'
@@ -113,14 +88,7 @@ TEXT : (
      | '|' 
      )+  ;
 
-TEXTWITHSPACES : TEXT ' ' TEXT
-               | TEXT ' ' TEXTWITHSPACES
-               ;
-
 // allow backslash for non-keyword items (\O, \T, \G, \L)
-BACKSLASH : '\\' ~[OTGL];
-
-// allow forward slash for non-keyword items )/s and /S)
-SLASH : '/' ~[sS];
+// BACKSLASH : '\\' ~[123456789];
 
 WS : [ \t\r\n]+ -> skip ; // skip tabs, newlines, but leave spaces (for inside of node text)
