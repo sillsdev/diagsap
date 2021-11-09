@@ -13,9 +13,9 @@ public class DescriptionConstants {
 	public static final String CONTENT_AFTER_COMPLETED_TREE = "contentAfterCompletedTree";
 	public static final String MISSING_OPENING_PAREN = "missingOpeningParen";
 	public static final String MISSING_CLOSING_PAREN = "missingClosingParen";
-	public static final String MISSING_CONTENT_AFTER_SUBSCRIPT = "missingContentAfterSubscript";
-	public static final String MISSING_CONTENT_AFTER_SUPERSCRIPT = "missingContentAfterSuperscript";
+	public static final String MISSING_CONSTITUENT = "missingConstituent";
+	public static final String MISSING_CONTENT = "missingContent";
+	public static final String MISSING_CONTENT_AND_CLOSING_PAREN = "missingContentAndClosingParen";
+	public static final String MISSING_RIGHT_BRANCH = "missingRightBranch";
 	public static final String TOO_MANY_CLOSING_PARENS = "tooManyCloseParens";
-	public static final String TOO_MANY_NODE_TYPES = "tooManyNodeTypes";
-	public static final String TOO_MANY_lINE_TYPES = "tooManyLineTypes";
 }

@@ -187,22 +187,9 @@ public class TreeBuilder {
 			sSyntaxErrorMessage = bundle.getString("descriptionsyntaxerror.too_many_close_parens");
 			break;
 
-		case DescriptionConstants.TOO_MANY_lINE_TYPES:
-			sSyntaxErrorMessage = bundle.getString("descriptionsyntaxerror.too_many_line_types");
-			break;
-
-		case DescriptionConstants.TOO_MANY_NODE_TYPES:
-			sSyntaxErrorMessage = bundle.getString("descriptionsyntaxerror.too_many_node_types");
-			break;
-
-		case DescriptionConstants.MISSING_CONTENT_AFTER_SUBSCRIPT:
+		case DescriptionConstants.MISSING_CONTENT:
 			sSyntaxErrorMessage = bundle
 					.getString("descriptionsyntaxerror.missing_content_after_subscript");
-			break;
-
-		case DescriptionConstants.MISSING_CONTENT_AFTER_SUPERSCRIPT:
-			sSyntaxErrorMessage = bundle
-					.getString("descriptionsyntaxerror.missing_content_after_superscript");
 			break;
 
 		default:

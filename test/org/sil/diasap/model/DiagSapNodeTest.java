@@ -40,11 +40,11 @@ public class DiagSapNodeTest {
 	@Test
 	public void textBoxDimensionsTest() {
 		DiagSapNode node = new DiagSapNode();
-		node.setContent1("node");
+//		node.setContent1("node");
 		assertEquals(25.98046875, node.getWidth(), 0.0);
 		assertEquals(19.62890625, node.getHeight(), 0.0);
 
-		node.setContent1("p<in>ag");
+//		node.setContent1("p<in>ag");
 		assertEquals(53.5546875, node.getWidth(), 0.0);
 		assertEquals(19.62890625, node.getHeight(), 0.0);
 }

@@ -8,6 +8,7 @@ package org.sil.diasap.descriptionparser;
 
 import static org.junit.Assert.*;
 
+import org.antlr.v4.misc.EscapeSequenceParsing;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -44,22 +45,21 @@ public class DescriptionRecognizerTest {
 
 	@Test
 	public void validDescriptionsTest() {
-		// following from original Help Topics documentation
 		checkValidDescription(
 				"((beauti) ((ful) (ly)))",
-				"(description ( (node ( (content beauti) ) ( (node ( (content ful) ) ( (content ly) )) )) ) <EOF>)");
+				"(description ( (node (leftbranch (branch ( (content beauti) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content ful) ))) (rightbranch (branch ( (content ly) )))) )))) ) <EOF>)");
 		checkValidDescription(
 				"(((beauti) (ful)) (ly))",
-				"(description ( (node ( (node ( (content beauti) ) ( (content ful) )) ) ( (content ly) )) ) <EOF>)");
+				"(description ( (node (leftbranch (branch ( (node (leftbranch (branch ( (content beauti) ))) (rightbranch (branch ( (content ful) )))) ))) (rightbranch (branch ( (content ly) )))) ) <EOF>)");
 		checkValidDescription(
 				"((\\1)(((p<in>ag) (–arál)) (an)))",
-				"(description ( (node ( (content (infixindex \\1)) ) ( (node ( (node ( (content p (infix (openWedge <) in (closeWedge >)) ag) ) ( (content –arál) )) ) ( (content an) )) )) ) <EOF>)");
+				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (node (leftbranch (branch ( (infixedbase (content p) (infix (openWedge <) (content in) (closeWedge >)) (content ag)) ))) (rightbranch (branch ( (content –arál) )))) ))) (rightbranch (branch ( (content an) )))) )))) ) <EOF>)");
 		checkValidDescription(
 				"((\\1)((i) ((g<in>) (luto))))",
-				"(description ( (node ( (content (infixindex \\1)) ) ( (node ( (content i) ) ( (node ( (content g (infix (openWedge <) in (closeWedge >))) ) ( (content luto) )) )) )) ) <EOF>)");
+				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content i) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content g) (infix (openWedge <) (content in) (closeWedge >))) ))) (rightbranch (branch ( (content luto) )))) )))) )))) ) <EOF>)");
 		checkValidDescription(
 				"((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))",
-				"(description ( (node ( (content (infixindex \\1)) ) ( (node ( (content g (infix (openWedge <) in (closeWedge >))) ) ( (node ( (content pí-) ) ( (node ( (content (infixindex \\2)) ) ( (node ( (content p (infix (openWedge <) in (closeWedge >)) a-) ) ( (node ( (content m-) ) ( (content ulod) )) )) )) )) )) )) ) <EOF>)");
+				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content g) (infix (openWedge <) (content in) (closeWedge >))) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content pí-) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixindex \\2) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content p) (infix (openWedge <) (content in) (closeWedge >)) (content a-)) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content m-) ))) (rightbranch (branch ( (content ulod) )))) )))) )))) )))) )))) )))) ) <EOF>)");
 	}
 
 	private void checkValidDescription(String sDescription, String sANTLRTree) {
@@ -90,33 +90,42 @@ public class DescriptionRecognizerTest {
 		// begin parsing at rule 'description'
 		ParseTree tree = parser.description();
 		// uncomment the next two lines to see what parsed
-//		String sTree = tree.toStringTree(parser);
-//		System.out.println(sTree);
+		String sTree = tree.toStringTree(parser);
+		System.out.println(sTree);
+		// uncomment the next line to see what the error messages were
+		errListener.getErrorMessages().stream().forEach(err -> System.out.println("error: " + err.getMsg()));
 		return parser;
 	}
 
 	@Test
 	public void invalidDescriptionsTest() {
 		checkInvalidDescription("", DescriptionConstants.MISSING_OPENING_PAREN, 0, 1);
-		checkInvalidDescription("(", "no viable alternative at input '('", 1, 1);
-		checkInvalidDescription("()", "no viable alternative at input '()'", 1, 1);
-		checkInvalidDescription("(a", "no viable alternative at input '(a'", 2, 1);
-		checkInvalidDescription("a)", DescriptionConstants.MISSING_OPENING_PAREN, 2, 3);
-		checkInvalidDescription("(a)", DescriptionConstants.MISSING_CLOSING_PAREN, 2, 2);
-		checkInvalidDescription("((a))b", DescriptionConstants.CONTENT_AFTER_COMPLETED_TREE, 5, 1);
-		checkInvalidDescription("((a))(b", DescriptionConstants.CONTENT_AFTER_COMPLETED_TREE, 5, 2);
-		checkInvalidDescription("((a)))", DescriptionConstants.TOO_MANY_CLOSING_PARENS, 6, 1);
-		checkInvalidDescription("(a b) (c))", "no viable alternative at input '(ab'", 3, 1);
-		checkInvalidDescription("a (b (c))", "mismatched input '(' expecting ')'", 2, 2);
-		checkInvalidDescription("\\1 (am (ci))", "mismatched input '(' expecting ')'", 3, 2);
-		checkInvalidDescription("(t \\1 (am (ci))", "no viable alternative at input '(t\\1'", 3, 1);
-		checkInvalidDescription("(t (am (ci))", "no viable alternative at input '(t('", 3, 1);
-		checkInvalidDescription("((t (am (ci))", "no viable alternative at input '((t(am('", 8, 2);
-		checkInvalidDescription("(t (am (ci)", "no viable alternative at input '(t('", 3, 1);
-		checkInvalidDescription("(a (\\1\\2noun))", "no viable alternative at input '(a('", 3, 1);
+		checkInvalidDescription("(", DescriptionConstants.MISSING_CONTENT_AND_CLOSING_PAREN, 1, 1);
+		checkInvalidDescription("()", DescriptionConstants.MISSING_CONTENT, 2, 1);
+		checkInvalidDescription("(a", DescriptionConstants.MISSING_CLOSING_PAREN, 2, 1);
+		checkInvalidDescription("a)", DescriptionConstants.MISSING_OPENING_PAREN, 1, 1);
+		checkInvalidDescription("(a)", DescriptionConstants.MISSING_CONSTITUENT, 3, 1);
+		checkInvalidDescription("((a))b", DescriptionConstants.MISSING_RIGHT_BRANCH, 4, 2);
+		checkInvalidDescription("((a))(b", DescriptionConstants.MISSING_RIGHT_BRANCH, 4, 2);
+		checkInvalidDescription("((a)))", DescriptionConstants.MISSING_RIGHT_BRANCH, 4, 2);
+		checkInvalidDescription("((a)(b)))", DescriptionConstants.TOO_MANY_CLOSING_PARENS, 8, 1);
+		checkInvalidDescription("(((a)(b))(c)))", DescriptionConstants.TOO_MANY_CLOSING_PARENS, 13, 1);
+		checkInvalidDescription("(((a)(b)))(c))", DescriptionConstants.TOO_MANY_CLOSING_PARENS, 9, 1);
+		checkInvalidDescription("(a b)", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 1);
+		checkInvalidDescription("((a) (b c))", DescriptionConstants.MISSING_CLOSING_PAREN, 8, 1);
+		checkInvalidDescription("(a b) (c))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 2);
+		checkInvalidDescription("a (b (c))", DescriptionConstants.MISSING_OPENING_PAREN, 2, 2);
+		checkInvalidDescription("\\1 (am (ci))", DescriptionConstants.MISSING_OPENING_PAREN, 3, 2);
+		checkInvalidDescription("(t \\1 (am (ci))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 3);
+		checkInvalidDescription("(t (am (ci))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 3);
+		checkInvalidDescription("((t (am (ci))", DescriptionConstants.MISSING_CLOSING_PAREN, 4, 5);
+		checkInvalidDescription("(a (\\1\\2noun))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 3);
+		checkInvalidDescription("((a (\\1\\2noun))", DescriptionConstants.MISSING_CLOSING_PAREN, 4, 3);
 		checkInvalidDescription(
 				"((\\1)(\\2)(\\3)(\\4)(\\5)(\\6)(\\7)(\\8)(\\9)(((p<in>ag) (–arál)) (an)))",
-				DescriptionConstants.MISSING_CLOSING_PAREN, 4, 2);
+				DescriptionConstants.MISSING_CLOSING_PAREN, 9, 1);
+		checkInvalidDescription("((\\1)((p<in>ag) (–arál)) (an)))",	DescriptionConstants.MISSING_CLOSING_PAREN, 25, 1);
+		checkInvalidDescription("((\\1)(p<in>ag) (–arál)) (an)))", DescriptionConstants.MISSING_CLOSING_PAREN, 15, 4);
 	}
 
 	private void checkInvalidDescription(String sDescription, String sFailedPortion, int iPos,

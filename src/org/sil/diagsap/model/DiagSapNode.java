@@ -11,13 +11,11 @@ import org.sil.lingtree.model.LexFontInfo;
 
 import javafx.scene.text.Text;
 
-public class DiagSapNode {
+public class DiagSapNode extends BranchItem {
 
-	// content of the node
-	Text content1TextBox = new Text(0, 0, "");
-	Text content2TextBox = new Text(0, 0, "");
-    DiagSapNode node1 = null;
-    DiagSapNode node2 = null;
+	// TODO: should DiagapNode have UI values or should these be in some other class that is used to draw what is here?
+    Branch leftBranch;
+    Branch rightBranch;
 
     private int iLevel; // level (or depth) of the node within the tree
 
@@ -38,46 +36,20 @@ public class DiagSapNode {
 	// upper mid position of the node for drawing a line above the node
 	private double dYUpperMid;
 
-	public String getContent1() {
-		return content1TextBox.getText();
+	public Branch getLeftBranch() {
+		return leftBranch;
 	}
 
-	public void setContent1(String content) {
-		content1TextBox.setText(content);
-		changeFontInfo();
+	public void setLeftBranch(Branch leftBranch) {
+		this.leftBranch = leftBranch;
 	}
 
-	public Text getContent1TextBox() {
-		return content1TextBox;
+	public Branch getRightBranch() {
+		return rightBranch;
 	}
 
-	public String getContent2() {
-		return content2TextBox.getText();
-	}
-
-	public void setContent2(String content) {
-		content2TextBox.setText(content);
-		changeFontInfo();
-	}
-
-	public Text getContent2TextBox() {
-		return content2TextBox;
-	}
-
-	public DiagSapNode getNode1() {
-		return node1;
-	}
-
-	public void setNode1(DiagSapNode node1) {
-		this.node1 = node1;
-	}
-
-	public DiagSapNode getNode2() {
-		return node2;
-	}
-
-	public void setNode2(DiagSapNode node2) {
-		this.node2 = node2;
+	public void setRightBranch(Branch rightBranch) {
+		this.rightBranch = rightBranch;
 	}
 
 	public DiagSapNode getMother() {
@@ -92,7 +64,7 @@ public class DiagSapNode {
 		return iLevel;
 	}
 
-	public void setiLevel(int iLevel) {
+	public void setLevel(int iLevel) {
 		this.iLevel = iLevel;
 	}
 
@@ -101,19 +73,19 @@ public class DiagSapNode {
 	}
 
 	public double getHeight() {
-		dHeight = content1TextBox.getBoundsInLocal().getHeight();
+//		dHeight = content1TextBox.getBoundsInLocal().getHeight();
 		return dHeight;
 	}
 
 	public double getWidth() {
-		dWidth = content1TextBox.getBoundsInLocal().getWidth();
+//		dWidth = content1TextBox.getBoundsInLocal().getWidth();
 		return dWidth;
 	}
 
 	private void changeFontInfo() {
 		FontInfo fontInfo = LexFontInfo.getInstance();;
-		content1TextBox.setFont(fontInfo.getFont());
-		content1TextBox.setFill(fontInfo.getColor());
+//		content1TextBox.setFont(fontInfo.getFont());
+//		content1TextBox.setFill(fontInfo.getColor());
 	}
 	public double getXCoordinate() {
 		return dXCoordinate;
@@ -121,7 +93,7 @@ public class DiagSapNode {
 
 	public void setXCoordinate(double dXCoordinate) {
 		this.dXCoordinate = dXCoordinate;
-		content1TextBox.setX(dXCoordinate);
+//		content1TextBox.setX(dXCoordinate);
 	}
 
 	public double getXMid() {
@@ -139,10 +111,10 @@ public class DiagSapNode {
 	public void setYCoordinate(double dYCoordinate) {
 		// the baseline y coordinate
 		this.dYCoordinate = dYCoordinate;
-		content1TextBox.setY(dYCoordinate);
-		// set y upper mid and lower mid (top of box and bottom of box)
-		dYUpperMid = content1TextBox.getLayoutBounds().getMinY();
-		dYLowerMid = content1TextBox.getLayoutBounds().getMaxY();
+//		content1TextBox.setY(dYCoordinate);
+//		// set y upper mid and lower mid (top of box and bottom of box)
+//		dYUpperMid = content1TextBox.getLayoutBounds().getMinY();
+//		dYLowerMid = content1TextBox.getLayoutBounds().getMaxY();
 	}
 
 	public double getYLowerMid() {

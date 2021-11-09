@@ -15,6 +15,9 @@ import javafx.scene.text.Text;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.sil.diagsap.model.Branch;
+import org.sil.diagsap.model.BranchItem;
+import org.sil.diagsap.model.ContentBranch;
 import org.sil.diagsap.model.DiagSapNode;
 import org.sil.diagsap.model.DiagSapTree;
 import org.sil.diagsap.service.TreeBuilder;
@@ -26,6 +29,9 @@ import org.sil.utility.view.JavaFXThreadingRule;
  *
  */
 public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
+
+	final String nodeClassName = "DiagSapNode";
+
 	@Rule
 	public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
 
@@ -35,11 +41,11 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		DiagSapTree origTree = new DiagSapTree();
 		DiagSapTree dsTree = TreeBuilder.parseAString("((beauti) ((ful) (ly)))", origTree);
 		DiagSapNode node = dsTree.getRootNode();
-		checkFontInfo(node, node.getContent1TextBox(), "Charis SIL", 12.0, "Regular", Color.BLUE);
-		DiagSapNode node1 = node.getNode1();
-		checkFontInfo(node1, node1.getContent1TextBox(), "Charis SIL", 12.0, "Regular", Color.BLUE);
-		DiagSapNode node2 = node.getNode2();
-		assertNull(node2);
+//		checkFontInfo(node, node.getContent1TextBox(), "Charis SIL", 12.0, "Regular", Color.BLUE);
+//		DiagSapNode node1 = node.getNode1();
+//		checkFontInfo(node1, node1.getContent1TextBox(), "Charis SIL", 12.0, "Regular", Color.BLUE);
+//		DiagSapNode node2 = node.getNode2();
+//		assertNull(node2);
 
 		// right-to-left
 		origTree.setUseRightToLeftOrientation(false);
@@ -78,10 +84,10 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		checkErrorValues(origTree, dsTree, 2, 1, 8, DescriptionConstants.MISSING_OPENING_PAREN);
 
 		dsTree = TreeBuilder.parseAString("(NP/s)", origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 5, DescriptionConstants.MISSING_CONTENT_AFTER_SUBSCRIPT);
+		checkErrorValues(origTree, dsTree, 1, 1, 5, DescriptionConstants.MISSING_CONTENT);
 
 		dsTree = TreeBuilder.parseAString("(NP/S)", origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 5, DescriptionConstants.MISSING_CONTENT_AFTER_SUPERSCRIPT);
+		checkErrorValues(origTree, dsTree, 1, 1, 5, DescriptionConstants.MISSING_CONTENT);
 
 		dsTree = TreeBuilder.parseAString("(S NP) (V) (VP))", origTree);
 		checkErrorValues(origTree, dsTree, 1, 1, 7, DescriptionConstants.CONTENT_AFTER_COMPLETED_TREE);
@@ -129,42 +135,51 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 
 	@Test
 	public void buildTreesTest() {
-		// Basic example
 		DiagSapTree origTree = new DiagSapTree();
 		DiagSapTree dsTree = TreeBuilder.parseAString("((beauti) ((ful) (ly)))", origTree);
 		DiagSapNode rootNode = dsTree.getRootNode();
 		assertNotNull(rootNode);
-		assertNotNull(rootNode.getNode2());
-		checkNodeResult(rootNode, "beauti", "", null, rootNode.getNode2(), 1);
+		assertEquals(1, rootNode.getLevel());
+		Branch branch = rootNode.getLeftBranch();
+		checkBranchContent("beauti", branch);
 		assertNull(rootNode.getMother());
-		DiagSapNode node1 = rootNode.getNode1();
-		assertNull(node1);
-		DiagSapNode node2 = rootNode.getNode2();
-		checkNodeResult(node2, "ful", "ly", null, null, 2);
-		checkNodeResult(node2.getMother(), "beauti", "", null, node2, 1);
+		branch = rootNode.getRightBranch();
+		assertNotNull(branch);
+		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
+		DiagSapNode node = (DiagSapNode)branch.getItem();
+		assertNotNull(node);
+		assertEquals(2, node.getLevel());
+		branch = node.getLeftBranch();
+		checkBranchContent("ful", branch);
+		branch = node.getRightBranch();
+		checkBranchContent("ly", branch);
 
-		// lex/gloss example
 		dsTree = TreeBuilder.parseAString("(((beauti) (ful)) (ly))", origTree);
-		// root node
 		rootNode = dsTree.getRootNode();
-		node1 = rootNode.getNode1();
-		assertNotNull(node1);
-		checkNodeResult(rootNode, "", "ly", node1, null, 1);
+		assertNotNull(rootNode);
+		assertEquals(1, rootNode.getLevel());
 		assertNull(rootNode.getMother());
-		node1 = rootNode.getNode1();
-		assertNotNull(node1);
-		checkNodeResult(node1, "beauti", "ful", null, null, 2);
-		checkNodeResult(node1.getMother(), "", "ly", node1, null, 1);
+		branch = rootNode.getLeftBranch();
+		assertNotNull(branch);
+		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
+		node = (DiagSapNode)branch.getItem();
+		assertNotNull(node);
+		assertEquals(2, node.getLevel());
+		branch = node.getLeftBranch();
+		checkBranchContent("beauti", branch);
+		branch = node.getRightBranch();
+		checkBranchContent("ful", branch);
+		branch = rootNode.getRightBranch();
+		checkBranchContent("ly", branch);
 	}
 
-	private void checkNodeResult(DiagSapNode node, String sContent1, String sContent2,
-			DiagSapNode node1, DiagSapNode node2, int iLevel) {
-		assertNotNull(node);
-		assertEquals(iLevel, node.getLevel());
-		assertEquals(sContent1, node.getContent1());
-		assertEquals(sContent2, node.getContent2());
-		assertEquals(node1, node.getNode1());
-		assertEquals(node2, node.getNode2());
+	protected void checkBranchContent(String sContent, Branch branch) {
+		assertNotNull(branch);
+		BranchItem bi = branch.getItem();
+		assertNotNull(bi);
+		ContentBranch content = (ContentBranch) bi;
+		assertNotNull(content);
+		assertEquals(sContent, content.getContent());
 	}
 
 }

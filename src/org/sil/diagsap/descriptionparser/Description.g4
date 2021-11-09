@@ -17,39 +17,43 @@ grammar Description;
 	package org.sil.diagsap.descriptionparser.antlr4generated;
 }
 description  : '(' node ')' EOF
+             | '(' EOF {notifyErrorListeners("missingContentAndClosingParen");}
+             | '(' ')' EOF {notifyErrorListeners("missingContent");}
+             | '(' content EOF {notifyErrorListeners("missingClosingParen");}
+             | content {notifyErrorListeners("missingOpeningParen");} node* ')' EOF
+             | infixindex {notifyErrorListeners("missingOpeningParen");} node* ')' EOF
              | EOF {notifyErrorListeners("missingOpeningParen");}
-             | node ')' {notifyErrorListeners("missingOpeningParen");}
-             | '(' node ')' {notifyErrorListeners("contentAfterCompletedTree");} content
-             | '(' node ')' {notifyErrorListeners("contentAfterCompletedTree");} node
-             | '(' node ')' ')' {notifyErrorListeners("tooManyCloseParens");}
+             | '(' content ')' EOF {notifyErrorListeners("missingConstituent");}
+             | '(' content {notifyErrorListeners("missingClosingParen");} content+ ')' EOF
+             | '(' content {notifyErrorListeners("missingClosingParen");} infixindex+ ')' EOF
+             | '(' content {notifyErrorListeners("missingClosingParen");} '(' infixindex+ ')' EOF
+             | '(' content {notifyErrorListeners("missingClosingParen");} node ')' EOF
              ;
 
-// we allow empty nodes that just have parens (hence, both type and content are optional)
-node : '(' node ')' '(' node ')'
-     | '(' content ')' '(' node ')'
-     | '(' node ')' '(' content ')'
-     | '(' content ')' '(' content ')'
-     | '(' content ')'
-     | node ')' '(' node ')' {notifyErrorListeners("missingOpeningParen");}
-     | node ')' '(' content ')' {notifyErrorListeners("missingOpeningParen");}
-     | '(' node ')' {notifyErrorListeners("missingOpeningParen");} node ')'
-     | '(' node ')' {notifyErrorListeners("missingOpeningParen");} content ')'
-     | '(' node '(' node ')' {notifyErrorListeners("missingClosingParen");}
-     | '(' node '(' content ')' {notifyErrorListeners("missingClosingParen");}
-     | '(' node ')' '(' node  {notifyErrorListeners("missingClosingParen");}
-     | '(' node ')' '(' content {notifyErrorListeners("missingClosingParen");}
-     | content ')' {notifyErrorListeners("missingOpeningParen");}
-     | '(' content {notifyErrorListeners("missingClosingParen");}
+node : leftbranch rightbranch
+     | leftbranch {notifyErrorListeners("missingRightBranch");}
+     | leftbranch rightbranch ')' {notifyErrorListeners("tooManyCloseParens");}
+     | leftbranch rightbranch {notifyErrorListeners("missingClosingParen");} '('
      ;
+
+leftbranch : branch;
+rightbranch : branch
+            | branch {notifyErrorListeners("missingClosingParen");} branch+ ')'*
+            ;
+branch : '(' content ')'
+       | '(' node ')'
+       | '(' infixindex ')'
+       | '(' infixedbase ')'
+       | '(' content {notifyErrorListeners("missingClosingParen");} content+ ')'
+       | '(' content {notifyErrorListeners("missingClosingParen");}
+       | content {notifyErrorListeners("missingClosingParen");} node
+       ;
 
 content : //(TEXT | BACKSLASH)+
           TEXT
-        | infixindex
-        | TEXT infix TEXT*
-        |      infix TEXT
         ;
-
-infix : openWedge TEXT closeWedge;
+infixedbase : content infix content?;
+infix : openWedge content closeWedge;
 
 openWedge : '<';
 
