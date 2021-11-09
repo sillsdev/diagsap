@@ -53,11 +53,8 @@ content : //(TEXT | BACKSLASH)+
           TEXT
         ;
 infixedbase : content infix content?;
-infix : openWedge content closeWedge;
 
-openWedge : '<';
-
-closeWedge : '>';
+infix : '<' content '>';
 
 infixindex : '\\1'
            | '\\2'

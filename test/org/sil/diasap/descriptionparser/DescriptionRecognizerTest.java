@@ -53,13 +53,13 @@ public class DescriptionRecognizerTest {
 				"(description ( (node (leftbranch (branch ( (node (leftbranch (branch ( (content beauti) ))) (rightbranch (branch ( (content ful) )))) ))) (rightbranch (branch ( (content ly) )))) ) <EOF>)");
 		checkValidDescription(
 				"((\\1)(((p<in>ag) (–arál)) (an)))",
-				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (node (leftbranch (branch ( (infixedbase (content p) (infix (openWedge <) (content in) (closeWedge >)) (content ag)) ))) (rightbranch (branch ( (content –arál) )))) ))) (rightbranch (branch ( (content an) )))) )))) ) <EOF>)");
+				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (node (leftbranch (branch ( (infixedbase (content p) (infix < (content in) >) (content ag)) ))) (rightbranch (branch ( (content –arál) )))) ))) (rightbranch (branch ( (content an) )))) )))) ) <EOF>)");
 		checkValidDescription(
 				"((\\1)((i) ((g<in>) (luto))))",
-				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content i) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content g) (infix (openWedge <) (content in) (closeWedge >))) ))) (rightbranch (branch ( (content luto) )))) )))) )))) ) <EOF>)");
+				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content i) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content g) (infix < (content in) >)) ))) (rightbranch (branch ( (content luto) )))) )))) )))) ) <EOF>)");
 		checkValidDescription(
 				"((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))",
-				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content g) (infix (openWedge <) (content in) (closeWedge >))) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content pí-) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixindex \\2) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content p) (infix (openWedge <) (content in) (closeWedge >)) (content a-)) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content m-) ))) (rightbranch (branch ( (content ulod) )))) )))) )))) )))) )))) )))) ) <EOF>)");
+				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content g) (infix < (content in) >)) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content pí-) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixindex \\2) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content p) (infix < (content in) >) (content a-)) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content m-) ))) (rightbranch (branch ( (content ulod) )))) )))) )))) )))) )))) )))) ) <EOF>)");
 	}
 
 	private void checkValidDescription(String sDescription, String sANTLRTree) {
