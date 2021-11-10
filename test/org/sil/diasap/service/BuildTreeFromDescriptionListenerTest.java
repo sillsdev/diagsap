@@ -139,7 +139,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		DiagSapTree dsTree = TreeBuilder.parseAString("((beauti) ((ful) (ly)))", origTree);
 		DiagSapNode rootNode = dsTree.getRootNode();
 		assertNotNull(rootNode);
-		assertEquals(1, rootNode.getLevel());
+		assertEquals(2, rootNode.getLevel());
 		Branch branch = rootNode.getLeftBranch();
 		checkBranchContent("beauti", branch);
 		assertNull(rootNode.getMother());
@@ -148,7 +148,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
 		DiagSapNode node = (DiagSapNode)branch.getItem();
 		assertNotNull(node);
-		assertEquals(2, node.getLevel());
+		assertEquals(1, node.getLevel());
 		branch = node.getLeftBranch();
 		checkBranchContent("ful", branch);
 		branch = node.getRightBranch();
@@ -157,20 +157,72 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		dsTree = TreeBuilder.parseAString("(((beauti) (ful)) (ly))", origTree);
 		rootNode = dsTree.getRootNode();
 		assertNotNull(rootNode);
-		assertEquals(1, rootNode.getLevel());
+		assertEquals(2, rootNode.getLevel());
 		assertNull(rootNode.getMother());
 		branch = rootNode.getLeftBranch();
 		assertNotNull(branch);
 		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
 		node = (DiagSapNode)branch.getItem();
 		assertNotNull(node);
-		assertEquals(2, node.getLevel());
+		assertEquals(1, node.getLevel());
 		branch = node.getLeftBranch();
 		checkBranchContent("beauti", branch);
 		branch = node.getRightBranch();
 		checkBranchContent("ful", branch);
 		branch = rootNode.getRightBranch();
 		checkBranchContent("ly", branch);
+
+		dsTree = TreeBuilder.parseAString("((institut) ((tion) ((al) ( ly))))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals(3, rootNode.getLevel());
+		branch = rootNode.getLeftBranch();
+		checkBranchContent("institut", branch);
+		assertNull(rootNode.getMother());
+		branch = rootNode.getRightBranch();
+		assertNotNull(branch);
+		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
+		node = (DiagSapNode)branch.getItem();
+		assertNotNull(node);
+		assertEquals(2, node.getLevel());
+		branch = node.getLeftBranch();
+		checkBranchContent("tion", branch);
+		branch = node.getRightBranch();
+		assertNotNull(branch);
+		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
+		node = (DiagSapNode)branch.getItem();
+		assertNotNull(node);
+		assertEquals(1, node.getLevel());
+		branch = node.getLeftBranch();
+		checkBranchContent("al", branch);
+		branch = node.getRightBranch();
+		checkBranchContent("ly", branch);
+
+//		dsTree = TreeBuilder.parseAString("((\\1)(((p<in>ag) (–arál)) (an)))", origTree);
+//		rootNode = dsTree.getRootNode();
+//		assertNotNull(rootNode);
+//		assertEquals(3, rootNode.getLevel());
+//		branch = rootNode.getLeftBranch();
+//		checkBranchContent("institut", branch); // TODO is an infix index
+//		assertNull(rootNode.getMother());
+//		branch = rootNode.getRightBranch();
+//		assertNotNull(branch);
+//		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
+//		node = (DiagSapNode)branch.getItem();
+//		assertNotNull(node);
+//		assertEquals(2, node.getLevel());
+//		branch = node.getLeftBranch();
+//		checkBranchContent("tion", branch);
+//		branch = node.getRightBranch();
+//		assertNotNull(branch);
+//		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
+//		node = (DiagSapNode)branch.getItem();
+//		assertNotNull(node);
+//		assertEquals(1, node.getLevel());
+//		branch = node.getLeftBranch();
+//		checkBranchContent("al", branch);
+//		branch = node.getRightBranch();
+//		checkBranchContent("ly", branch);
 	}
 
 	protected void checkBranchContent(String sContent, Branch branch) {

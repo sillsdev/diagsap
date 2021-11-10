@@ -29,6 +29,7 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 	private HashMap<Integer, DiagSapNode> nodeMap = new HashMap<Integer, DiagSapNode>();
 	private HashMap<Integer, BranchItem> branchItemMap = new HashMap<Integer, BranchItem>();
 	private HashMap<Integer, Branch> branchMap = new HashMap<Integer, Branch>();
+	private int maxLevelFound = 0;
 
 	public BuildTreeFromDescriptionListener(DescriptionParser parser) {
 		super();
@@ -55,7 +56,8 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 		if (tree.getRootNode() == null) {
 			node.setLevel(1);
 			tree.setRootNode(node);
-			System.out.println("enterNode: setting rootnode " + node);
+			maxLevelFound = 1;
+			System.out.println("enterNode: setting rootnode " + node + "; level=" + node.getLevel() + "; maxLevel=" + maxLevelFound);
 		} else {
 			ParserRuleContext parent = ctx.getParent();
 			System.out.println("enterNode: node=" + node + "; ctx=" + ctx + "; parent=" + parent);
@@ -66,6 +68,8 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 					DescriptionParser.NodeContext nodeCtx = (DescriptionParser.NodeContext)parent.getParent();
 					DiagSapNode mother = nodeMap.get(nodeCtx.hashCode());
 					node.setLevel(mother.getLevel() + 1);
+					maxLevelFound = Math.max(mother.getLevel()+1, maxLevelFound);
+					System.out.println("\tlevel set to " + node.getLevel() + "; maxLevel=" + maxLevelFound);
 					node.setMother(mother);
 				}
 			}
@@ -219,6 +223,7 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 	@Override
 	public void exitNode(DescriptionParser.NodeContext ctx) {
 		System.out.println("exitNode: ctx=" + ctx);
+		DiagSapNode node = nodeMap.get(ctx.hashCode());
 		ParserRuleContext parent = ctx.getParent();
 		if (parent instanceof BranchContext) {
 			branchMap.values().stream().forEach(n -> System.out.println("branch=" + n + "; bi=" + n.getItem()));
@@ -226,8 +231,8 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 			BranchContext branchContext = (BranchContext)parent;
 			Branch branch = branchMap.get(branchContext.hashCode());
 			System.out.println("\tbranch=" + branch + "; bi=" + branch.getItem());
-			DiagSapNode node = nodeMap.get(ctx.hashCode());
-			System.out.println("\tnode=" + node);
+			int adjustedLevel = (maxLevelFound - node.getLevel()) + 1;
+			node.setLevel(adjustedLevel);
 			branch.setItem(node);
 			System.out.println("\tbranch=" + branch + "; bi=" + branch.getItem());
 			branchMap.replace(branchContext.hashCode(), branch);
@@ -237,7 +242,11 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 //			branchItemMap.values().stream().forEach(n -> System.out.println("bi=" + n));
 //			branchItemMap.replace(ctx.hashCode(), node);
 //			branchItemMap.values().stream().forEach(n -> System.out.println("bi=" + n));
+		} else {
+			int adjustedLevel = (maxLevelFound - node.getLevel()) + 1;
+			node.setLevel(adjustedLevel);
 		}
+		System.out.println("\tnode=" + node + "; adjusted level=" + node.getLevel() + "; maxLevel=" + maxLevelFound);
 	}
 
 	@Override
