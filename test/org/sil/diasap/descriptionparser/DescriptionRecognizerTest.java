@@ -8,7 +8,6 @@ package org.sil.diasap.descriptionparser;
 
 import static org.junit.Assert.*;
 
-import org.antlr.v4.misc.EscapeSequenceParsing;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -99,6 +98,7 @@ public class DescriptionRecognizerTest {
 
 	@Test
 	public void invalidDescriptionsTest() {
+		checkInvalidDescription("((\\1)(p<in>ag)) (–arál)) (an)))", DescriptionConstants.CONTENT_AFTER_COMPLETED_TREE, 17, 2);
 		checkInvalidDescription("", DescriptionConstants.MISSING_OPENING_PAREN, 0, 1);
 		checkInvalidDescription("(", DescriptionConstants.MISSING_CONTENT_AND_CLOSING_PAREN, 1, 1);
 		checkInvalidDescription("()", DescriptionConstants.MISSING_CONTENT, 2, 1);
@@ -106,7 +106,7 @@ public class DescriptionRecognizerTest {
 		checkInvalidDescription("a)", DescriptionConstants.MISSING_OPENING_PAREN, 1, 1);
 		checkInvalidDescription("(a)", DescriptionConstants.MISSING_CONSTITUENT, 3, 1);
 		checkInvalidDescription("((a))b", DescriptionConstants.MISSING_RIGHT_BRANCH, 4, 2);
-		checkInvalidDescription("((a))(b", DescriptionConstants.MISSING_RIGHT_BRANCH, 4, 2);
+		checkInvalidDescription("((a))(b", DescriptionConstants.MISSING_RIGHT_BRANCH, 4, 3);
 		checkInvalidDescription("((a)))", DescriptionConstants.MISSING_RIGHT_BRANCH, 4, 2);
 		checkInvalidDescription("((a)(b)))", DescriptionConstants.TOO_MANY_CLOSING_PARENS, 8, 1);
 		checkInvalidDescription("(((a)(b))(c)))", DescriptionConstants.TOO_MANY_CLOSING_PARENS, 13, 1);
@@ -116,16 +116,16 @@ public class DescriptionRecognizerTest {
 		checkInvalidDescription("(a b) (c))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 2);
 		checkInvalidDescription("a (b (c))", DescriptionConstants.MISSING_OPENING_PAREN, 2, 2);
 		checkInvalidDescription("\\1 (am (ci))", DescriptionConstants.MISSING_OPENING_PAREN, 3, 2);
-		checkInvalidDescription("(t \\1 (am (ci))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 3);
+		checkInvalidDescription("(t \\1 (am (ci))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 1);
 		checkInvalidDescription("(t (am (ci))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 3);
 		checkInvalidDescription("((t (am (ci))", DescriptionConstants.MISSING_CLOSING_PAREN, 4, 5);
-		checkInvalidDescription("(a (\\1\\2noun))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 3);
-		checkInvalidDescription("((a (\\1\\2noun))", DescriptionConstants.MISSING_CLOSING_PAREN, 4, 3);
+		checkInvalidDescription("(a (\\1\\2noun))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 1);
+		checkInvalidDescription("((a (\\1\\2noun))", DescriptionConstants.MISSING_CLOSING_PAREN, 4, 1);
 		checkInvalidDescription(
 				"((\\1)(\\2)(\\3)(\\4)(\\5)(\\6)(\\7)(\\8)(\\9)(((p<in>ag) (–arál)) (an)))",
 				DescriptionConstants.MISSING_CLOSING_PAREN, 9, 1);
 		checkInvalidDescription("((\\1)((p<in>ag) (–arál)) (an)))",	DescriptionConstants.MISSING_CLOSING_PAREN, 25, 1);
-		checkInvalidDescription("((\\1)(p<in>ag) (–arál)) (an)))", DescriptionConstants.MISSING_CLOSING_PAREN, 15, 4);
+		checkInvalidDescription("((\\1)(p<in>ag) (–arál)) (an)))", DescriptionConstants.MISSING_CLOSING_PAREN, 15, 3);
 	}
 
 	private void checkInvalidDescription(String sDescription, String sFailedPortion, int iPos,

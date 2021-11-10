@@ -68,56 +68,117 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 	@Test
 	public void buildTreeFailuresTest() {
 		DiagSapTree origTree = new DiagSapTree();
-		DiagSapTree dsTree = TreeBuilder.parseAString("(S (NP) ((VP))", origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 12, DescriptionConstants.MISSING_CLOSING_PAREN);
+		DiagSapTree dsTree = TreeBuilder.parseAString("(a)", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 3, DescriptionConstants.MISSING_CONSTITUENT);
 
-		dsTree = TreeBuilder.parseAString("(S (NP (VP))", origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 10, DescriptionConstants.MISSING_CLOSING_PAREN);
+		dsTree = TreeBuilder.parseAString("((a))b", origTree);
+		checkErrorValues(origTree, dsTree, 2, 1, 4, DescriptionConstants.MISSING_RIGHT_BRANCH);
 
-		dsTree = TreeBuilder.parseAString("(S (NP ((VP))", origTree);
-		checkErrorValues(origTree, dsTree, 2, 1, 11, DescriptionConstants.MISSING_CLOSING_PAREN);
+		dsTree = TreeBuilder.parseAString("((a))(b", origTree);
+		checkErrorValues(origTree, dsTree, 2, 1, 4, DescriptionConstants.MISSING_RIGHT_BRANCH);
 
-		dsTree = TreeBuilder.parseAString("S (NP (VP))", origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 0, DescriptionConstants.MISSING_OPENING_PAREN);
+		dsTree = TreeBuilder.parseAString("((a)))", origTree);
+		checkErrorValues(origTree, dsTree, 2, 1, 4, DescriptionConstants.MISSING_RIGHT_BRANCH);
 
-		dsTree = TreeBuilder.parseAString("(S (NP) VP))", origTree);
-		checkErrorValues(origTree, dsTree, 2, 1, 8, DescriptionConstants.MISSING_OPENING_PAREN);
+		dsTree = TreeBuilder.parseAString("((a)(b)))", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 8, DescriptionConstants.TOO_MANY_CLOSING_PARENS);
 
-		dsTree = TreeBuilder.parseAString("(NP/s)", origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 5, DescriptionConstants.MISSING_CONTENT);
+		dsTree = TreeBuilder.parseAString("(((a)(b))(c)))", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 13, DescriptionConstants.TOO_MANY_CLOSING_PARENS);
 
-		dsTree = TreeBuilder.parseAString("(NP/S)", origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 5, DescriptionConstants.MISSING_CONTENT);
+		dsTree = TreeBuilder.parseAString("(((a)(b)))(c))", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 9, DescriptionConstants.TOO_MANY_CLOSING_PARENS);
 
-		dsTree = TreeBuilder.parseAString("(S NP) (V) (VP))", origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 7, DescriptionConstants.CONTENT_AFTER_COMPLETED_TREE);
+		dsTree = TreeBuilder.parseAString("(a b)", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 3, DescriptionConstants.MISSING_CLOSING_PAREN);
 
-		String sBad = "(S) (NP (N-bar/S sup' (N(\\L Juan (\\G John)))))\n" +
-				"(VP (V/ssub (\\T\\L duerme (\\G sleeps)))))";
+		dsTree = TreeBuilder.parseAString("((a) (b c))", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 8, DescriptionConstants.MISSING_CLOSING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("(a b) (c))", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 3, DescriptionConstants.MISSING_CLOSING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("a (b (c))", origTree);
+		checkErrorValues(origTree, dsTree, 2, 1, 2, DescriptionConstants.MISSING_OPENING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("\\1 (am (ci))", origTree);
+		checkErrorValues(origTree, dsTree, 2, 1, 3, DescriptionConstants.MISSING_OPENING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("(t \\1 (am (ci))", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 3, DescriptionConstants.MISSING_CLOSING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("(t (am (ci))", origTree);
+		checkErrorValues(origTree, dsTree, 3, 1, 3, DescriptionConstants.MISSING_CLOSING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("((t (am (ci))", origTree);
+		checkErrorValues(origTree, dsTree, 5, 1, 4, DescriptionConstants.MISSING_CLOSING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("(a (\\1\\2noun))", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 3, DescriptionConstants.MISSING_CLOSING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("((a (\\1\\2noun))", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 4, DescriptionConstants.MISSING_CLOSING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("((\\1)(\\2)(\\3)(\\4)(\\5)(\\6)(\\7)(\\8)(\\9)(((p<in>ag) (–arál)) (an)))", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 9, DescriptionConstants.MISSING_CLOSING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("((\\1)((p<in>ag) (–arál)) (an)))", origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 25, DescriptionConstants.MISSING_CLOSING_PAREN);
+
+		dsTree = TreeBuilder.parseAString("((\\1)(p<in>ag) (–arál)) (an)))", origTree);
+		checkErrorValues(origTree, dsTree, 3, 1, 15, DescriptionConstants.MISSING_CLOSING_PAREN);
+
+
+		
+		
+		
+		String sBad = "((\\1)(p<in>ag)) (–arál)) (an)))";
 		dsTree = TreeBuilder.parseAString(sBad, origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 4, DescriptionConstants.CONTENT_AFTER_COMPLETED_TREE);
-		String sDescriptionWithErrorLocationMarked = "(S)  << HERE >> (NP (N-bar/S sup' (N(\\L Juan (\\G John)))))\n" +
-				"(VP (V/ssub (\\T\\L duerme (\\G sleeps)))))";
+		checkErrorValues(origTree, dsTree, 1, 1, 17, DescriptionConstants.CONTENT_AFTER_COMPLETED_TREE);
+		String sDescriptionWithErrorLocationMarked = "((\\1)(p<in>ag)) ( << HERE >> –arál)) (an)))";
 		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
 
-		sBad = "(S (NP) (N-bar/S sup' (N(\\L Juan (\\G John)))))\n" +
-				"(VP (V/ssub (\\T\\L duerme (\\G sleeps)))))";
+		sBad = "((\\1)(p<in>ag) (–arál)) (an)))";
 		dsTree = TreeBuilder.parseAString(sBad, origTree);
-		checkErrorValues(origTree, dsTree, 1, 2, 0, DescriptionConstants.CONTENT_AFTER_COMPLETED_TREE);
-		sDescriptionWithErrorLocationMarked = "(S (NP) (N-bar/S sup' (N(\\L Juan (\\G John)))))\n" +
-				" << HERE >> (VP (V/ssub (\\T\\L duerme (\\G sleeps)))))";
+		checkErrorValues(origTree, dsTree, 3, 1, 15, DescriptionConstants.MISSING_CLOSING_PAREN);
+		sDescriptionWithErrorLocationMarked = "((\\1)(p<in>ag)  << HERE >> (–arál)) (an)))";
 		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
-		sBad = "(S (PP (P' (P (\\L de (\\G from))))(NP (N' (N (\\L aqui (\\G here))))))\n" +
-				"(NP (N'/Ssup' (N(\\L Juanita (\\G Juanita)))))\n" +
-				"(VP (NP (N' (N (\\LSusana (\\G Susana))))) (V' (V/ssub (\\T\\L duerme (\\G sleeps)))))))";
+
+		sBad = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod))))))";
 		dsTree = TreeBuilder.parseAString(sBad, origTree);
-		String sErrorMessage = DescriptionConstants.TOO_MANY_CLOSING_PARENS;
-		checkErrorValues(origTree, dsTree, 1, 3, 83, sErrorMessage);
-		sDescriptionWithErrorLocationMarked = "(S (PP (P' (P (\\L de (\\G from))))(NP (N' (N (\\L aqui (\\G here))))))\n" +
-				"(NP (N'/Ssup' (N(\\L Juanita (\\G Juanita)))))\n" +
-				"(VP (NP (N' (N (\\LSusana (\\G Susana))))) (V' (V/ssub (\\T\\L duerme (\\G sleeps))))))) << HERE >> ";
+		checkErrorValues(origTree, dsTree, 1, 1, 47, DescriptionConstants.MISSING_CLOSING_PAREN);
+		sDescriptionWithErrorLocationMarked = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod << HERE >> ))))))";
 		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
-		}
+
+		// Following parse fine but are semantically wrong
+		// infix index number wrong
+		sBad = "((\\1) ((g<in>) ((pí-)((\\3) ((p<in>a-)((m-)(ulod)))))))";
+		dsTree = TreeBuilder.parseAString(sBad, origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 47, DescriptionConstants.MISSING_CLOSING_PAREN);
+		sDescriptionWithErrorLocationMarked = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod << HERE >> ))))))";
+		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
+
+		// missing matching infix
+		sBad = "((\\1) ((g<in>) ((pí-)((\\2) ((pa-)((m-)(ulod)))))))";
+		dsTree = TreeBuilder.parseAString(sBad, origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 47, DescriptionConstants.MISSING_CLOSING_PAREN);
+		sDescriptionWithErrorLocationMarked = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod << HERE >> ))))))";
+		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
+
+		// missing matching infix index
+		sBad = "((\\1) ((g<in>) ((pí-)((m-) ((p<in>a-)((m-)(ulod)))))))";
+		dsTree = TreeBuilder.parseAString(sBad, origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 47, DescriptionConstants.MISSING_CLOSING_PAREN);
+		sDescriptionWithErrorLocationMarked = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod << HERE >> ))))))";
+		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
+
+		// two consecutive nodes
+		sBad = "(((a) (b))((c)(d)))";
+		dsTree = TreeBuilder.parseAString(sBad, origTree);
+		checkErrorValues(origTree, dsTree, 1, 1, 47, DescriptionConstants.MISSING_CLOSING_PAREN);
+		sDescriptionWithErrorLocationMarked = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod << HERE >> ))))))";
+		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
+	}
 
 	private void checkErrorValues(DiagSapTree origTree, DiagSapTree dsTree,
 			int expectedNumErrors, int expectedLineNumber, int expectedCharPos,

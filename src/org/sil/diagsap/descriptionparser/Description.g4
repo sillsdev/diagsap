@@ -17,6 +17,9 @@ grammar Description;
 	package org.sil.diagsap.descriptionparser.antlr4generated;
 }
 description  : '(' node ')' EOF
+             | '(' node ')' '(' {notifyErrorListeners("contentAfterCompletedTree");} EOF
+             | '(' node ')' ')' {notifyErrorListeners("contentAfterCompletedTree");} EOF
+             | '(' node ')' content {notifyErrorListeners("contentAfterCompletedTree");} EOF
              | '(' EOF {notifyErrorListeners("missingContentAndClosingParen");}
              | '(' ')' EOF {notifyErrorListeners("missingContent");}
              | '(' content EOF {notifyErrorListeners("missingClosingParen");}
@@ -26,6 +29,9 @@ description  : '(' node ')' EOF
              | '(' content ')' EOF {notifyErrorListeners("missingConstituent");}
              | '(' content {notifyErrorListeners("missingClosingParen");} content+ ')' EOF
              | '(' content {notifyErrorListeners("missingClosingParen");} infixindex+ ')' EOF
+             | '(' content {notifyErrorListeners("missingClosingParen");} infixindex+ content*
+             | '(' content {notifyErrorListeners("missingClosingParen");} '(' infixindex+ content*
+             | '(' '(' content {notifyErrorListeners("missingClosingParen");} '(' infixindex+ content*
              | '(' content {notifyErrorListeners("missingClosingParen");} '(' infixindex+ ')' EOF
              | '(' content {notifyErrorListeners("missingClosingParen");} node ')' EOF
              ;
@@ -33,6 +39,7 @@ description  : '(' node ')' EOF
 node : leftbranch rightbranch
      | leftbranch {notifyErrorListeners("missingRightBranch");}
      | leftbranch rightbranch ')' {notifyErrorListeners("tooManyCloseParens");}
+     | leftbranch rightbranch {notifyErrorListeners("missingClosingParen");} branch
      | leftbranch rightbranch {notifyErrorListeners("missingClosingParen");} '('
      ;
 
