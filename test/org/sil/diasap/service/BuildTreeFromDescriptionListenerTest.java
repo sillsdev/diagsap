@@ -7,8 +7,6 @@ package org.sil.diasap.service;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
-
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -20,6 +18,8 @@ import org.sil.diagsap.model.BranchItem;
 import org.sil.diagsap.model.ContentBranch;
 import org.sil.diagsap.model.DiagSapNode;
 import org.sil.diagsap.model.DiagSapTree;
+import org.sil.diagsap.model.InfixIndexBranch;
+import org.sil.diagsap.model.InfixedBaseBranch;
 import org.sil.diagsap.service.TreeBuilder;
 import org.sil.diagsap.descriptionparser.DescriptionConstants;
 import org.sil.utility.view.JavaFXThreadingRule;
@@ -141,18 +141,14 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		assertNotNull(rootNode);
 		assertEquals(2, rootNode.getLevel());
 		Branch branch = rootNode.getLeftBranch();
-		checkBranchContent("beauti", branch);
+		checkContentBranch(branch, "beauti");
 		assertNull(rootNode.getMother());
 		branch = rootNode.getRightBranch();
-		assertNotNull(branch);
-		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
-		DiagSapNode node = (DiagSapNode)branch.getItem();
-		assertNotNull(node);
-		assertEquals(1, node.getLevel());
+		DiagSapNode node = checkNodeBranch(branch, 1);
 		branch = node.getLeftBranch();
-		checkBranchContent("ful", branch);
+		checkContentBranch(branch, "ful");
 		branch = node.getRightBranch();
-		checkBranchContent("ly", branch);
+		checkContentBranch(branch, "ly");
 
 		dsTree = TreeBuilder.parseAString("(((beauti) (ful)) (ly))", origTree);
 		rootNode = dsTree.getRootNode();
@@ -160,72 +156,123 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		assertEquals(2, rootNode.getLevel());
 		assertNull(rootNode.getMother());
 		branch = rootNode.getLeftBranch();
-		assertNotNull(branch);
-		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
-		node = (DiagSapNode)branch.getItem();
-		assertNotNull(node);
-		assertEquals(1, node.getLevel());
+		node = checkNodeBranch(branch, 1);
 		branch = node.getLeftBranch();
-		checkBranchContent("beauti", branch);
+		checkContentBranch(branch, "beauti");
 		branch = node.getRightBranch();
-		checkBranchContent("ful", branch);
+		checkContentBranch(branch, "ful");
 		branch = rootNode.getRightBranch();
-		checkBranchContent("ly", branch);
+		checkContentBranch(branch, "ly");
 
 		dsTree = TreeBuilder.parseAString("((institut) ((tion) ((al) ( ly))))", origTree);
 		rootNode = dsTree.getRootNode();
 		assertNotNull(rootNode);
 		assertEquals(3, rootNode.getLevel());
 		branch = rootNode.getLeftBranch();
-		checkBranchContent("institut", branch);
+		checkContentBranch(branch, "institut");
 		assertNull(rootNode.getMother());
 		branch = rootNode.getRightBranch();
-		assertNotNull(branch);
-		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
-		node = (DiagSapNode)branch.getItem();
-		assertNotNull(node);
-		assertEquals(2, node.getLevel());
+		node = checkNodeBranch(branch, 2);
 		branch = node.getLeftBranch();
-		checkBranchContent("tion", branch);
+		checkContentBranch(branch, "tion");
 		branch = node.getRightBranch();
-		assertNotNull(branch);
-		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
-		node = (DiagSapNode)branch.getItem();
-		assertNotNull(node);
-		assertEquals(1, node.getLevel());
+		node = checkNodeBranch(branch, 1);
 		branch = node.getLeftBranch();
-		checkBranchContent("al", branch);
+		checkContentBranch(branch, "al");
 		branch = node.getRightBranch();
-		checkBranchContent("ly", branch);
+		checkContentBranch(branch, "ly");
 
-//		dsTree = TreeBuilder.parseAString("((\\1)(((p<in>ag) (–arál)) (an)))", origTree);
-//		rootNode = dsTree.getRootNode();
-//		assertNotNull(rootNode);
-//		assertEquals(3, rootNode.getLevel());
-//		branch = rootNode.getLeftBranch();
-//		checkBranchContent("institut", branch); // TODO is an infix index
-//		assertNull(rootNode.getMother());
-//		branch = rootNode.getRightBranch();
-//		assertNotNull(branch);
-//		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
-//		node = (DiagSapNode)branch.getItem();
-//		assertNotNull(node);
-//		assertEquals(2, node.getLevel());
-//		branch = node.getLeftBranch();
-//		checkBranchContent("tion", branch);
-//		branch = node.getRightBranch();
-//		assertNotNull(branch);
-//		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
-//		node = (DiagSapNode)branch.getItem();
-//		assertNotNull(node);
-//		assertEquals(1, node.getLevel());
-//		branch = node.getLeftBranch();
-//		checkBranchContent("al", branch);
-//		branch = node.getRightBranch();
-//		checkBranchContent("ly", branch);
+		dsTree = TreeBuilder.parseAString("((\\1)(((p<in>ag) (–arál)) (an)))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals(3, rootNode.getLevel());
+		branch = rootNode.getLeftBranch();
+		checkInfixIndexBranch(branch, 1);
+		branch = rootNode.getRightBranch();
+		node = checkNodeBranch(branch, 2);
+		branch = node.getRightBranch();
+		checkContentBranch(branch, "an");
+		branch = node.getLeftBranch();
+		node = checkNodeBranch(branch, 1);
+		branch = node.getRightBranch();
+		checkContentBranch(branch, "–arál");
+		branch = node.getLeftBranch();
+		checkInfixBaseBranch(branch, "p", "in", "ag");
+
+		dsTree = TreeBuilder.parseAString("((\\1)((i) ((g<in>) (luto))))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals(3, rootNode.getLevel());
+		branch = rootNode.getLeftBranch();
+		checkInfixIndexBranch(branch, 1);
+		branch = rootNode.getRightBranch();
+		node = checkNodeBranch(branch, 2);
+		branch = node.getLeftBranch();
+		checkContentBranch(branch, "i");
+		branch = node.getRightBranch();
+		node = checkNodeBranch(branch, 1);
+		branch = node.getRightBranch();
+		checkContentBranch(branch, "luto");
+		branch = node.getLeftBranch();
+		checkInfixBaseBranch(branch, "g", "in", null);
+
+		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals(6, rootNode.getLevel());
+		branch = rootNode.getLeftBranch();
+		checkInfixIndexBranch(branch, 1);
+		branch = rootNode.getRightBranch();
+		node = checkNodeBranch(branch, 5);
+		branch = node.getLeftBranch();
+		checkInfixBaseBranch(branch, "g", "in", null);
+		branch = node.getRightBranch();
+		node = checkNodeBranch(branch, 4);
+		branch = node.getLeftBranch();
+		checkContentBranch(branch, "pí-");
+		branch = node.getRightBranch();
+		node = checkNodeBranch(branch, 3);
+		branch = node.getLeftBranch();
+		checkInfixIndexBranch(branch, 2);
+		branch = node.getRightBranch();
+		node = checkNodeBranch(branch, 2);
+		branch = node.getLeftBranch();
+		checkInfixBaseBranch(branch, "p", "in", "a-");
+		branch = node.getRightBranch();
+		node = checkNodeBranch(branch, 1);
+		branch = node.getLeftBranch();
+		checkContentBranch(branch, "m-");
+		branch = node.getRightBranch();
+		checkContentBranch(branch, "ulod");
 	}
 
-	protected void checkBranchContent(String sContent, Branch branch) {
+	protected void checkInfixBaseBranch(Branch branch, String expectedContentBefore,
+			String expectedInfixContent, String expectedContentAfter) {
+		assertNotNull(branch);
+		BranchItem bi = branch.getItem();
+		assertNotNull(bi);
+		InfixedBaseBranch ifxBase = (InfixedBaseBranch) bi;
+		assertEquals(expectedContentBefore, ifxBase.getContentBefore());
+		assertEquals(expectedInfixContent, ifxBase.getInfixContent());
+		assertEquals(expectedContentAfter, ifxBase.getContentAfter());
+	}
+
+	protected DiagSapNode checkNodeBranch(Branch branch, int expectedLevel) {
+		assertNotNull(branch);
+		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
+		DiagSapNode node = (DiagSapNode)branch.getItem();
+		assertNotNull(node);
+		assertEquals(expectedLevel, node.getLevel());
+		return node;
+	}
+
+	protected void checkInfixIndexBranch(Branch branch, int expectedIndex) {
+		InfixIndexBranch index = (InfixIndexBranch)branch.getItem();
+		assertNotNull(index);
+		assertEquals(expectedIndex,index.getIndex());
+	}
+
+	protected void checkContentBranch(Branch branch, String sContent) {
 		assertNotNull(branch);
 		BranchItem bi = branch.getItem();
 		assertNotNull(bi);

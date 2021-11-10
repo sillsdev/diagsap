@@ -12,12 +12,16 @@ import org.sil.diagsap.descriptionparser.antlr4generated.DescriptionBaseListener
 import org.sil.diagsap.descriptionparser.antlr4generated.DescriptionParser;
 import org.sil.diagsap.descriptionparser.antlr4generated.DescriptionParser.BranchContext;
 import org.sil.diagsap.descriptionparser.antlr4generated.DescriptionParser.InfixContext;
+import org.sil.diagsap.descriptionparser.antlr4generated.DescriptionParser.InfixedbaseContext;
 import org.sil.diagsap.descriptionparser.antlr4generated.DescriptionParser.NodeContext;
 import org.sil.diagsap.model.Branch;
 import org.sil.diagsap.model.BranchItem;
 import org.sil.diagsap.model.ContentBranch;
 import org.sil.diagsap.model.DiagSapNode;
 import org.sil.diagsap.model.DiagSapTree;
+import org.sil.diagsap.model.InfixIndexBranch;
+import org.sil.diagsap.model.InfixedBaseBranch;
+import org.sil.utility.StringUtilities;
 
 /**
  * @author Andy Black build a tree from the parsed description
@@ -29,6 +33,7 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 	private HashMap<Integer, DiagSapNode> nodeMap = new HashMap<Integer, DiagSapNode>();
 	private HashMap<Integer, BranchItem> branchItemMap = new HashMap<Integer, BranchItem>();
 	private HashMap<Integer, Branch> branchMap = new HashMap<Integer, Branch>();
+	private HashMap<Integer, InfixedBaseBranch> infixedBaseBranchMap = new HashMap<Integer, InfixedBaseBranch>();
 	private int maxLevelFound = 0;
 
 	public BuildTreeFromDescriptionListener(DescriptionParser parser) {
@@ -101,6 +106,8 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 	@Override
 	public void enterInfixedbase(DescriptionParser.InfixedbaseContext ctx) {
 		System.out.println("enterInfixedbase: ctx=" + ctx);
+		InfixedBaseBranch base = new InfixedBaseBranch();
+		infixedBaseBranchMap.put(ctx.hashCode(), base);
 	}
 
 	@Override
@@ -122,8 +129,7 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 		sContent = sContent.replaceAll("\\\\\\(", "(").replaceAll("\\\\\\)", ")");
 		System.out.println("exitContent: str='" + sContent + "'; ctx=" + ctx + "; parent=" + parent + "; p class='" + parent.getClass() + "'");
 		ContentBranch content = new ContentBranch(sContent);
-//		branchItemMap.put(ctx.hashCode(), content);
-		String sParentClass = parent.getClass().getName();
+		String sParentClass = parent.getClass().getSimpleName();
 		int iStart = sParentClass.indexOf("$");
 		switch (sParentClass.substring(iStart +1)) {
 		case "BranchContext":
@@ -139,37 +145,46 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 			InfixContext infixContext = (InfixContext) parent;
 			branchItemMap.put(infixContext.hashCode(), content);
 			break;
+		case "InfixedbaseContext":
+			System.out.println("\tfound infix");
+			InfixedbaseContext infixedBaseContext = (InfixedbaseContext) parent;
+			InfixedBaseBranch ifxBaseBranch = infixedBaseBranchMap.get(infixedBaseContext.hashCode());
+			if (StringUtilities.isNullOrEmpty(ifxBaseBranch.getContentBefore())) {
+				ifxBaseBranch.setContentBefore(sContent);
+			} else {
+				ifxBaseBranch.setContentAfter(sContent);
+			}
+			break;
 		}
-//		DescriptionParser.NodeContext parentCtx = (NodeContext) ctx.getParent();
-//		DiagSapNode node = nodeMap.get(parentCtx.hashCode());
-//		int iEndOfText = sContent.length();
-//		if (node.getNode1() == null) {
-//			if (node.getContent1().equals("")) {
-//				node.setContent1(sContent.substring(0, iEndOfText).trim());
-//				System.out.println("exitContent: node " + node + " content1='" + sContent + "'");
-//			} else {
-//				node.setContent2(sContent.substring(0, iEndOfText).trim());
-//				System.out.println("exitContent: node " + node + " content2='" + sContent + "'");
-//			}
-//		} else {
-//			node.setContent2(sContent.substring(0, iEndOfText).trim());
-//			System.out.println("exitContent: node " + node + " content2='" + sContent + "'");
-//		}
 	}
 
 	@Override
 	public void exitInfix(DescriptionParser.InfixContext ctx) {
 		System.out.println("exitInfix: ctx=" + ctx);
+		InfixedbaseContext baseContext = (InfixedbaseContext)ctx.getParent();
+		InfixedBaseBranch base = infixedBaseBranchMap.get(baseContext.hashCode());
+		ContentBranch content = (ContentBranch) branchItemMap.get(ctx.hashCode());
+		base.setInfixContent(content.getContent());
 	}
 
 	@Override
 	public void exitInfixedbase(DescriptionParser.InfixedbaseContext ctx) {
 		System.out.println("exitInfixedBase: ctx=" + ctx);
+		InfixedBaseBranch base = infixedBaseBranchMap.get(ctx.hashCode());
+		BranchContext branchContext = (BranchContext)ctx.getParent();
+		Branch branch = branchMap.get(branchContext.hashCode());
+		branch.setItem(base);
 	}
 
 	@Override
 	public void exitInfixindex(DescriptionParser.InfixindexContext ctx) {
 		System.out.println("exitInfixIndent: ctx=" + ctx);
+		String sIndex = ctx.getText();
+		int index = Integer.parseInt(sIndex.substring(1));
+		InfixIndexBranch ifxIndex = new InfixIndexBranch(index);
+		BranchContext branchContext = (BranchContext)ctx.getParent();
+		Branch branch = branchMap.get(branchContext.hashCode());
+		branch.setItem(ifxIndex);
 	}
 
 	@Override

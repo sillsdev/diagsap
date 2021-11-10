@@ -15,7 +15,10 @@ public class InfixedBaseBranch extends BranchItem {
 	String contentBefore;
 	String infixContent;
 	String contentAfter;
-	
+
+	public InfixedBaseBranch() {
+	}
+
 	public InfixedBaseBranch(String contentBefore, String infixContent, String contentAfter) {
 		super();
 		this.contentBefore = contentBefore;
