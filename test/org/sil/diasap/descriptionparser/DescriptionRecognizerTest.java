@@ -89,10 +89,10 @@ public class DescriptionRecognizerTest {
 		// begin parsing at rule 'description'
 		ParseTree tree = parser.description();
 		// uncomment the next two lines to see what parsed
-		String sTree = tree.toStringTree(parser);
-		System.out.println(sTree);
+//		String sTree = tree.toStringTree(parser);
+//		System.out.println(sTree);
 		// uncomment the next line to see what the error messages were
-		errListener.getErrorMessages().stream().forEach(err -> System.out.println("error: " + err.getMsg()));
+//		errListener.getErrorMessages().stream().forEach(err -> System.out.println("error: " + err.getMsg()));
 		return parser;
 	}
 

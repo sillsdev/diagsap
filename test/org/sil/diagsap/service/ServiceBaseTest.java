@@ -4,22 +4,22 @@
  * (http://www.gnu.org/licenses/lgpl-2.1.html)
  */
 
-package org.sil.diasap.model;
-
-import static org.junit.Assert.*;
+package org.sil.diagsap.service;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
-import org.sil.diagsap.model.DiagSapNode;
+import org.sil.diagsap.model.DiagSapTree;
 import org.sil.utility.view.JavaFXThreadingRule;
 
 /**
  * @author Andy Black
  *
  */
-public class DiagSapNodeTest {
+public abstract class ServiceBaseTest {
+
+	protected DiagSapTree origTree = new DiagSapTree();
+
 	@Rule
 	public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
 
@@ -36,17 +36,4 @@ public class DiagSapNodeTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
-	@Test
-	public void textBoxDimensionsTest() {
-		DiagSapNode node = new DiagSapNode();
-//		node.setContent1("node");
-		assertEquals(25.98046875, node.getWidth(), 0.0);
-		assertEquals(19.62890625, node.getHeight(), 0.0);
-
-//		node.setContent1("p<in>ag");
-		assertEquals(53.5546875, node.getWidth(), 0.0);
-		assertEquals(19.62890625, node.getHeight(), 0.0);
-}
-
 }
