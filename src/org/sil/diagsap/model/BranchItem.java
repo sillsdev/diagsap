@@ -12,4 +12,5 @@ package org.sil.diagsap.model;
  */
 public abstract class BranchItem {
 
+	abstract public String reconstructDescription();
 }

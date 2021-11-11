@@ -148,6 +148,8 @@ public class TreeBuilder {
 		walker.walk(validator, parseTree); // initiate walk of tree with
 											// listener
 		DiagSapTree dsTree = validator.getTree();
+		TreeSemanticChecker semanticChecker = TreeSemanticChecker.getInstance();
+		semanticChecker.checkTree(dsTree);
 		restoreTreeParameters(origTree, dsTree);
 		return dsTree;
 	}

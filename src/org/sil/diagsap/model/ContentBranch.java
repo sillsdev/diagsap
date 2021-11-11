@@ -28,4 +28,13 @@ public class ContentBranch extends BranchItem {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	@Override
+	public String reconstructDescription() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		sb.append(content);
+		sb.append(")");
+		return sb.toString();
+	}
 }

@@ -6,6 +6,8 @@
 
 package org.sil.diagsap.model;
 
+import org.sil.utility.StringUtilities;
+
 /**
  * @author Andy Black
  *
@@ -48,5 +50,20 @@ public class InfixedBaseBranch extends BranchItem {
 
 	public void setContentAfter(String contentAfter) {
 		this.contentAfter = contentAfter;
+	}
+
+	@Override
+	public String reconstructDescription() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		sb.append(contentBefore);
+		sb.append("<");
+		sb.append(infixContent);
+		sb.append(">");
+		if (!StringUtilities.isNullOrEmpty(contentAfter)) {
+			sb.append(contentAfter);
+		}
+		sb.append(")");
+		return sb.toString();
 	}
 }

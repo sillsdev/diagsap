@@ -26,4 +26,13 @@ public class InfixIndexBranch extends BranchItem {
 	public void setIndex(int index) {
 		this.index = index;
 	}
+
+	@Override
+	public String reconstructDescription() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("(\\");
+		sb.append(index);
+		sb.append(")");
+		return sb.toString();
+	}
 }

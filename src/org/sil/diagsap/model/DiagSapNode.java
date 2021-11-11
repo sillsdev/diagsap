@@ -132,4 +132,16 @@ public class DiagSapNode extends BranchItem {
 	public void setYUpperMid(double dYUpperMid) {
 		this.dYUpperMid = dYUpperMid;
 	}
+
+	@Override
+	public String reconstructDescription() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		BranchItem item = leftBranch.getItem();
+		sb.append(item.reconstructDescription());
+		item = rightBranch.getItem();
+		sb.append(item.reconstructDescription());
+		sb.append(")");
+		return sb.toString();
+	}
 }

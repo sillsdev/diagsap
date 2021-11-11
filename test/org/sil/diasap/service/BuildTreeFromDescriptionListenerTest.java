@@ -67,7 +67,6 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 
 	@Test
 	public void buildTreeFailuresTest() {
-		DiagSapTree origTree = new DiagSapTree();
 		DiagSapTree dsTree = TreeBuilder.parseAString("(a)", origTree);
 		checkErrorValues(origTree, dsTree, 1, 1, 3, DescriptionConstants.MISSING_CONSTITUENT);
 
@@ -127,10 +126,6 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 
 		dsTree = TreeBuilder.parseAString("((\\1)(p<in>ag) (–arál)) (an)))", origTree);
 		checkErrorValues(origTree, dsTree, 3, 1, 15, DescriptionConstants.MISSING_CLOSING_PAREN);
-
-
-		
-		
 		
 		String sBad = "((\\1)(p<in>ag)) (–arál)) (an)))";
 		dsTree = TreeBuilder.parseAString(sBad, origTree);
@@ -145,35 +140,6 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
 
 		sBad = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod))))))";
-		dsTree = TreeBuilder.parseAString(sBad, origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 47, DescriptionConstants.MISSING_CLOSING_PAREN);
-		sDescriptionWithErrorLocationMarked = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod << HERE >> ))))))";
-		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
-
-		// Following parse fine but are semantically wrong
-		// infix index number wrong
-		sBad = "((\\1) ((g<in>) ((pí-)((\\3) ((p<in>a-)((m-)(ulod)))))))";
-		dsTree = TreeBuilder.parseAString(sBad, origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 47, DescriptionConstants.MISSING_CLOSING_PAREN);
-		sDescriptionWithErrorLocationMarked = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod << HERE >> ))))))";
-		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
-
-		// missing matching infix
-		sBad = "((\\1) ((g<in>) ((pí-)((\\2) ((pa-)((m-)(ulod)))))))";
-		dsTree = TreeBuilder.parseAString(sBad, origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 47, DescriptionConstants.MISSING_CLOSING_PAREN);
-		sDescriptionWithErrorLocationMarked = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod << HERE >> ))))))";
-		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
-
-		// missing matching infix index
-		sBad = "((\\1) ((g<in>) ((pí-)((m-) ((p<in>a-)((m-)(ulod)))))))";
-		dsTree = TreeBuilder.parseAString(sBad, origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 47, DescriptionConstants.MISSING_CLOSING_PAREN);
-		sDescriptionWithErrorLocationMarked = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod << HERE >> ))))))";
-		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
-
-		// two consecutive nodes
-		sBad = "(((a) (b))((c)(d)))";
 		dsTree = TreeBuilder.parseAString(sBad, origTree);
 		checkErrorValues(origTree, dsTree, 1, 1, 47, DescriptionConstants.MISSING_CLOSING_PAREN);
 		sDescriptionWithErrorLocationMarked = "((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod << HERE >> ))))))";
@@ -225,7 +191,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		branch = rootNode.getRightBranch();
 		checkContentBranch(branch, "ly");
 
-		dsTree = TreeBuilder.parseAString("((institut) ((tion) ((al) ( ly))))", origTree);
+		dsTree = TreeBuilder.parseAString("((institut) ((ion) ((al) ( ly))))", origTree);
 		rootNode = dsTree.getRootNode();
 		assertNotNull(rootNode);
 		assertEquals(3, rootNode.getLevel());
@@ -235,7 +201,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		branch = rootNode.getRightBranch();
 		node = checkNodeBranch(branch, 2);
 		branch = node.getLeftBranch();
-		checkContentBranch(branch, "tion");
+		checkContentBranch(branch, "ion");
 		branch = node.getRightBranch();
 		node = checkNodeBranch(branch, 1);
 		branch = node.getLeftBranch();
@@ -333,13 +299,156 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		assertEquals(expectedIndex,index.getIndex());
 	}
 
-	protected void checkContentBranch(Branch branch, String sContent) {
+	protected void checkContentBranch(Branch branch, String sExpectedContent) {
 		assertNotNull(branch);
 		BranchItem bi = branch.getItem();
 		assertNotNull(bi);
 		ContentBranch content = (ContentBranch) bi;
 		assertNotNull(content);
-		assertEquals(sContent, content.getContent());
+		assertEquals(sExpectedContent, content.getContent());
+	}
+
+	@Test
+	public void reconstructDescriptionTest() {
+		DiagSapTree origTree = new DiagSapTree();
+		DiagSapTree dsTree = TreeBuilder.parseAString("((beauti) ((ful) (ly)))", origTree);
+		DiagSapNode rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals("((beauti)((ful)(ly)))", rootNode.reconstructDescription());
+		Branch branch = rootNode.getLeftBranch();
+		checkReconstructedContentBranch(branch, "(beauti)");
+		branch = rootNode.getRightBranch();
+		DiagSapNode node = checkNodeBranch(branch, 1);
+		assertEquals("((ful)(ly))", node.reconstructDescription());
+		branch = node.getLeftBranch();
+		checkReconstructedContentBranch(branch, "(ful)");
+		branch = node.getRightBranch();
+		checkReconstructedContentBranch(branch, "(ly)");
+
+		dsTree = TreeBuilder.parseAString("(((beauti) (ful)) (ly))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals("(((beauti)(ful))(ly))", rootNode.reconstructDescription());
+		branch = rootNode.getLeftBranch();
+		node = checkReconstructedNodeBranch(branch, "((beauti)(ful))");
+		branch = node.getLeftBranch();
+		checkReconstructedContentBranch(branch, "(beauti)");
+		branch = node.getRightBranch();
+		checkReconstructedContentBranch(branch, "(ful)");
+		branch = rootNode.getRightBranch();
+		checkReconstructedContentBranch(branch, "(ly)");
+
+		dsTree = TreeBuilder.parseAString("((institut) ((ion) ((al) ( ly))))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals("((institut)((ion)((al)(ly))))", rootNode.reconstructDescription());
+		branch = rootNode.getLeftBranch();
+		checkReconstructedContentBranch(branch, "(institut)");
+		branch = rootNode.getRightBranch();
+		node = checkReconstructedNodeBranch(branch, "((ion)((al)(ly)))");
+		branch = node.getLeftBranch();
+		checkReconstructedContentBranch(branch, "(ion)");
+		branch = node.getRightBranch();
+		node = checkReconstructedNodeBranch(branch, "((al)(ly))");
+		branch = node.getLeftBranch();
+		checkReconstructedContentBranch(branch, "(al)");
+		branch = node.getRightBranch();
+		checkReconstructedContentBranch(branch, "(ly)");
+
+		dsTree = TreeBuilder.parseAString("((\\1)(((p<in>ag) (–arál)) (an)))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals(3, rootNode.getLevel());
+		branch = rootNode.getLeftBranch();
+		checkRecontructedInfixIndexBranch(branch, "(\\1)");
+		branch = rootNode.getRightBranch();
+		node = checkReconstructedNodeBranch(branch, "(((p<in>ag)(–arál))(an))");
+		branch = node.getRightBranch();
+		checkReconstructedContentBranch(branch, "(an)");
+		branch = node.getLeftBranch();
+		node = checkNodeBranch(branch, 1);
+		branch = node.getRightBranch();
+		checkReconstructedContentBranch(branch, "(–arál)");
+		branch = node.getLeftBranch();
+		checkReconstructedInfixBaseBranch(branch, "(p<in>ag)");
+
+		dsTree = TreeBuilder.parseAString("((\\1)((i) ((g<in>) (luto))))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals("((\\1)((i)((g<in>)(luto))))", rootNode.reconstructDescription());
+		branch = rootNode.getLeftBranch();
+		checkRecontructedInfixIndexBranch(branch, "(\\1)");
+		branch = rootNode.getRightBranch();
+		node = checkReconstructedNodeBranch(branch, "((i)((g<in>)(luto)))");
+		branch = node.getLeftBranch();
+		checkReconstructedContentBranch(branch, "(i)");
+		branch = node.getRightBranch();
+		node = checkReconstructedNodeBranch(branch, "((g<in>)(luto))");
+		branch = node.getRightBranch();
+		checkReconstructedContentBranch(branch, "(luto)");
+		branch = node.getLeftBranch();
+		checkReconstructedInfixBaseBranch(branch, "(g<in>)");
+
+		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals("((\\1)((g<in>)((pí-)((\\2)((p<in>a-)((m-)(ulod)))))))", rootNode.reconstructDescription());
+		branch = rootNode.getLeftBranch();
+		checkRecontructedInfixIndexBranch(branch, "(\\1)");
+		branch = rootNode.getRightBranch();
+		node = checkReconstructedNodeBranch(branch, "((g<in>)((pí-)((\\2)((p<in>a-)((m-)(ulod))))))");
+		branch = node.getLeftBranch();
+		checkReconstructedInfixBaseBranch(branch, "(g<in>)");
+		branch = node.getRightBranch();
+		node = checkReconstructedNodeBranch(branch, "((pí-)((\\2)((p<in>a-)((m-)(ulod)))))");
+		branch = node.getLeftBranch();
+		checkReconstructedContentBranch(branch, "(pí-)");
+		branch = node.getRightBranch();
+		node = checkReconstructedNodeBranch(branch, "((\\2)((p<in>a-)((m-)(ulod))))");
+		branch = node.getLeftBranch();
+		checkRecontructedInfixIndexBranch(branch, "(\\2)");
+		branch = node.getRightBranch();
+		node = checkReconstructedNodeBranch(branch, "((p<in>a-)((m-)(ulod)))");
+		branch = node.getLeftBranch();
+		checkReconstructedInfixBaseBranch(branch, "(p<in>a-)");
+		branch = node.getRightBranch();
+		node = checkReconstructedNodeBranch(branch, "((m-)(ulod))");
+		branch = node.getLeftBranch();
+		checkReconstructedContentBranch(branch, "(m-)");
+		branch = node.getRightBranch();
+		checkReconstructedContentBranch(branch, "(ulod)");
+	}
+
+	protected void checkReconstructedContentBranch(Branch branch, String sExpectedReconstruction) {
+		assertNotNull(branch);
+		BranchItem bi = branch.getItem();
+		assertNotNull(bi);
+		ContentBranch content = (ContentBranch) bi;
+		assertNotNull(content);
+		assertEquals(sExpectedReconstruction, content.reconstructDescription());
+	}
+
+	protected DiagSapNode checkReconstructedNodeBranch(Branch branch, String sExpected) {
+		assertNotNull(branch);
+		assertEquals(nodeClassName, branch.getItem().getClass().getSimpleName());
+		DiagSapNode node = (DiagSapNode)branch.getItem();
+		assertNotNull(node);
+		assertEquals(sExpected, node.reconstructDescription());
+		return node;
+	}
+
+	protected void checkRecontructedInfixIndexBranch(Branch branch, String sExpected) {
+		InfixIndexBranch index = (InfixIndexBranch)branch.getItem();
+		assertNotNull(index);
+		assertEquals(sExpected, index.reconstructDescription());
+	}
+
+	protected void checkReconstructedInfixBaseBranch(Branch branch, String sExpected) {
+		assertNotNull(branch);
+		BranchItem bi = branch.getItem();
+		assertNotNull(bi);
+		InfixedBaseBranch ifxBase = (InfixedBaseBranch) bi;
+		assertEquals(sExpected, ifxBase.reconstructDescription());
 	}
 
 }

@@ -9,6 +9,7 @@ package org.sil.diasap.service;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.sil.diagsap.model.DiagSapTree;
 import org.sil.utility.view.JavaFXThreadingRule;
 
 /**
@@ -16,6 +17,9 @@ import org.sil.utility.view.JavaFXThreadingRule;
  *
  */
 public abstract class ServiceBaseTest {
+
+	protected DiagSapTree origTree = new DiagSapTree();
+
 	@Rule
 	public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
 
