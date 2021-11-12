@@ -29,6 +29,7 @@ public class DiagSapTree {
 	double dInitialYCoordinate; // initial, topmost Y coordinate
 	double dXSize; // total width of tree
 	double dYSize; // total height of tree
+	double dTextUnderlineGap; // extra gap between text and its underline
 	double dVerticalGap; // extra gap between levels
 
 	double dHorizontalGap; // extra gap between leaf nodes
@@ -149,6 +150,15 @@ public class DiagSapTree {
 
 	public void setSaveAsSVG(boolean fSaveAsSVG) {
 		this.fSaveAsSVG = fSaveAsSVG;
+	}
+
+	@XmlElement(name = "textUnderlineGap")
+	public double getTextUnderlineGap() {
+		return dTextUnderlineGap;
+	}
+
+	public void setTextUnderlineGap(double dTextUnderlineGap) {
+		this.dTextUnderlineGap = dTextUnderlineGap;
 	}
 
 	@XmlElement(name = "useRightToLeftOrientation")

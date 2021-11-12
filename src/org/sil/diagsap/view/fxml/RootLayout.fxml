@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import org.fxmisc.richtext.InlineCssTextArea?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<!-- <?import org.controlsfx.control.StatusBar?> -->
+
+<BorderPane fx:id="mainPane" prefHeight="660.0" prefWidth="1000.0" stylesheets="@DiagSap.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sil.diagsap.view.RootLayoutController">
+   <top>
+      <VBox prefHeight="75.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar fx:id="menuBar">
+              <menus>
+                <Menu fx:id="menuFile" mnemonicParsing="true" text="%menu.file">
+                  <items>
+                    <MenuItem fx:id="menuItemFileNew" accelerator="Ctrl+n" mnemonicParsing="true" onAction="#handleNewTree" text="%menu.new" />
+					<MenuItem fx:id="menuItemFileOpen" accelerator="Ctrl+o" mnemonicParsing="true" onAction="#handleOpenTree" text="%menu.open" />
+					<MenuItem fx:id="menuItemFileSave" accelerator="Ctrl+s" mnemonicParsing="true" onAction="#handleSaveTree" text="%menu.save" />
+					<MenuItem fx:id="menuItemFileSaveAs" mnemonicParsing="true" onAction="#handleSaveTreeAs" text="%menu.saveas" />
+					<SeparatorMenuItem />
+					<CheckMenuItem fx:id="menuItemSaveAsPng" mnemonicParsing="true" onAction="#handleMenuSaveAsPng" text="%menu.saveaspng" />
+					<CheckMenuItem fx:id="menuItemSaveAsSVG" mnemonicParsing="true" onAction="#handleMenuSaveAsSVG" text="%menu.saveassvg" />
+                    <SeparatorMenuItem />
+                    <MenuItem fx:id="menuItemFileExit" mnemonicParsing="true" onAction="#handleExit" text="%menu.exit" />
+                  </items>
+                </Menu>
+                <Menu fx:id="menuEdit" mnemonicParsing="true" text="%menu.edit" onShown="#handleShowingEditMenu">
+                  <items>
+					<MenuItem fx:id="menuItemEditUndo" mnemonicParsing="true" onAction="#handleUndo" text="%menu.undo" accelerator="Ctrl+z" />
+					<MenuItem fx:id="menuItemEditRedo" mnemonicParsing="true" onAction="#handleRedo" text="%menu.redo" accelerator="Ctrl+y" />
+					<SeparatorMenuItem />
+					<MenuItem fx:id="menuItemEditCut" mnemonicParsing="true" onAction="#handleCut" text="%menu.cut" accelerator="ctrl+x" />
+					<MenuItem fx:id="menuItemEditCopy" mnemonicParsing="true" onAction="#handleCopy" text="%menu.copy" accelerator="ctrl+c" />
+					<MenuItem fx:id="menuItemEditPaste" mnemonicParsing="true" onAction="#handlePaste" text="%menu.paste" accelerator="ctrl+v" />
+                  </items>
+                </Menu>
+                <Menu fx:id="menuTree" mnemonicParsing="true" text="%menu.tree">
+                  <items>
+                    <MenuItem fx:id="menuItemDrawTree" accelerator="ctrl+d" mnemonicParsing="true" onAction="#handleDrawTree" text="%menu.drawtree" />
+                  </items>
+                </Menu>
+                <Menu fx:id="menuFormat" mnemonicParsing="true" text="%menu.format">
+                  <items>
+                    <CheckMenuItem fx:id="menuItemUseRightToLeftOrientation" mnemonicParsing="true" onAction="#handleMenuUseRightToLeftOrientation" text="%menu.userighttoleftorientation" />
+					<SeparatorMenuItem />
+					<MenuItem fx:id="menuItemLexicalFont" mnemonicParsing="true" onAction="#handleLexicalFontInfo" text="%menu.lexicalfont" />
+					<SeparatorMenuItem />
+					<MenuItem fx:id="menuItemTreeSpacingParameter" mnemonicParsing="true" onAction="#handleTreeSpacingParameters" text="%menu.treespacingparameters" />
+					<MenuItem fx:id="menuItemBackgroundAndLineParameters" mnemonicParsing="true" onAction="#handleBackgroundAndLineParameters" text="%menu.backgroundandlineparameters" />
+					<SeparatorMenuItem />
+					<MenuItem fx:id="menuItemSaveTreeParameters" mnemonicParsing="true" onAction="#handleSaveTreeParameters" text="%menu.savetreeparameters" />
+                  </items>
+                </Menu>
+				<Menu fx:id="menuSettings" mnemonicParsing="true" text="%menu.settings">
+				  <items>
+					<MenuItem fx:id="menuItemDescriptionFontSize" mnemonicParsing="true" onAction="#handleMenuDescriptionFontSize" text="%menu.descriptionfontsize" />
+					<CheckMenuItem fx:id="menuItemDrawAsType" mnemonicParsing="true" onAction="#handleMenuDrawAsType" text="%menu.drawastype" />
+					<CheckMenuItem fx:id="menuItemShowMatchingParenWithArrowKeys" mnemonicParsing="true" onAction="#handleMenuShowMatchingParenWithArrowKeys" text="%menu.showmatchingparenwitharrowkeys" />
+					<MenuItem fx:id="menuItemShowMatchingParenDelay" mnemonicParsing="true" onAction="#handleMenuShowMatchingParenDelay" text="%menu.showmatchingparendelay" />
+					<SeparatorMenuItem />
+					<MenuItem fx:id="menuItemChangeInterfaceLanguage" mnemonicParsing="true" onAction="#handleChangeInterfaceLanguage" text="%menu.changeinterfacelanguage" />
+				  </items>
+				</Menu>
+                <Menu fx:id="menuHelp" mnemonicParsing="true" text="%menu.help">
+                  <items>
+                    <MenuItem fx:id="menuItemQuickReferenceGuide" mnemonicParsing="true" onAction="#handleQuickReferenceGuide" text="%menu.quickreferenceguide" />
+                    <MenuItem fx:id="menuItemUserDocumentation" mnemonicParsing="true" onAction="#handleUserDocumentation" text="%menu.userdocumentation" />
+                    <SeparatorMenuItem />
+                    <MenuItem fx:id="menuItemAbout" mnemonicParsing="true" onAction="#handleAbout" text="%menu.about" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="toolbarbutton" BorderPane.alignment="CENTER">
+              <items>
+                    <Button fx:id="buttonToolbarFileNew" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" minWidth="17.0" mnemonicParsing="true" onAction="#handleNewTree" prefHeight="23.0" prefWidth="17.0" text="" />
+					<Button fx:id="buttonToolbarFileOpen" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" minWidth="17.0" mnemonicParsing="true" onAction="#handleOpenTree" prefHeight="23.0" prefWidth="17.0" text="" />
+					<Button fx:id="buttonToolbarFileSave" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" minWidth="17.0" mnemonicParsing="true" onAction="#handleSaveTree" prefHeight="23.0" prefWidth="17.0" text="" />
+					<Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="3.0" />
+					<Button fx:id="buttonToolbarEditCut" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" minWidth="17.0" mnemonicParsing="true" onAction="#handleCut" prefHeight="23.0" prefWidth="17.0" text="" />
+					<Button fx:id="buttonToolbarEditCopy" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" minWidth="17.0" mnemonicParsing="true" onAction="#handleCopy" prefHeight="23.0" prefWidth="17.0" text="" />
+					<Button fx:id="buttonToolbarEditPaste" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" minWidth="17.0" mnemonicParsing="true" onAction="#handlePaste" prefHeight="23.0" prefWidth="17.0" text="" />
+					<Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="3.0" />
+					<Button fx:id="buttonToolbarDrawTree" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" minWidth="17.0" mnemonicParsing="true" onAction="#handleDrawTree" prefHeight="23.0" prefWidth="17.0" text="" />
+					<Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="3.0" />
+	                <ToggleButton fx:id="toggleButtonShowMatchingParenWithArrowKeys" onAction="#handleShowMatchingParenWithArrowKeys" text="→(  )←" />
+					<Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="3.0" />
+	                <ToggleButton fx:id="toggleButtonSaveAsPng" onAction="#handleSaveAsPng" text="PNG" />
+	                <ToggleButton fx:id="toggleButtonSaveAsSVG" onAction="#handleSaveAsSVG" text="SVG" />
+              </items>
+            </ToolBar>
+         </children>
+      </VBox>
+   </top>
+   <bottom>
+      <VBox prefHeight="21.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text fx:id="statusBarKey" strokeType="OUTSIDE" strokeWidth="0.0" text="%label.key" />
+         </children>
+      </VBox>
+   </bottom>
+   <center>
+      <AnchorPane BorderPane.alignment="CENTER">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <SplitPane fx:id="splitPane" dividerPositions="0.3644524236983842" orientation="VERTICAL">
+                     <items>
+                        <InlineCssTextArea fx:id="treeDescription" prefHeight="200.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <content>
+                                    <Pane fx:id="drawingArea" prefHeight="1000.0" prefWidth="10000.0" style="-fx-background-color: #FFFFFF;"  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </content>
+                        </ScrollPane>
+                     </items>
+                  </SplitPane>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>
