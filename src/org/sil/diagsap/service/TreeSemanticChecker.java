@@ -142,13 +142,13 @@ public class TreeSemanticChecker {
 		collectBranchInfixItems(node.getRightBranch().getItem());
 	}
 
-	protected void collectBranchInfixItems(BranchItem leftItem) {
-		if (leftItem instanceof DiagSapNode) {
-			collectAllInfixIndexesAndBases((DiagSapNode)leftItem);
-		} else if (leftItem instanceof InfixIndexBranch) {
-			infixIndexes.add((InfixIndexBranch)leftItem);
-		} else if (leftItem instanceof InfixedBaseBranch) {
-			infixedBases.add((InfixedBaseBranch)leftItem);
+	protected void collectBranchInfixItems(BranchItem item) {
+		if (item instanceof DiagSapNode) {
+			collectAllInfixIndexesAndBases((DiagSapNode)item);
+		} else if (item instanceof InfixIndexBranch) {
+			infixIndexes.add((InfixIndexBranch)item);
+		} else if (item instanceof InfixedBaseBranch) {
+			infixedBases.add((InfixedBaseBranch)item);
 		}
 	}
 

@@ -6,18 +6,26 @@
 
 package org.sil.diagsap.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 
+import org.sil.diagsap.model.BranchItem;
+import org.sil.diagsap.model.ContentBranch;
 import org.sil.diagsap.model.DiagSapNode;
 import org.sil.diagsap.model.DiagSapTree;
+import org.sil.diagsap.model.InfixIndexBranch;
+import org.sil.diagsap.model.InfixedBaseBranch;
 import org.sil.lingtree.Constants;
 import org.sil.lingtree.model.FontInfo;
+import org.sil.lingtree.model.LexFontInfo;
 import org.sil.lingtree.model.NodeType;
 import org.sil.utility.StringUtilities;
 
@@ -26,15 +34,16 @@ import org.sil.utility.StringUtilities;
  *
  */
 public class TreeDrawer {
-	DiagSapTree ltTree;
+	DiagSapTree dsTree;
 	HashMap<Integer, Double> maxHeightPerLevel = new HashMap<>();
+	List<ContentBranch> contentBranches = new ArrayList<ContentBranch>();
 
 	private static final double dYCoordAdjustment = 3; // adjustment value
-	private static final double dTriangleOffset = 3;
+	private double dUnderlineYCoordinate = 3;
 
-	public TreeDrawer(DiagSapTree ltTree) {
+	public TreeDrawer(DiagSapTree dsTree) {
 		super();
-		this.ltTree = ltTree;
+		this.dsTree = dsTree;
 	}
 
 	public HashMap<Integer, Double> getMaxHeightPerLevel() {
@@ -42,7 +51,7 @@ public class TreeDrawer {
 	}
 
 	public void calculateMaxHeightPerLevel() {
-		DiagSapNode node = ltTree.getRootNode();
+		DiagSapNode node = dsTree.getRootNode();
 		calculateMaxHeightPerLevel(node);
 	}
 
@@ -60,8 +69,8 @@ public class TreeDrawer {
 	}
 
 	public void calculateYCoordinateOfEveryNode() {
-		DiagSapNode node = ltTree.getRootNode();
-		calculateYCoordinateOfANode(node, ltTree.getInitialYCoordinate());
+		DiagSapNode node = dsTree.getRootNode();
+		calculateYCoordinateOfANode(node, dsTree.getInitialYCoordinate());
 	}
 
 	// Determine Y-axis coordinates for this node
@@ -69,23 +78,23 @@ public class TreeDrawer {
 		node.setYCoordinate(dVerticalOffset);
 		node.setYLowerMid(node.getYLowerMid() + dYCoordAdjustment);
 		node.setYUpperMid(node.getYUpperMid() - dYCoordAdjustment);
-		if (node.getYLowerMid() > ltTree.getYSize()) {
+		if (node.getYLowerMid() > dsTree.getYSize()) {
 			// Keep track of total height for scrolling
-			ltTree.setYSize(node.getYLowerMid());
+			dsTree.setYSize(node.getYLowerMid());
 		}
 //		if (node.getNodeType() == NodeType.Lex || node.getNodeType() == NodeType.EmptyElement) {
 //			// keep track of lowest for "flat" view
-//			if (node.getYCoordinate() > ltTree.getLexBottomYCoordinate()) {
-//				ltTree.setLexBottomYCoordinate(node.getYCoordinate());
+//			if (node.getYCoordinate() > dsTree.getLexBottomYCoordinate()) {
+//				dsTree.setLexBottomYCoordinate(node.getYCoordinate());
 //			}
-//			if (node.getYUpperMid() > ltTree.getLexBottomYUpperMid()) {
-//				ltTree.setLexBottomYUpperMid(node.getYUpperMid());
+//			if (node.getYUpperMid() > dsTree.getLexBottomYUpperMid()) {
+//				dsTree.setLexBottomYUpperMid(node.getYUpperMid());
 //			}
 //		}
 //		if (node.getNodeType() == NodeType.Gloss) {
 //			// keep track of lowest for "flat" view
-//			if (node.getYCoordinate() > ltTree.getGlossBottomYCoordinate()) {
-//				ltTree.setGlossBottomYCoordinate(node.getYCoordinate());
+//			if (node.getYCoordinate() > dsTree.getGlossBottomYCoordinate()) {
+//				dsTree.setGlossBottomYCoordinate(node.getYCoordinate());
 //			}
 //		}
 //		// Determine Y-axis coordinate for any daughters
@@ -93,17 +102,17 @@ public class TreeDrawer {
 //			double dDaughterYCoordinate = node.getYCoordinate()
 //					+ maxHeightPerLevel.get(node.getLevel());
 //			if (daughterNode.getNodeType() != NodeType.Gloss) {
-//				dDaughterYCoordinate += ltTree.getVerticalGap();
+//				dDaughterYCoordinate += dsTree.getVerticalGap();
 //			} else {
-//				dDaughterYCoordinate += ltTree.getLexGlossGapAdjustment();
+//				dDaughterYCoordinate += dsTree.getLexGlossGapAdjustment();
 //			}
 //			calculateYCoordinateOfANode(daughterNode, dDaughterYCoordinate);
 //		}
 	}
 
 	public void calculateXCoordinateOfEveryNode() {
-		ltTree.setHorizontalOffset(ltTree.getInitialXCoordinate());
-		DiagSapNode node = ltTree.getRootNode();
+		dsTree.setHorizontalOffset(dsTree.getInitialXCoordinate());
+		DiagSapNode node = dsTree.getRootNode();
 		calculateXCoordinateOfANode(node, 0);
 	}
 
@@ -152,23 +161,23 @@ public class TreeDrawer {
 
 			// The mid point of this leaf node is the current horizontal offset
 			// plus half of the widest node in the column.
-			node.setXMid(ltTree.getHorizontalOffset() + dMaxColumnWidth / 2);
+			node.setXMid(dsTree.getHorizontalOffset() + dMaxColumnWidth / 2);
 			// Update the current horizontal offset to be that mid point plus
 			// half of the widest node in the column plus the gap between leaf
 			// nodes.
-			ltTree.setHorizontalOffset(node.getXMid() + ltTree.getHorizontalGap() + dMaxColumnWidth
+			dsTree.setHorizontalOffset(node.getXMid() + dsTree.getHorizontalGap() + dMaxColumnWidth
 					/ 2);
 //		}
-		node.setXCoordinate(node.getXMid() - node.getWidth() / 2); // adjust for
+		node.setX1Coordinate(node.getXMid() - node.getWidth() / 2); // adjust for
 																	// width of
 																	// this node
-		double dEnd = node.getXCoordinate() + node.getWidth();
-		if (dEnd > ltTree.getXSize()) {
-			ltTree.setXSize(dEnd); // Keep track of total width for scrolling
+		double dEnd = node.getX1Coordinate() + node.getWidth();
+		if (dEnd > dsTree.getXSize()) {
+			dsTree.setXSize(dEnd); // Keep track of total width for scrolling
 		}
 		// System.out.printf(
 		// "%1$s\tXSize = %2$s,\tWidth = %3$s,\tXCoord = %4$s,\tYCoord = %5$s, \tXMid = %5$s"
-		// + "\r\n", node.getContent(), ltTree.getXSize(), node.getWidth(),
+		// + "\r\n", node.getContent(), dsTree.getXSize(), node.getWidth(),
 		// node.getXCoordinate(), node.getYCoordinate(), node.getXMid());
 		// System.out.printf("\tYUpperMid = %1$s, \tYLowerMid = %2$s\r\n",
 		// node.getYUpperMid(),
@@ -178,9 +187,9 @@ public class TreeDrawer {
 
 	private void adjustXValues(DiagSapNode node, double dAdjust) {
 		// adjust this node
-		node.setXCoordinate(node.getXCoordinate() + dAdjust);
+		node.setX1Coordinate(node.getX1Coordinate() + dAdjust);
 		node.setXMid(node.getXMid() + dAdjust);
-		ltTree.setHorizontalOffset(ltTree.getHorizontalOffset() + dAdjust);
+		dsTree.setHorizontalOffset(dsTree.getHorizontalOffset() + dAdjust);
 		// adjust any daughter nodes
 //		for (DiagSapNode daughterNode : node.getDaughters()) {
 //			adjustXValues(daughterNode, dAdjust);
@@ -188,47 +197,107 @@ public class TreeDrawer {
 	}
 
 	public void draw(Pane pane) {
-		recalculateValues();
-		DiagSapNode node = ltTree.getRootNode();
+//		recalculateValues();
+		DiagSapNode node = dsTree.getRootNode();
+
+		contentBranches.clear();
+		collectContentBranchItems(node);
+		FontInfo fontInfo = LexFontInfo.getInstance();
+		double dXCoordinate = dsTree.getInitialXCoordinate();
+		dXCoordinate = drawContentBoxesWithUnderline(pane, fontInfo, dXCoordinate);
+		calculateX1AndX2OfNode(node);
 		drawNodes(node, pane);
 		pane.setStyle("-fx-background-color:"
-				+ StringUtilities.toRGBCode(ltTree.getBackgroundColor()) + ";");
+				+ StringUtilities.toRGBCode(dsTree.getBackgroundColor()) + ";");
+	}
+
+	protected double drawContentBoxesWithUnderline(Pane pane, FontInfo fontInfo, double dXCoordinate) {
+		for (ContentBranch content: contentBranches) {
+			Text contentTextBox = drawContentTextBox(fontInfo, dXCoordinate, content);
+			pane.getChildren().add(content.getContentTextBox());
+			Line line = drawUnderline(dXCoordinate, contentTextBox);
+			pane.getChildren().add(line);
+			dXCoordinate = updateXCoordinate(dXCoordinate, contentTextBox);
+		}
+		return dXCoordinate;
+	}
+
+	protected Line drawUnderline(double dXCoordinate, Text contentTextBox) {
+		Bounds tbBounds = contentTextBox.getBoundsInLocal();
+		double width = tbBounds.getWidth();
+		double lineY = dUnderlineYCoordinate = tbBounds.getMinY() + tbBounds.getHeight() + dsTree.getTextUnderlineGap();
+		Line line = new Line(dXCoordinate, lineY, dXCoordinate + width, lineY);
+		line.setStroke(dsTree.getLineColor());
+		line.setStrokeWidth(dsTree.getLineWidth());
+		return line;
+	}
+
+	protected double updateXCoordinate(double dXCoordinate, Text contentTextBox) {
+		double width = contentTextBox.getBoundsInLocal().getWidth();
+		dXCoordinate += width + dsTree.getHorizontalGap();
+		return dXCoordinate;
+	}
+
+	protected Text drawContentTextBox(FontInfo fontInfo, double dXCoordinate, ContentBranch content) {
+		Text contentTextBox = content.getContentTextBox();
+		contentTextBox.setX(dXCoordinate);
+		contentTextBox.setY(dsTree.getInitialYCoordinate());
+		contentTextBox.setFont(fontInfo.getFont());
+		contentTextBox.setFill(fontInfo.getColor());
+		return contentTextBox;
+	}
+
+	protected void collectContentBranchItems(DiagSapNode node) {
+		collectContentBranchItems(node.getLeftBranch().getItem());
+		collectContentBranchItems(node.getRightBranch().getItem());
+	}
+
+	protected void collectContentBranchItems(BranchItem item) {
+		if (item instanceof DiagSapNode) {
+			collectContentBranchItems((DiagSapNode)item);
+		} else if (item instanceof ContentBranch) {
+			contentBranches.add((ContentBranch)item);
+		}
 	}
 
 	private void drawNodes(DiagSapNode node, Pane pane) {
-//		pane.getChildren().add(node.getContentTextBox());
-//		if (node.hasMother() && !node.isOmitLine() && node.getNodeType() != NodeType.Gloss) {
-//			DiagSapNode mother = node.getMother();
-//			if (!node.isTriangle()) {
-//				// need to draw a line between mother and this node
-//				Line line = new Line(mother.getXMid(), mother.getYLowerMid(), node.getXMid(),
-//						node.getYUpperMid());
-//				line.setStroke(ltTree.getLineColor());
-//				line.setStrokeWidth(ltTree.getLineWidth());
-//				pane.getChildren().add(line);
-//			} else if (node.isTriangle()) {
-//				drawTriangle(node, pane, mother);
-//			}
-//		}
-//		for (DiagSapNode daughterNode : node.getDaughters()) {
-//			drawNodes(daughterNode, pane);
-//		}
+		double yCoordinate = dUnderlineYCoordinate + (node.getLevel() * dsTree.getVerticalGap());
+		Line horizontalLine = new Line(node.getX1Coordinate(), yCoordinate, node.getX2Coordinate(),
+				yCoordinate);
+		pane.getChildren().add(horizontalLine);
+		BranchItem branchItem = node.getLeftBranch().getItem();
+		drawNodeVerticalLine(node, pane, yCoordinate, branchItem, true);
+		branchItem = node.getRightBranch().getItem();
+		drawNodeVerticalLine(node, pane, yCoordinate, branchItem, false);
+	}
+
+	protected void drawNodeVerticalLine(DiagSapNode node, Pane pane, double yCoordinate,
+			BranchItem branchItem, boolean isLeft) {
+		double x = isLeft ? node.getX1Coordinate(): node.getX2Coordinate();
+		if (branchItem instanceof DiagSapNode) {
+			drawNodes((DiagSapNode) branchItem, pane);
+			Line verticalLine = new Line(x, yCoordinate, x, yCoordinate - dsTree.getVerticalGap());
+			pane.getChildren().add(verticalLine);
+		} else if (branchItem instanceof ContentBranch) {
+			Line verticalLine = new Line(x, yCoordinate, x, dUnderlineYCoordinate);
+			pane.getChildren().add(verticalLine);
+		}
 	}
 
 	public StringBuilder drawAsSVG() {
 		recalculateValues();
-		DiagSapNode node = ltTree.getRootNode();
+		DiagSapNode node = dsTree.getRootNode();
 		StringBuilder sb = new StringBuilder();
 		// Trying to convert from pixels to mm does not come out right.
 		// So we're going with pixels
 		// final String sMM = "mm";
 		// sb.append(Constants.SVG_HEADER.replace("{0}",
-		// pixelsToMM(ltTree.getXSize()) + sMM).replace(
-		// "{1}", pixelsToMM(ltTree.getYSize()) + sMM));
-		sb.append(Constants.SVG_HEADER.replace("{0}", String.valueOf(ltTree.getXSize() + 10)).replace(
-				"{1}", String.valueOf(ltTree.getYSize())));
+		// pixelsToMM(dsTree.getXSize()) + sMM).replace(
+		// "{1}", pixelsToMM(dsTree.getYSize()) + sMM));
+		sb.append(Constants.SVG_HEADER.replace("{0}", String.valueOf(dsTree.getXSize() + 10)).replace(
+				"{1}", String.valueOf(dsTree.getYSize())));
 		sb.append(Constants.SVG_BACKGROUND_COLOR.replace("{0}",
-				StringUtilities.toRGBCode(ltTree.getBackgroundColor())));
+				StringUtilities.toRGBCode(dsTree.getBackgroundColor())));
 		drawNodesAsSVG(node, sb);
 		sb.append(Constants.SVG_END_ELEMENT);
 		return sb;
@@ -238,20 +307,55 @@ public class TreeDrawer {
 		calculateMaxHeightPerLevel();
 		calculateYCoordinateOfEveryNode();
 		calculateXCoordinateOfEveryNode();
-		if (ltTree.isUseRightToLeftOrientation()) {
+		if (dsTree.isUseRightToLeftOrientation()) {
 			adjustForRightToLeftOrientation();
 		}
 	}
 
+	private void calculateX1AndX2OfNode(DiagSapNode node) {
+			BranchItem leftItem = node.getLeftBranch().getItem();
+			calculateXCoordinateOfItem(node, leftItem, true);
+			BranchItem rightItem  = node.getRightBranch().getItem();
+			calculateXCoordinateOfItem(node, rightItem, false);
+	}
+
+	protected void calculateXCoordinateOfItem(DiagSapNode node, BranchItem branchItem, boolean isX1) {
+		if (branchItem instanceof DiagSapNode) {
+			DiagSapNode itemNode = (DiagSapNode)branchItem;
+			calculateX1AndX2OfNode(itemNode);
+			double x = itemNode.getX1Coordinate() + (itemNode.getX2Coordinate() - itemNode.getX1Coordinate()) /2;
+			if (isX1) {
+				node.setX1Coordinate(x);
+			} else {
+				node.setX2Coordinate(x);
+			}
+		} else {
+			if (branchItem instanceof ContentBranch) {
+				double x = calculateXCoordinateOfContentMid((ContentBranch) branchItem);
+				if (isX1) {
+					node.setX1Coordinate(x);
+				} else {
+					node.setX2Coordinate(x);
+				}
+			}
+		}
+	}
+
+	private double calculateXCoordinateOfContentMid(ContentBranch contentBranch) {
+		double x = contentBranch.getContentTextBox().getX();
+		double width = contentBranch.getContentTextBox().getBoundsInLocal().getWidth();
+		return x + (width/2);
+	}
+
 	public void adjustForRightToLeftOrientation()
 	{
-		double adjust = ltTree.getXSize() + ltTree.getInitialXCoordinate();
-		DiagSapNode node = ltTree.getRootNode();
+		double adjust = dsTree.getXSize() + dsTree.getInitialXCoordinate();
+		DiagSapNode node = dsTree.getRootNode();
 		adjustForRightToLeftOrientation(node, adjust);
 	}
 
 	private void adjustForRightToLeftOrientation(DiagSapNode node, double adjust) {
-		node.setXCoordinate((adjust - node.getWidth()) - node.getXCoordinate());
+		node.setX1Coordinate((adjust - node.getWidth()) - node.getX1Coordinate());
 		node.setXMid(adjust - node.getXMid());
 //		for (DiagSapNode daughterNode : node.getDaughters()) {
 //			adjustForRightToLeftOrientation(daughterNode, adjust);
@@ -285,9 +389,9 @@ public class TreeDrawer {
 		sb.append("\" y2=\"");
 		sb.append(y2);
 		sb.append("\" stroke=\"");
-		sb.append(StringUtilities.toRGBCode(ltTree.getLineColor()));
+		sb.append(StringUtilities.toRGBCode(dsTree.getLineColor()));
 		sb.append("\" stroke-width=\"");
-		sb.append(ltTree.getLineWidth());
+		sb.append(dsTree.getLineWidth());
 		sb.append("\"/>\n");
 		// Using mm does not work right
 		// sb.append(pixelsToMM(x1));
@@ -298,9 +402,9 @@ public class TreeDrawer {
 		// sb.append("mm\" y2=\"");
 		// sb.append(pixelsToMM(y2));
 		// sb.append("mm\" stroke=\"");
-		// sb.append(StringUtilities.toRGBCode(ltTree.getLineColor()));
+		// sb.append(StringUtilities.toRGBCode(dsTree.getLineColor()));
 		// sb.append("\" stroke-width=\"");
-		// sb.append(pixelsToMM(ltTree.getLineWidth()));
+		// sb.append(pixelsToMM(dsTree.getLineWidth()));
 		// sb.append("mm\"/>\n");
 	}
 
@@ -330,20 +434,6 @@ public class TreeDrawer {
 		sb.append("\">");
 		sb.append(tb.getText().replace("<", "&lt;").replace(">", "&gt;"));
 		sb.append("</text>\n");
-	}
-
-	private void drawTriangleAsSVG(DiagSapNode mother, DiagSapNode node, StringBuilder sb) {
-		double dLeftmostX = node.getXCoordinate() + dTriangleOffset;
-		double dRightmostX = node.getXCoordinate() + node.getWidth() - dTriangleOffset;
-		double dTopX = mother.getXMid();
-		double dBottomY = node.getYUpperMid();
-		double dTopY = mother.getYLowerMid();
-		// right part of line
-		createLineAsSVG(dLeftmostX, dBottomY, dTopX, dTopY, sb);
-		// left part of line
-		createLineAsSVG(dTopX, dTopY, dRightmostX, dBottomY, sb);
-		// bottom part of line
-		createLineAsSVG(dLeftmostX, dBottomY, dRightmostX, dBottomY, sb);
 	}
 
 	private double pixelsToInches(double pixels) {

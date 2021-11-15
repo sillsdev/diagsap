@@ -25,8 +25,10 @@ public class DiagSapNode extends BranchItem {
 	private double dHeight; // height of the node
 	private double dWidth; // width of the node
 
-	// left horizontal position of the node
-	private double dXCoordinate;
+	// left horizontal position of the node's horizontal line
+	private double dX1Coordinate;
+	// right horizontal position of the node's horizontal line
+	private double dX2Coordinate;
 	// mid horizontal position of the node
 	private double dXMid;
 	// upper vertical position of the node
@@ -87,13 +89,21 @@ public class DiagSapNode extends BranchItem {
 //		content1TextBox.setFont(fontInfo.getFont());
 //		content1TextBox.setFill(fontInfo.getColor());
 	}
-	public double getXCoordinate() {
-		return dXCoordinate;
+
+	public double getX1Coordinate() {
+		return dX1Coordinate;
 	}
 
-	public void setXCoordinate(double dXCoordinate) {
-		this.dXCoordinate = dXCoordinate;
-//		content1TextBox.setX(dXCoordinate);
+	public void setX1Coordinate(double dXCoordinate) {
+		this.dX1Coordinate = dXCoordinate;
+	}
+
+	public double getX2Coordinate() {
+		return dX2Coordinate;
+	}
+
+	public void setX2Coordinate(double dXCoordinate) {
+		this.dX2Coordinate = dXCoordinate;
 	}
 
 	public double getXMid() {

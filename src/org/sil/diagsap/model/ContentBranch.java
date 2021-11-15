@@ -15,10 +15,11 @@ import javafx.scene.text.Text;
 public class ContentBranch extends BranchItem {
 
 	String content;
+	Text contentTextBox = new Text(0, 0, "");
 
 	public ContentBranch(String content) {
 		super();
-		this.content = content;
+		setContent(content);
 	}
 
 	public String getContent() {
@@ -27,6 +28,15 @@ public class ContentBranch extends BranchItem {
 
 	public void setContent(String content) {
 		this.content = content;
+		contentTextBox.setText(content);
+	}
+
+	public Text getContentTextBox() {
+		return contentTextBox;
+	}
+
+	public void setContentTextBox(Text contentTextBox) {
+		this.contentTextBox = contentTextBox;
 	}
 
 	@Override
