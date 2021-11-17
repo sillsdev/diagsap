@@ -4,7 +4,7 @@
  * (http://www.gnu.org/licenses/lgpl-2.1.html)
  */
 
-package org.sil.diasap.descriptionparser;
+package org.sil.diagsap.descriptionparser;
 
 import static org.junit.Assert.*;
 

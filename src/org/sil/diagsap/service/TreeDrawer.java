@@ -257,15 +257,29 @@ public class TreeDrawer {
 			collectContentBranchItems((DiagSapNode)item);
 		} else if (item instanceof ContentBranch) {
 			contentBranches.add((ContentBranch)item);
+		} else if (item instanceof InfixedBaseBranch) {
+			InfixedBaseBranch infix = (InfixedBaseBranch)item;
+			contentBranches.add(infix.getContentBefore());
+			contentBranches.add(infix.getInfixContent());
+			if (infix.getContentAfter() != null) {
+				contentBranches.add(infix.getContentAfter());
+			}
 		}
 	}
 
 	private void drawNodes(DiagSapNode node, Pane pane) {
 		double yCoordinate = dUnderlineYCoordinate + (node.getLevel() * dsTree.getVerticalGap());
+		System.out.println("drawNodes: node=" + node + "; level=" + node.getLevel() + "; left=" + node.getLeftBranch().getItem() + "; right=" + node.getRightBranch().getItem());
+		System.out.println("\tx1=" + node.getX1Coordinate() + "; x2=" + node.getX2Coordinate());
 		Line horizontalLine = new Line(node.getX1Coordinate(), yCoordinate, node.getX2Coordinate(),
 				yCoordinate);
 		pane.getChildren().add(horizontalLine);
 		BranchItem branchItem = node.getLeftBranch().getItem();
+//		if (branchItem instanceof InfixedBaseBranch) {
+//			InfixedBaseBranch infix = (InfixedBaseBranch)branchItem;
+//			Line infixHorizontalLine = new Line(infix.getX1Coordinate(), yCoordinate, node.getX2Coordinate(),
+//					yCoordinate);
+//		}
 		drawNodeVerticalLine(node, pane, yCoordinate, branchItem, true);
 		branchItem = node.getRightBranch().getItem();
 		drawNodeVerticalLine(node, pane, yCoordinate, branchItem, false);
@@ -273,14 +287,60 @@ public class TreeDrawer {
 
 	protected void drawNodeVerticalLine(DiagSapNode node, Pane pane, double yCoordinate,
 			BranchItem branchItem, boolean isLeft) {
+		System.out.println("vl: level=" + node.getLevel() + "; branch=" + branchItem);
+		double finalY = yCoordinate - dsTree.getVerticalGap();
 		double x = isLeft ? node.getX1Coordinate(): node.getX2Coordinate();
 		if (branchItem instanceof DiagSapNode) {
 			drawNodes((DiagSapNode) branchItem, pane);
-			Line verticalLine = new Line(x, yCoordinate, x, yCoordinate - dsTree.getVerticalGap());
+			Line verticalLine = new Line(x, yCoordinate, x, finalY);
 			pane.getChildren().add(verticalLine);
+			System.out.println("vertical line: level=" + node.getLevel() + "; yc=" + yCoordinate);
+			System.out.println("\tnode: x=" + x);
 		} else if (branchItem instanceof ContentBranch) {
 			Line verticalLine = new Line(x, yCoordinate, x, dUnderlineYCoordinate);
 			pane.getChildren().add(verticalLine);
+			System.out.println("vertical line: level=" + node.getLevel() + "; yc=" + yCoordinate);
+			System.out.println("\tcontent: x=" + x + "; content='" +((ContentBranch)branchItem).getContent());
+		} else if (branchItem instanceof InfixedBaseBranch) {
+			InfixedBaseBranch base = (InfixedBaseBranch)branchItem;
+			if (base.getContentAfter() != null) {
+				System.out.println("base: level=" + base.getLevel() + "; yc=" + yCoordinate);
+				// need a horizontal line, too.
+//				double infixYCoordinate = dUnderlineYCoordinate + (base.getLevel() * dsTree.getVerticalGap());
+				double infixYCoordinate = dUnderlineYCoordinate + (1.0 * dsTree.getVerticalGap());
+				double widthBefore = base.getContentBefore().getContentTextBox().getBoundsInLocal().getWidth();
+				double x1 = base.getContentBefore().getContentTextBox().getX() + widthBefore/2;
+				double widthAfter = base.getContentAfter().getContentTextBox().getBoundsInLocal().getWidth();
+				double x2 = base.getContentAfter().getContentTextBox().getX() + widthAfter/2;
+				Line horizontalLine = new Line(x1, infixYCoordinate, x2, infixYCoordinate);
+				pane.getChildren().add(horizontalLine);
+				Line verticalLine = new Line(x1, infixYCoordinate, x1, infixYCoordinate - dsTree.getVerticalGap());
+				pane.getChildren().add(verticalLine);
+				System.out.println("\tinfix: x1=" + x1 + "; yinfix=" + infixYCoordinate + " to " + (infixYCoordinate - dsTree.getVerticalGap()));
+				Line verticalLine2 = new Line(x2, infixYCoordinate, x2, infixYCoordinate - dsTree.getVerticalGap());
+				pane.getChildren().add(verticalLine2);
+				System.out.println("\tinfix: x2=" + x2);
+
+				double xMid = calculateXMidOfInfixedBase(base);
+				Line verticalMid = new Line(xMid, infixYCoordinate, xMid, yCoordinate);
+				pane.getChildren().add(verticalMid);
+			} else {
+				// need a horizontal line, too.
+////				double infixYCoordinate = dUnderlineYCoordinate + (base.getLevel() * dsTree.getVerticalGap());
+//				double infixYCoordinate = dUnderlineYCoordinate + (1.0 * dsTree.getVerticalGap());
+//				double widthBefore = base.getContentBefore().getContentTextBox().getBoundsInLocal().getWidth();
+//				double x1 = base.getContentBefore().getContentTextBox().getX() + widthBefore/2;
+//				double widthAfter = base.getContentAfter().getContentTextBox().getBoundsInLocal().getWidth();
+//				double x2 = base.getContentAfter().getContentTextBox().getX() + widthAfter/2;
+//				Line horizontalLine = new Line(x1, infixYCoordinate, x2, infixYCoordinate);
+//				pane.getChildren().add(horizontalLine);
+				// TODO: note is same as for DiagSapNode
+//				Line verticalLine = new Line(node.getX1Coordinate(), yCoordinate, node.getX1Coordinate(), yCoordinate - dsTree.getVerticalGap());
+				Line verticalLine = new Line(x, yCoordinate, x, finalY);
+				pane.getChildren().add(verticalLine);
+//				System.out.println("\tinfix: x1=" + x1 + "; yinfix=" + infixYCoordinate + " to " + (infixYCoordinate - dsTree.getVerticalGap()));
+
+			}
 		}
 	}
 
@@ -313,32 +373,53 @@ public class TreeDrawer {
 	}
 
 	private void calculateX1AndX2OfNode(DiagSapNode node) {
-			BranchItem leftItem = node.getLeftBranch().getItem();
-			calculateXCoordinateOfItem(node, leftItem, true);
-			BranchItem rightItem  = node.getRightBranch().getItem();
-			calculateXCoordinateOfItem(node, rightItem, false);
+		BranchItem leftItem = node.getLeftBranch().getItem();
+		calculateXCoordinateOfItem(node, leftItem, true);
+		BranchItem rightItem = node.getRightBranch().getItem();
+		calculateXCoordinateOfItem(node, rightItem, false);
 	}
 
 	protected void calculateXCoordinateOfItem(DiagSapNode node, BranchItem branchItem, boolean isX1) {
+		double x;
 		if (branchItem instanceof DiagSapNode) {
-			DiagSapNode itemNode = (DiagSapNode)branchItem;
+			DiagSapNode itemNode = (DiagSapNode) branchItem;
 			calculateX1AndX2OfNode(itemNode);
-			double x = itemNode.getX1Coordinate() + (itemNode.getX2Coordinate() - itemNode.getX1Coordinate()) /2;
+			x = itemNode.getX1Coordinate()
+					+ (itemNode.getX2Coordinate() - itemNode.getX1Coordinate()) / 2;
 			if (isX1) {
 				node.setX1Coordinate(x);
 			} else {
 				node.setX2Coordinate(x);
 			}
-		} else {
-			if (branchItem instanceof ContentBranch) {
-				double x = calculateXCoordinateOfContentMid((ContentBranch) branchItem);
-				if (isX1) {
-					node.setX1Coordinate(x);
-				} else {
-					node.setX2Coordinate(x);
-				}
+		} else if (branchItem instanceof ContentBranch) {
+			x = calculateXCoordinateOfContentMid((ContentBranch) branchItem);
+			if (isX1) {
+				node.setX1Coordinate(x);
+			} else {
+				node.setX2Coordinate(x);
+			}
+		} else if (branchItem instanceof InfixedBaseBranch) {
+			InfixedBaseBranch infix = (InfixedBaseBranch)branchItem;
+			x = calculateXMidOfInfixedBase(infix);
+			node.setX1Coordinate(x);
+			if (infix.getContentAfter() != null) {
+				x = calculateXCoordinateOfContentMid(infix.getContentAfter());
+				node.setX2Coordinate(x);
+			} else {
+				System.out.println("infix with no content after");
 			}
 		}
+	}
+
+	protected double calculateXMidOfInfixedBase(InfixedBaseBranch infix) {
+		double x;
+		double xInitial = infix.getContentBefore().getContentTextBox().getX();
+		Text rightmostTextBox = (infix.getContentAfter() != null) ? infix.getContentAfter()
+				.getContentTextBox() : infix.getContentBefore().getContentTextBox();
+		double xFinal = rightmostTextBox.getX()
+				+ rightmostTextBox.getBoundsInLocal().getWidth();
+		x = (xInitial + xFinal) / 2;
+		return x;
 	}
 
 	private double calculateXCoordinateOfContentMid(ContentBranch contentBranch) {

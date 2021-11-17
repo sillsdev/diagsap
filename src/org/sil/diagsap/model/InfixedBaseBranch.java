@@ -14,54 +14,63 @@ import org.sil.utility.StringUtilities;
  */
 public class InfixedBaseBranch extends BranchItem {
 
-	String contentBefore;
-	String infixContent;
-	String contentAfter;
+	ContentBranch contentBefore;
+	ContentBranch infixContent;
+	ContentBranch contentAfter;
+	int level;
 
 	public InfixedBaseBranch() {
 	}
 
-	public InfixedBaseBranch(String contentBefore, String infixContent, String contentAfter) {
+	public InfixedBaseBranch(ContentBranch contentBefore, ContentBranch infixContent, ContentBranch contentAfter) {
 		super();
 		this.contentBefore = contentBefore;
 		this.infixContent = infixContent;
 		this.contentAfter = contentAfter;
 	}
 
-	public String getContentBefore() {
+	public ContentBranch getContentBefore() {
 		return contentBefore;
 	}
 
-	public void setContentBefore(String contentBefore) {
+	public void setContentBefore(ContentBranch contentBefore) {
 		this.contentBefore = contentBefore;
 	}
 
-	public String getInfixContent() {
+	public ContentBranch getInfixContent() {
 		return infixContent;
 	}
 
-	public void setInfixContent(String infixContent) {
+	public void setInfixContent(ContentBranch infixContent) {
 		this.infixContent = infixContent;
 	}
 
-	public String getContentAfter() {
+	public ContentBranch getContentAfter() {
 		return contentAfter;
 	}
 
-	public void setContentAfter(String contentAfter) {
+	public void setContentAfter(ContentBranch contentAfter) {
 		this.contentAfter = contentAfter;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 	@Override
 	public String reconstructDescription() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("(");
-		sb.append(contentBefore);
+		sb.append(contentBefore.getContent());
 		sb.append("<");
-		sb.append(infixContent);
+		sb.append(infixContent.getContent());
 		sb.append(">");
-		if (!StringUtilities.isNullOrEmpty(contentAfter)) {
-			sb.append(contentAfter);
+		if (contentAfter != null) {
+			sb.append(contentAfter.getContent());
 		}
 		sb.append(")");
 		return sb.toString();

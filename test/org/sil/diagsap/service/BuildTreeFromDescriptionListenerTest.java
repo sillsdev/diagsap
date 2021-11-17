@@ -212,19 +212,19 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		dsTree = TreeBuilder.parseAString("((\\1)(((p<in>ag) (–arál)) (an)))", origTree);
 		rootNode = dsTree.getRootNode();
 		assertNotNull(rootNode);
-		assertEquals(3, rootNode.getLevel());
+		assertEquals(4, rootNode.getLevel());
 		branch = rootNode.getLeftBranch();
 		checkInfixIndexBranch(branch, 1);
 		branch = rootNode.getRightBranch();
-		node = checkNodeBranch(branch, 2);
+		node = checkNodeBranch(branch, 3);
 		branch = node.getRightBranch();
 		checkContentBranch(branch, "an");
 		branch = node.getLeftBranch();
-		node = checkNodeBranch(branch, 1);
+		node = checkNodeBranch(branch, 2);
 		branch = node.getRightBranch();
 		checkContentBranch(branch, "–arál");
 		branch = node.getLeftBranch();
-		checkInfixBaseBranch(branch, "p", "in", "ag");
+		checkInfixBaseBranch(branch, "p", "in", "ag", 1);
 
 		dsTree = TreeBuilder.parseAString("((\\1)((i) ((g<in>) (luto))))", origTree);
 		rootNode = dsTree.getRootNode();
@@ -241,7 +241,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		branch = node.getRightBranch();
 		checkContentBranch(branch, "luto");
 		branch = node.getLeftBranch();
-		checkInfixBaseBranch(branch, "g", "in", null);
+		checkInfixBaseBranch(branch, "g", "in", null, 4);
 
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))", origTree);
 		rootNode = dsTree.getRootNode();
@@ -252,7 +252,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		branch = rootNode.getRightBranch();
 		node = checkNodeBranch(branch, 5);
 		branch = node.getLeftBranch();
-		checkInfixBaseBranch(branch, "g", "in", null);
+		checkInfixBaseBranch(branch, "g", "in", null, 7);
 		branch = node.getRightBranch();
 		node = checkNodeBranch(branch, 4);
 		branch = node.getLeftBranch();
@@ -264,7 +264,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		branch = node.getRightBranch();
 		node = checkNodeBranch(branch, 2);
 		branch = node.getLeftBranch();
-		checkInfixBaseBranch(branch, "p", "in", "a-");
+		checkInfixBaseBranch(branch, "p", "in", "a-", 1);
 		branch = node.getRightBranch();
 		node = checkNodeBranch(branch, 1);
 		branch = node.getLeftBranch();
@@ -274,14 +274,19 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 	}
 
 	protected void checkInfixBaseBranch(Branch branch, String expectedContentBefore,
-			String expectedInfixContent, String expectedContentAfter) {
+			String expectedInfixContent, String expectedContentAfter, int expectedLevel) {
 		assertNotNull(branch);
 		BranchItem bi = branch.getItem();
 		assertNotNull(bi);
 		InfixedBaseBranch ifxBase = (InfixedBaseBranch) bi;
-		assertEquals(expectedContentBefore, ifxBase.getContentBefore());
-		assertEquals(expectedInfixContent, ifxBase.getInfixContent());
-		assertEquals(expectedContentAfter, ifxBase.getContentAfter());
+		assertEquals(expectedContentBefore, ifxBase.getContentBefore().getContent());
+		assertEquals(expectedInfixContent, ifxBase.getInfixContent().getContent());
+		if (expectedContentAfter == null) {
+			assertNull(ifxBase.getContentAfter());
+		} else {
+			assertEquals(expectedContentAfter, ifxBase.getContentAfter().getContent());
+		}
+		assertEquals(expectedLevel, ifxBase.getLevel());
 	}
 
 	protected DiagSapNode checkNodeBranch(Branch branch, int expectedLevel) {
@@ -358,7 +363,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		dsTree = TreeBuilder.parseAString("((\\1)(((p<in>ag) (–arál)) (an)))", origTree);
 		rootNode = dsTree.getRootNode();
 		assertNotNull(rootNode);
-		assertEquals(3, rootNode.getLevel());
+		assertEquals(4, rootNode.getLevel());
 		branch = rootNode.getLeftBranch();
 		checkRecontructedInfixIndexBranch(branch, "(\\1)");
 		branch = rootNode.getRightBranch();
@@ -366,7 +371,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		branch = node.getRightBranch();
 		checkReconstructedContentBranch(branch, "(an)");
 		branch = node.getLeftBranch();
-		node = checkNodeBranch(branch, 1);
+		node = checkNodeBranch(branch, 2);
 		branch = node.getRightBranch();
 		checkReconstructedContentBranch(branch, "(–arál)");
 		branch = node.getLeftBranch();

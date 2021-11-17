@@ -8,6 +8,7 @@ package org.sil.diagsap.service;
 import java.util.HashMap;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.sil.diagsap.descriptionparser.antlr4generated.DescriptionBaseListener;
 import org.sil.diagsap.descriptionparser.antlr4generated.DescriptionParser;
 import org.sil.diagsap.descriptionparser.antlr4generated.DescriptionParser.BranchContext;
@@ -115,10 +116,10 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 		case "InfixedbaseContext":
 			InfixedbaseContext infixedBaseContext = (InfixedbaseContext) parent;
 			InfixedBaseBranch ifxBaseBranch = infixedBaseBranchMap.get(infixedBaseContext.hashCode());
-			if (StringUtilities.isNullOrEmpty(ifxBaseBranch.getContentBefore())) {
-				ifxBaseBranch.setContentBefore(sContent);
+			if (ifxBaseBranch.getContentBefore() == null) {
+				ifxBaseBranch.setContentBefore(content);
 			} else {
-				ifxBaseBranch.setContentAfter(sContent);
+				ifxBaseBranch.setContentAfter(content);
 			}
 			break;
 		}
@@ -129,13 +130,23 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 		InfixedbaseContext baseContext = (InfixedbaseContext)ctx.getParent();
 		InfixedBaseBranch base = infixedBaseBranchMap.get(baseContext.hashCode());
 		ContentBranch content = (ContentBranch) branchItemMap.get(ctx.hashCode());
-		base.setInfixContent(content.getContent());
+		base.setInfixContent(content);
 	}
 
 	@Override
 	public void exitInfixedbase(DescriptionParser.InfixedbaseContext ctx) {
 		InfixedBaseBranch base = infixedBaseBranchMap.get(ctx.hashCode());
 		BranchContext branchContext = (BranchContext)ctx.getParent();
+		if (branchContext != null) {
+			if (base.getContentAfter() != null) {
+				ParserRuleContext branchParent = branchContext.getParent();
+				DescriptionParser.NodeContext nodeCtx = (DescriptionParser.NodeContext) branchParent
+						.getParent();
+				DiagSapNode mother = nodeMap.get(nodeCtx.hashCode());
+				base.setLevel(mother.getLevel() + 1);
+				maxLevelFound = Math.max(mother.getLevel() + 1, maxLevelFound);
+			}
+		}
 		Branch branch = branchMap.get(branchContext.hashCode());
 		branch.setItem(base);
 	}
@@ -177,13 +188,51 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 		if (parent instanceof BranchContext) {
 			BranchContext branchContext = (BranchContext)parent;
 			Branch branch = branchMap.get(branchContext.hashCode());
-			int adjustedLevel = (maxLevelFound - node.getLevel()) + 1;
-			node.setLevel(adjustedLevel);
 			branch.setItem(node);
 			branchMap.replace(branchContext.hashCode(), branch);
-		} else {
-			int adjustedLevel = (maxLevelFound - node.getLevel()) + 1;
-			node.setLevel(adjustedLevel);
+		}
+	}
+
+	@Override
+	public void exitDescription(DescriptionParser.DescriptionContext ctx) {
+		// need to invert level numbers now that we're at the top
+		DescriptionParser.NodeContext nodeContext = (NodeContext) ctx.children.get(1);
+		DiagSapNode rootNode = nodeMap.get(nodeContext.hashCode());
+		System.out.println("rootnode=" + rootNode + "; max=" + maxLevelFound);
+		rootNode.setLevel(maxLevelFound);
+		adjustLevelsInTree(rootNode);
+	}
+
+	private void adjustLevelsInTree(DiagSapNode node) {
+		System.out.println("adjust: node=" + node);
+		System.out.println("\tleftbranch=" + node.getLeftBranch());
+		System.out.println("\tleftitem=" + node.getLeftBranch().getItem());
+		BranchItem leftItem = node.getLeftBranch().getItem();
+		adjustLevelOfBranchItem(node, leftItem);
+		System.out.println("adjust: node=" + node);
+		System.out.println("\trightbranch=" + node.getRightBranch());
+		System.out.println("\trightitem=" + node.getRightBranch().getItem());
+		BranchItem rightItem  = node.getRightBranch().getItem();
+		if (rightItem instanceof DiagSapNode) {
+			adjustLevelOfBranchItem(node, rightItem);
+		}
+	}
+
+	protected void adjustLevelOfBranchItem(DiagSapNode node, BranchItem branchItem) {
+		System.out.println("branch item: node=" + node + "; item=" + branchItem);
+		if (branchItem instanceof DiagSapNode) {
+			DiagSapNode node1 = (DiagSapNode)branchItem;
+			int adjustedLevel = (maxLevelFound - node1.getLevel()) + 1;
+			System.out.println("changing node level from " + node1.getLevel() + " to " + adjustedLevel + " for node1=" + node);
+			node1.setLevel(adjustedLevel);
+			adjustLevelsInTree((DiagSapNode)branchItem);
+		} else if (branchItem instanceof InfixedBaseBranch) {
+			InfixedBaseBranch base = (InfixedBaseBranch)branchItem;
+			int adjustedLevel = (maxLevelFound - base.getLevel()) + 1;
+			System.out.println("changing base level from " + node.getLevel() + " to " + adjustedLevel);
+			base.setLevel(adjustedLevel);
+		} else if (branchItem instanceof ContentBranch) {
+			System.out.println("\tcontent=" + ((ContentBranch)branchItem).getContent());
 		}
 	}
 }

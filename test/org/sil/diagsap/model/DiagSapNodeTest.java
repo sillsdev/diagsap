@@ -7,6 +7,7 @@
 package org.sil.diagsap.model;
 
 import static org.junit.Assert.*;
+import javafx.scene.text.Text;
 
 import org.junit.After;
 import org.junit.Before;
@@ -39,14 +40,15 @@ public class DiagSapNodeTest {
 
 	@Test
 	public void textBoxDimensionsTest() {
-		DiagSapNode node = new DiagSapNode();
-//		node.setContent1("node");
-		assertEquals(25.98046875, node.getWidth(), 0.0);
-		assertEquals(19.62890625, node.getHeight(), 0.0);
+		ContentBranch content = new ContentBranch("node");
+		Text textBox = content.getContentTextBox();
+		assertEquals(40.74609375, textBox.getBoundsInLocal().getWidth(), 0.0);
+		assertEquals(23.94140625, textBox.getBoundsInLocal().getHeight(), 0.0);
 
-//		node.setContent1("p<in>ag");
-		assertEquals(53.5546875, node.getWidth(), 0.0);
-		assertEquals(19.62890625, node.getHeight(), 0.0);
+		content.setContent("p<in>ag");
+		textBox = content.getContentTextBox();
+		assertEquals(69.5126953125, textBox.getBoundsInLocal().getWidth(), 0.0);
+		assertEquals(23.94140625, textBox.getBoundsInLocal().getHeight(), 0.0);
 }
 
 }

@@ -201,7 +201,7 @@ public class TreeBuilder {
 			break;
 
 		case DescriptionConstants.MISSING_RIGHT_BRANCH:
-			sSyntaxErrorMessage = bundle.getString("descriptionsyntaxerror.missing_right_ranch");
+			sSyntaxErrorMessage = bundle.getString("descriptionsyntaxerror.missing_right_branch");
 			break;
 
 		case DescriptionConstants.TOO_MANY_CLOSING_PARENS:
