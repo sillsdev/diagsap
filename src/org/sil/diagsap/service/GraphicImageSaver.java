@@ -39,7 +39,7 @@ public class GraphicImageSaver {
 		sFilePath = treeFile.getCanonicalPath();
 		if (sFilePath.endsWith("." + Constants.DIAGSAP_DATA_FILE_EXTENSION)) {
 			int len = sFilePath.length();
-			sFilePath = sFilePath.substring(0, len - 4);
+			sFilePath = sFilePath.substring(0, len - Constants.DIAGSAP_DATA_FILE_EXTENSION.length());
 		}
     }
     
@@ -50,8 +50,8 @@ public class GraphicImageSaver {
         return instance;
     }
     
-    public void saveAsSVG(TreeDrawer drawer) throws IOException {
-		StringBuilder sb = drawer.drawAsSVG();
+    public void saveAsSVG(TreeDrawer drawer, Pane pane, double treeWidth, double treeHeight) throws IOException {
+		StringBuilder sb = drawer.drawAsSVG(pane, treeWidth, treeHeight);
 		Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 				sFilePath + ".svg"), "UTF-8"));
 		try {

@@ -1132,7 +1132,9 @@ public class RootLayoutController implements Initializable {
 			// there was an error in the description; show it
 			reportErrorInDescriptionMessage();
 		} else {
-		saver.saveAsSVG(drawer);
+			drawer.draw(drawingArea);
+			drawer.calculateTreeHeightAndWidth(dsTree.getRootNode());
+			saver.saveAsSVG(drawer, drawingArea, dsTree.getXSize(), dsTree.getYSize());
 		}
 	}
 

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
@@ -214,7 +215,7 @@ public class TreeDrawer {
 				+ StringUtilities.toRGBCode(dsTree.getBackgroundColor()) + ";");
 	}
 
-	protected void calculateTreeHeightAndWidth(DiagSapNode node) {
+	public void calculateTreeHeightAndWidth(DiagSapNode node) {
 		double xTreeWidth = calculateTreeWidth();
 		dsTree.setXSize(xTreeWidth);
 		double yTreeHeight = dUnderlineYCoordinate + node.getLevel() * dsTree.getVerticalGap();
@@ -354,23 +355,33 @@ public class TreeDrawer {
 		}
 	}
 
-	public StringBuilder drawAsSVG() {
-		recalculateValues();
-		DiagSapNode node = dsTree.getRootNode();
+	public StringBuilder drawAsSVG(Pane pane, double treeWidth, double treeHeight) {
 		StringBuilder sb = new StringBuilder();
 		// Trying to convert from pixels to mm does not come out right.
 		// So we're going with pixels
 		// final String sMM = "mm";
 		// sb.append(Constants.SVG_HEADER.replace("{0}",
 		// pixelsToMM(dsTree.getXSize()) + sMM).replace(
-		// "{1}", pixelsToMM(dsTree.getYSize()) + sMM));
-		sb.append(Constants.SVG_HEADER.replace("{0}", String.valueOf(dsTree.getXSize() + 10)).replace(
-				"{1}", String.valueOf(dsTree.getYSize())));
+		// "{1}", pixelsToMM(dsTree.getYSize()) + sMM));s=d
+		sb.append(Constants.SVG_HEADER.replace("{0}", String.valueOf(treeWidth + 10)).replace(
+				"{1}", String.valueOf(treeHeight + 10)));
 		sb.append(Constants.SVG_BACKGROUND_COLOR.replace("{0}",
 				StringUtilities.toRGBCode(dsTree.getBackgroundColor())));
-		drawNodesAsSVG(node, sb);
+		drawAsSVGBasedOnPane(pane, sb);
 		sb.append(Constants.SVG_END_ELEMENT);
 		return sb;
+	}
+
+	private void drawAsSVGBasedOnPane(Pane pane, StringBuilder sb) {
+		for (Node node : pane.getChildrenUnmodifiable()) {
+			if (node instanceof Text) {
+				Text morphTextBox = (Text)node;
+				createTextAsSVG(morphTextBox, dsTree.getLexicalFontInfo(), sb);
+			} else if (node instanceof Line) {
+				Line line = (Line)node;
+				createLineAsSVG(line.getStartX(), line.getStartY(), line.getEndX(), line.getEndY(), sb);
+			}
+		}
 	}
 
 	private void recalculateValues() {
