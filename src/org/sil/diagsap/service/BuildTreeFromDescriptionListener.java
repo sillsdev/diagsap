@@ -198,20 +198,13 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 		// need to invert level numbers now that we're at the top
 		DescriptionParser.NodeContext nodeContext = (NodeContext) ctx.children.get(1);
 		DiagSapNode rootNode = nodeMap.get(nodeContext.hashCode());
-		System.out.println("rootnode=" + rootNode + "; max=" + maxLevelFound);
 		rootNode.setLevel(maxLevelFound);
 		adjustLevelsInTree(rootNode);
 	}
 
 	private void adjustLevelsInTree(DiagSapNode node) {
-		System.out.println("adjust: node=" + node);
-		System.out.println("\tleftbranch=" + node.getLeftBranch());
-		System.out.println("\tleftitem=" + node.getLeftBranch().getItem());
 		BranchItem leftItem = node.getLeftBranch().getItem();
 		adjustLevelOfBranchItem(node, leftItem);
-		System.out.println("adjust: node=" + node);
-		System.out.println("\trightbranch=" + node.getRightBranch());
-		System.out.println("\trightitem=" + node.getRightBranch().getItem());
 		BranchItem rightItem  = node.getRightBranch().getItem();
 		if (rightItem instanceof DiagSapNode) {
 			adjustLevelOfBranchItem(node, rightItem);
@@ -219,20 +212,17 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 	}
 
 	protected void adjustLevelOfBranchItem(DiagSapNode node, BranchItem branchItem) {
-		System.out.println("branch item: node=" + node + "; item=" + branchItem);
 		if (branchItem instanceof DiagSapNode) {
 			DiagSapNode node1 = (DiagSapNode)branchItem;
 			int adjustedLevel = (maxLevelFound - node1.getLevel()) + 1;
-			System.out.println("changing node level from " + node1.getLevel() + " to " + adjustedLevel + " for node1=" + node);
 			node1.setLevel(adjustedLevel);
 			adjustLevelsInTree((DiagSapNode)branchItem);
 		} else if (branchItem instanceof InfixedBaseBranch) {
 			InfixedBaseBranch base = (InfixedBaseBranch)branchItem;
 			int adjustedLevel = (maxLevelFound - base.getLevel()) + 1;
-			System.out.println("changing base level from " + node.getLevel() + " to " + adjustedLevel);
 			base.setLevel(adjustedLevel);
 		} else if (branchItem instanceof ContentBranch) {
-			System.out.println("\tcontent=" + ((ContentBranch)branchItem).getContent());
+			// nothing to do
 		}
 	}
 }

@@ -7,12 +7,10 @@
 package org.sil.diagsap.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
@@ -27,7 +25,6 @@ import org.sil.diagsap.model.InfixedBaseBranch;
 import org.sil.lingtree.Constants;
 import org.sil.lingtree.model.FontInfo;
 import org.sil.lingtree.model.LexFontInfo;
-import org.sil.lingtree.model.NodeType;
 import org.sil.utility.StringUtilities;
 
 /**
@@ -36,11 +33,9 @@ import org.sil.utility.StringUtilities;
  */
 public class TreeDrawer {
 	DiagSapTree dsTree;
-	HashMap<Integer, Double> maxHeightPerLevel = new HashMap<>();
 	List<ContentBranch> contentBranches = new ArrayList<ContentBranch>();
 	List<InfixedBaseBranch> infixedBaseBranches = new ArrayList<InfixedBaseBranch>();
 
-	private static final double dYCoordAdjustment = 3; // adjustment value
 	private double dUnderlineYCoordinate = 3;
 
 	public TreeDrawer(DiagSapTree dsTree) {
@@ -48,160 +43,8 @@ public class TreeDrawer {
 		this.dsTree = dsTree;
 	}
 
-	public HashMap<Integer, Double> getMaxHeightPerLevel() {
-		return maxHeightPerLevel;
-	}
-
-	public void calculateMaxHeightPerLevel() {
-		DiagSapNode node = dsTree.getRootNode();
-		calculateMaxHeightPerLevel(node);
-	}
-
-	private void calculateMaxHeightPerLevel(DiagSapNode node) {
-		int iLevel = node.getLevel();
-		double thisHeight = node.getHeight();
-		if (maxHeightPerLevel.get(iLevel) == null) {
-			maxHeightPerLevel.put(iLevel, thisHeight);
-		} else if (thisHeight > maxHeightPerLevel.get(iLevel)) {
-			maxHeightPerLevel.put(iLevel, thisHeight);
-		}
-//		for (DiagSapNode daughterNode : node.getDaughters()) {
-//			calculateMaxHeightPerLevel(daughterNode);
-//		}
-	}
-
-	public void calculateYCoordinateOfEveryNode() {
-		DiagSapNode node = dsTree.getRootNode();
-		calculateYCoordinateOfANode(node, dsTree.getInitialYCoordinate());
-	}
-
-	// Determine Y-axis coordinates for this node
-	private void calculateYCoordinateOfANode(DiagSapNode node, double dVerticalOffset) {
-		node.setYCoordinate(dVerticalOffset);
-		node.setYLowerMid(node.getYLowerMid() + dYCoordAdjustment);
-		node.setYUpperMid(node.getYUpperMid() - dYCoordAdjustment);
-		if (node.getYLowerMid() > dsTree.getYSize()) {
-			// Keep track of total height for scrolling
-			dsTree.setYSize(node.getYLowerMid());
-		}
-//		if (node.getNodeType() == NodeType.Lex || node.getNodeType() == NodeType.EmptyElement) {
-//			// keep track of lowest for "flat" view
-//			if (node.getYCoordinate() > dsTree.getLexBottomYCoordinate()) {
-//				dsTree.setLexBottomYCoordinate(node.getYCoordinate());
-//			}
-//			if (node.getYUpperMid() > dsTree.getLexBottomYUpperMid()) {
-//				dsTree.setLexBottomYUpperMid(node.getYUpperMid());
-//			}
-//		}
-//		if (node.getNodeType() == NodeType.Gloss) {
-//			// keep track of lowest for "flat" view
-//			if (node.getYCoordinate() > dsTree.getGlossBottomYCoordinate()) {
-//				dsTree.setGlossBottomYCoordinate(node.getYCoordinate());
-//			}
-//		}
-//		// Determine Y-axis coordinate for any daughters
-//		for (DiagSapNode daughterNode : node.getDaughters()) {
-//			double dDaughterYCoordinate = node.getYCoordinate()
-//					+ maxHeightPerLevel.get(node.getLevel());
-//			if (daughterNode.getNodeType() != NodeType.Gloss) {
-//				dDaughterYCoordinate += dsTree.getVerticalGap();
-//			} else {
-//				dDaughterYCoordinate += dsTree.getLexGlossGapAdjustment();
-//			}
-//			calculateYCoordinateOfANode(daughterNode, dDaughterYCoordinate);
-//		}
-	}
-
-	public void calculateXCoordinateOfEveryNode() {
-		dsTree.setHorizontalOffset(dsTree.getInitialXCoordinate());
-		DiagSapNode node = dsTree.getRootNode();
-		calculateXCoordinateOfANode(node, 0);
-	}
-
-	// Determine the X-axis coordinate for this node
-	// It assumes that the width of this and all other nodes have
-	// already been established.
-	// It also assumes that higher branching nodes are not wider than the
-	// total width of their daughters (which may not always be true...)
-	private double calculateXCoordinateOfANode(DiagSapNode node, double dMaxColumnWidth) {
-		node.setXMid(0);
-		if (dMaxColumnWidth < node.getWidth()) {
-			// remember widest node in the column
-			dMaxColumnWidth = node.getWidth();
-		}
-
-//		if (node.getDaughters().size() > 0) { // is a non-leaf node
-//			DiagSapNode firstDaughterNode = node.getDaughters().get(0);
-//			DiagSapNode nextDaughter = firstDaughterNode.getRightSister();
-//			double dLeftMost = calculateXCoordinateOfANode(firstDaughterNode, dMaxColumnWidth);
-//			double dRightMost = dLeftMost;
-//			while (nextDaughter != null) { // calculate coordinates for other
-//											// daughters
-//				dRightMost = calculateXCoordinateOfANode(nextDaughter, dMaxColumnWidth);
-//				nextDaughter = nextDaughter.getRightSister();
-//			}
-//			// take mid point between first & last daughter
-//			node.setXMid((dLeftMost + dRightMost) / 2);
-//			if (dRightMost > dLeftMost) {
-//				if (node.getWidth() > (dRightMost - dLeftMost)) {
-//					double dAdjust = (node.getWidth() - (dRightMost - dLeftMost)) / 2;
-//					node.setXMid(node.getXMid() + dAdjust);
-//
-//					nextDaughter = firstDaughterNode;
-//					while (nextDaughter != null) {
-//						adjustXValues(nextDaughter, dAdjust);
-//						nextDaughter = nextDaughter.getRightSister();
-//					}
-//				}
-//			}
-//		} else { // is a leaf node
-			// half the width of this column - Offset from last terminal
-			// node plus
-			// half the width of the widest node in this column - gap
-			// between terminal nodes plus - have a new offset for next
-			// terminal node
-
-			// The mid point of this leaf node is the current horizontal offset
-			// plus half of the widest node in the column.
-			node.setXMid(dsTree.getHorizontalOffset() + dMaxColumnWidth / 2);
-			// Update the current horizontal offset to be that mid point plus
-			// half of the widest node in the column plus the gap between leaf
-			// nodes.
-			dsTree.setHorizontalOffset(node.getXMid() + dsTree.getHorizontalGap() + dMaxColumnWidth
-					/ 2);
-//		}
-		node.setX1Coordinate(node.getXMid() - node.getWidth() / 2); // adjust for
-																	// width of
-																	// this node
-		double dEnd = node.getX1Coordinate() + node.getWidth();
-		if (dEnd > dsTree.getXSize()) {
-			dsTree.setXSize(dEnd); // Keep track of total width for scrolling
-		}
-		// System.out.printf(
-		// "%1$s\tXSize = %2$s,\tWidth = %3$s,\tXCoord = %4$s,\tYCoord = %5$s, \tXMid = %5$s"
-		// + "\r\n", node.getContent(), dsTree.getXSize(), node.getWidth(),
-		// node.getXCoordinate(), node.getYCoordinate(), node.getXMid());
-		// System.out.printf("\tYUpperMid = %1$s, \tYLowerMid = %2$s\r\n",
-		// node.getYUpperMid(),
-		// node.getYLowerMid());
-		return node.getXMid();
-	}
-
-	private void adjustXValues(DiagSapNode node, double dAdjust) {
-		// adjust this node
-		node.setX1Coordinate(node.getX1Coordinate() + dAdjust);
-		node.setXMid(node.getXMid() + dAdjust);
-		dsTree.setHorizontalOffset(dsTree.getHorizontalOffset() + dAdjust);
-		// adjust any daughter nodes
-//		for (DiagSapNode daughterNode : node.getDaughters()) {
-//			adjustXValues(daughterNode, dAdjust);
-//		}
-	}
-
 	public void draw(Pane pane) {
-//		recalculateValues();
 		DiagSapNode node = dsTree.getRootNode();
-
 		contentBranches.clear();
 		infixedBaseBranches.clear();
 		collectContentAndInfixedBaseBranchItems(node);
@@ -288,17 +131,10 @@ public class TreeDrawer {
 
 	private void drawNodes(DiagSapNode node, Pane pane) {
 		double yCoordinate = dUnderlineYCoordinate + (node.getLevel() * dsTree.getVerticalGap());
-		System.out.println("drawNodes: node=" + node + "; level=" + node.getLevel() + "; left=" + node.getLeftBranch().getItem() + "; right=" + node.getRightBranch().getItem());
-		System.out.println("\tx1=" + node.getX1Coordinate() + "; x2=" + node.getX2Coordinate());
 		Line horizontalLine = new Line(node.getX1Coordinate(), yCoordinate, node.getX2Coordinate(),
 				yCoordinate);
 		pane.getChildren().add(horizontalLine);
 		BranchItem branchItem = node.getLeftBranch().getItem();
-//		if (branchItem instanceof InfixedBaseBranch) {
-//			InfixedBaseBranch infix = (InfixedBaseBranch)branchItem;
-//			Line infixHorizontalLine = new Line(infix.getX1Coordinate(), yCoordinate, node.getX2Coordinate(),
-//					yCoordinate);
-//		}
 		drawNodeVerticalLine(node, pane, yCoordinate, branchItem, true);
 		branchItem = node.getRightBranch().getItem();
 		drawNodeVerticalLine(node, pane, yCoordinate, branchItem, false);
@@ -306,7 +142,6 @@ public class TreeDrawer {
 
 	protected void drawNodeVerticalLine(DiagSapNode node, Pane pane, double yCoordinate,
 			BranchItem branchItem, boolean isLeft) {
-		System.out.println("vl: level=" + node.getLevel() + "; branch=" + branchItem);
 		double finalY = yCoordinate - dsTree.getVerticalGap();
 		double x = isLeft ? node.getX1Coordinate(): node.getX2Coordinate();
 		Line verticalLine;
@@ -314,17 +149,12 @@ public class TreeDrawer {
 			drawNodes((DiagSapNode) branchItem, pane);
 			verticalLine = new Line(x, yCoordinate, x, finalY);
 			pane.getChildren().add(verticalLine);
-			System.out.println("vertical line: level=" + node.getLevel() + "; yc=" + yCoordinate);
-			System.out.println("\tnode: x=" + x);
 		} else if (branchItem instanceof ContentBranch) {
 			verticalLine = new Line(x, yCoordinate, x, dUnderlineYCoordinate);
 			pane.getChildren().add(verticalLine);
-			System.out.println("vertical line: level=" + node.getLevel() + "; yc=" + yCoordinate);
-			System.out.println("\tcontent: x=" + x + "; content='" +((ContentBranch)branchItem).getContent());
 		} else if (branchItem instanceof InfixedBaseBranch) {
 			InfixedBaseBranch base = (InfixedBaseBranch)branchItem;
 			if (base.getContentAfter() != null) {
-				System.out.println("base: level=" + base.getLevel() + "; yc=" + yCoordinate);
 				// need a horizontal line, too.
 				double infixYCoordinate = dUnderlineYCoordinate + (base.getLevel() * dsTree.getVerticalGap());
 				double widthBefore = base.getContentBefore().getContentTextBox().getBoundsInLocal().getWidth();
@@ -335,10 +165,8 @@ public class TreeDrawer {
 				pane.getChildren().add(horizontalLine);
 				verticalLine = new Line(x1, infixYCoordinate, x1, infixYCoordinate - dsTree.getVerticalGap());
 				pane.getChildren().add(verticalLine);
-				System.out.println("\tinfix: x1=" + x1 + "; yinfix=" + infixYCoordinate + " to " + (infixYCoordinate - dsTree.getVerticalGap()));
 				Line verticalLine2 = new Line(x2, infixYCoordinate, x2, infixYCoordinate - dsTree.getVerticalGap());
 				pane.getChildren().add(verticalLine2);
-				System.out.println("\tinfix: x2=" + x2);
 
 				double xMid = calculateXMidOfInfixedBase(base);
 				Line verticalMid = new Line(xMid, infixYCoordinate, xMid, yCoordinate);
@@ -384,15 +212,6 @@ public class TreeDrawer {
 		}
 	}
 
-	private void recalculateValues() {
-		calculateMaxHeightPerLevel();
-		calculateYCoordinateOfEveryNode();
-		calculateXCoordinateOfEveryNode();
-		if (dsTree.isUseRightToLeftOrientation()) {
-			adjustForRightToLeftOrientation();
-		}
-	}
-
 	private void calculateX1AndX2OfNode(DiagSapNode node) {
 		BranchItem leftItem = node.getLeftBranch().getItem();
 		calculateXCoordinateOfItem(node, leftItem, true);
@@ -426,8 +245,6 @@ public class TreeDrawer {
 			if (infix.getContentAfter() != null) {
 				x = calculateXCoordinateOfContentMid(infix.getContentAfter());
 				node.setX2Coordinate(x);
-			} else {
-				System.out.println("infix with no content after");
 			}
 		} else if (branchItem instanceof InfixIndexBranch) {
 			InfixIndexBranch ifxIndex = (InfixIndexBranch)branchItem;
@@ -480,23 +297,6 @@ public class TreeDrawer {
 		node.setXMid(adjust - node.getXMid());
 //		for (DiagSapNode daughterNode : node.getDaughters()) {
 //			adjustForRightToLeftOrientation(daughterNode, adjust);
-//		}
-	}
-
-	private void drawNodesAsSVG(DiagSapNode node, StringBuilder sb) {
-//		createTextAsSVG(node.getContentTextBox(), node.getFontInfoFromNodeType(), sb);
-//		if (node.hasMother() && !node.isOmitLine() && node.getNodeType() != NodeType.Gloss) {
-//			DiagSapNode mother = node.getMother();
-//			if (!node.isTriangle()) {
-//				// need to draw a line between mother and this node
-//				createLineAsSVG(mother.getXMid(), mother.getYLowerMid(), node.getXMid(),
-//						node.getYUpperMid(), sb);
-//			} else if (node.isTriangle()) {
-//				drawTriangleAsSVG(mother, node, sb);
-//			}
-//		}
-//		for (DiagSapNode daughterNode : node.getDaughters()) {
-//			drawNodesAsSVG(daughterNode, sb);
 //		}
 	}
 
