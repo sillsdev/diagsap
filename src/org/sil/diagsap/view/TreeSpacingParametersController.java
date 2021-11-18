@@ -84,7 +84,6 @@ public class TreeSpacingParametersController implements Initializable {
 		initialYCoordinate.setText(String.valueOf(dsTree.getInitialYCoordinate()));
 		horizontalGap.setText(String.valueOf(dsTree.getHorizontalGap()));
 		verticalGap.setText(String.valueOf(dsTree.getVerticalGap()));
-		System.out.println("setData:tu=" + dsTree.getTextUnderlineGap());
 		textUnderlineGap.setText(String.valueOf(dsTree.getTextUnderlineGap()));
 	}
 
