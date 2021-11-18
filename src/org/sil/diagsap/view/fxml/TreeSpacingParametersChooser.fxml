@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="236.0" prefWidth="620.0" stylesheets="@LingTree.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sil.lingtree.view.TreeSpacingParametersController">
+<AnchorPane prefHeight="236.0" prefWidth="620.0" stylesheets="@DiagSap.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sil.diagsap.view.TreeSpacingParametersController">
    <children>
       <ButtonBar layoutX="348.0" layoutY="193.0" prefHeight="40.0" prefWidth="272.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0">
         <buttons>
@@ -41,7 +41,7 @@
             <Label text="%spacingdialog.initialxcoordinate" wrapText="true" GridPane.rowIndex="2" />
             <Label text="%spacingdialog.verticalgap" wrapText="true" GridPane.rowIndex="3" />
             <Label text="%spacingdialog.horizontalgap" wrapText="true" GridPane.rowIndex="4" />
-            <Label text="%spacingdialog.lexglossgapadjustment" wrapText="true" GridPane.rowIndex="5" />
+            <Label text="%spacingdialog.textunderlinegap" wrapText="true" GridPane.rowIndex="5" />
             <TextField fx:id="initialYCoordinate" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets left="10.0" right="30.0" />
@@ -58,7 +58,7 @@
                <GridPane.margin>
                   <Insets left="10.0" right="30.0" />
                </GridPane.margin></TextField>
-            <TextField fx:id="lexGlossGapAdjustment" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <TextField fx:id="textUnderlineGap" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets left="10.0" right="30.0" />
                </GridPane.margin></TextField>

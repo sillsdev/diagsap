@@ -42,7 +42,7 @@ public class TreeSpacingParametersController implements Initializable {
 	Stage dialogStage;
 	private boolean okClicked = false;
 	private MainApp mainApp;
-	private DiagSapTree ltTree;
+	private DiagSapTree dsTree;
 	private UnaryOperator<TextFormatter.Change> filter;
 
 	/**
@@ -78,13 +78,18 @@ public class TreeSpacingParametersController implements Initializable {
 		this.dialogStage = dialogStage;
 	}
 
-	public void setData(DiagSapTree ltTree) {
-		this.ltTree = ltTree;
-		initialXCoordinate.setText(String.valueOf(ltTree.getInitialXCoordinate()));
-		initialYCoordinate.setText(String.valueOf(ltTree.getInitialYCoordinate()));
-		horizontalGap.setText(String.valueOf(ltTree.getHorizontalGap()));
-		verticalGap.setText(String.valueOf(ltTree.getVerticalGap()));
-		textUnderlineGap.setText(String.valueOf(ltTree.getTextUnderlineGap()));
+	public void setData(DiagSapTree dsTree) {
+		this.dsTree = dsTree;
+		initialXCoordinate.setText(String.valueOf(dsTree.getInitialXCoordinate()));
+		initialYCoordinate.setText(String.valueOf(dsTree.getInitialYCoordinate()));
+		horizontalGap.setText(String.valueOf(dsTree.getHorizontalGap()));
+		verticalGap.setText(String.valueOf(dsTree.getVerticalGap()));
+		System.out.println("setData:tu=" + dsTree.getTextUnderlineGap());
+		textUnderlineGap.setText(String.valueOf(dsTree.getTextUnderlineGap()));
+	}
+
+	public DiagSapTree getTree() {
+		return dsTree;
 	}
 
 	/**
@@ -102,19 +107,19 @@ public class TreeSpacingParametersController implements Initializable {
 	@FXML
 	private void handleOk() {
 		if (initialXCoordinate.getText().length() > 0) {
-			ltTree.setInitialXCoordinate(Double.valueOf(initialXCoordinate.getText()));
+			dsTree.setInitialXCoordinate(Double.valueOf(initialXCoordinate.getText()));
 		}
 		if (initialYCoordinate.getText().length() > 0) {
-			ltTree.setInitialYCoordinate(Double.valueOf(initialYCoordinate.getText()));
+			dsTree.setInitialYCoordinate(Double.valueOf(initialYCoordinate.getText()));
 		}
 		if (horizontalGap.getText().length() > 0) {
-			ltTree.setHorizontalGap(Double.valueOf(horizontalGap.getText()));
+			dsTree.setHorizontalGap(Double.valueOf(horizontalGap.getText()));
 		}
 		if (verticalGap.getText().length() > 0) {
-			ltTree.setVerticalGap(Double.valueOf(verticalGap.getText()));
+			dsTree.setVerticalGap(Double.valueOf(verticalGap.getText()));
 		}
 		if (textUnderlineGap.getText().length() > 0) {
-			ltTree.setTextUnderlineGap(Double.valueOf(textUnderlineGap.getText()));
+			dsTree.setTextUnderlineGap(Double.valueOf(textUnderlineGap.getText()));
 		}
 		okClicked = true;
 		dialogStage.close();

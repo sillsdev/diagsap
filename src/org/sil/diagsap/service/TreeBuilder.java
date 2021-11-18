@@ -165,6 +165,7 @@ public class TreeBuilder {
 		dsTree.setSaveAsPng(origTree.isSaveAsPng());
 		dsTree.setSaveAsSVG(origTree.isSaveAsSVG());
 		dsTree.setVerticalGap(origTree.getVerticalGap());
+		dsTree.setTextUnderlineGap(origTree.getTextUnderlineGap());
 		dsTree.setUseRightToLeftOrientation(origTree.isUseRightToLeftOrientation());
 	}
 
