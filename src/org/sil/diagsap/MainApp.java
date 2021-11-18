@@ -53,7 +53,7 @@ public class MainApp extends Application implements MainAppUtilities {
 	private RootLayoutController controller;
 	private ApplicationPreferences applicationPreferences;
 	private XMLBackEndProvider xmlBackEndProvider;
-	private DiagSapTree ltTree;
+	private DiagSapTree dsTree;
 	private final String sOperatingSystem = System.getProperty("os.name");
 
 	static String[] userArgs;
@@ -76,15 +76,14 @@ public class MainApp extends Application implements MainAppUtilities {
 			applicationPreferences = new ApplicationPreferences(this);
 			locale = new Locale(applicationPreferences.getLastLocaleLanguage());
 
-			ltTree = new DiagSapTree();
-			xmlBackEndProvider = new XMLBackEndProvider(ltTree, locale);
+			dsTree = new DiagSapTree();
+			xmlBackEndProvider = new XMLBackEndProvider(dsTree, locale);
 			this.primaryStage = primaryStage;
 			this.primaryStage.setTitle(kApplicationTitle);
 			this.primaryStage.getIcons().add(getNewMainIconImage());
 			restoreWindowSettings();
 
 			initRootLayout();
-			// saveDataPeriodically(Constants.SAVE_DATA_PERIODICITY);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -165,7 +164,7 @@ public class MainApp extends Application implements MainAppUtilities {
 			}
 			if (file != null && file.exists()) {
 				loadTreeData(file);
-				controller.setTree(ltTree);
+				controller.setTree(dsTree);
 				controller.handleDrawTree();
 			} else {
 				boolean fSucceeded = askUserForNewOrToOpenExistingFile(bundle, controller);
@@ -235,7 +234,7 @@ public class MainApp extends Application implements MainAppUtilities {
 		} else if (result.get() == buttonOpenExistingTree) {
 			File file = controller.doFileOpen(true);
 			loadTreeData(file);
-			controller.setTree(ltTree);
+			controller.setTree(dsTree);
 			controller.computeHighlighting();
 			controller.handleDrawTree();
 
@@ -248,8 +247,8 @@ public class MainApp extends Application implements MainAppUtilities {
 
 	public void loadTreeData(File file) {
 		xmlBackEndProvider.loadTreeDataFromFile(file);
-		ltTree = xmlBackEndProvider.getLingTree();
-		ltTree.setFontsAndColors();
+		dsTree = xmlBackEndProvider.getLingTree();
+		dsTree.setFontsAndColors();
 		applicationPreferences.setLastOpenedFilePath(file);
 		applicationPreferences.setLastOpenedDirectoryPath(file.getParent());
 		updateStageTitle(file);
@@ -319,7 +318,7 @@ public class MainApp extends Application implements MainAppUtilities {
 	}
 
 	public DiagSapTree getTree() {
-		return ltTree;
+		return dsTree;
 	}
 
 	public XMLBackEndProvider getXmlBackEndProvider() {

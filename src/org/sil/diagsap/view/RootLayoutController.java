@@ -19,6 +19,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -961,8 +963,11 @@ public class RootLayoutController implements Initializable {
 	 */
 	@FXML
 	private void handleExit() {
-		if (fIsDirty) {
-			askAboutSaving();
+		try {
+			mainApp.stop();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		System.exit(0);
 	}
