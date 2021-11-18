@@ -87,7 +87,7 @@ public class RootLayoutController implements Initializable {
 	MainApp mainApp;
 	private Locale currentLocale;
 	ResourceBundle bundle;
-	DiagSapTree ltTree;
+	DiagSapTree dsTree;
 	String sDescription;
 	ApplicationPreferences applicationPreferences;
 	boolean fIsDirty;
@@ -559,11 +559,11 @@ public class RootLayoutController implements Initializable {
 	}
 
 	public DiagSapTree getTree() {
-		return ltTree;
+		return dsTree;
 	}
 
 	public void setTree(DiagSapTree ltTree) {
-		this.ltTree = ltTree;
+		this.dsTree = ltTree;
 		treeDescription.replaceText(ltTree.getDescription());
 		menuItemSaveAsPng.setSelected(ltTree.isSaveAsPng());
 		toggleButtonSaveAsPng = setToggleButtonStyle(menuItemSaveAsPng, toggleButtonSaveAsPng);
@@ -789,21 +789,21 @@ public class RootLayoutController implements Initializable {
 
 	private TreeDrawer drawTreePrep() {
 		sDescription = treeDescription.getText();
-		ltTree = TreeBuilder.parseAString(sDescription, ltTree);
+		dsTree = TreeBuilder.parseAString(sDescription, dsTree);
 		updateTreeDataToBackEndProvider();
 		if (TreeBuilder.getNumberOfErrors() > 0) {
 			return null;
 		}
-		TreeDrawer drawer = new TreeDrawer(ltTree);
+		TreeDrawer drawer = new TreeDrawer(dsTree);
 		return drawer;
 	}
 
 	private void updateTreeDataToBackEndProvider() {
-		ltTree.setSaveAsPng(menuItemSaveAsPng.isSelected());
-		ltTree.setSaveAsSVG(menuItemSaveAsSVG.isSelected());
-		ltTree.setUseRightToLeftOrientation(menuItemUseRightToLeftOrientation.isSelected());
-		ltTree.setDescription(treeDescription.getText());
-		mainApp.getBackEndProvider().setLingTree(ltTree);
+		dsTree.setSaveAsPng(menuItemSaveAsPng.isSelected());
+		dsTree.setSaveAsSVG(menuItemSaveAsSVG.isSelected());
+		dsTree.setUseRightToLeftOrientation(menuItemUseRightToLeftOrientation.isSelected());
+		dsTree.setDescription(treeDescription.getText());
+		mainApp.getBackEndProvider().setLingTree(dsTree);
 	}
 
 	private void reportErrorInDescriptionMessage() {
@@ -876,7 +876,7 @@ public class RootLayoutController implements Initializable {
 
 	@FXML
 	private void handleMenuUseRightToLeftOrientation() {
-		ltTree.setUseRightToLeftOrientation(menuItemUseRightToLeftOrientation.isSelected());
+		dsTree.setUseRightToLeftOrientation(menuItemUseRightToLeftOrientation.isSelected());
 		handleDrawTree();
 		markAsDirty();
 	}
@@ -901,7 +901,7 @@ public class RootLayoutController implements Initializable {
 	@FXML
 	private void handleMenuSaveAsPng() {
 		toggleButtonSaveAsPng = setToggleButtonStyle(menuItemSaveAsPng, toggleButtonSaveAsPng);
-		ltTree.setSaveAsPng(menuItemSaveAsPng.isSelected());
+		dsTree.setSaveAsPng(menuItemSaveAsPng.isSelected());
 		markAsDirty();
 	}
 
@@ -909,7 +909,7 @@ public class RootLayoutController implements Initializable {
 	private void handleSaveAsPng() {
 		menuItemSaveAsPng.setSelected(!menuItemSaveAsPng.isSelected());
 		toggleButtonSaveAsPng = setToggleButtonStyle(menuItemSaveAsPng, toggleButtonSaveAsPng);
-		ltTree.setSaveAsPng(menuItemSaveAsPng.isSelected());
+		dsTree.setSaveAsPng(menuItemSaveAsPng.isSelected());
 		markAsDirty();
 		treeDescription.requestFocus();
 	}
@@ -917,7 +917,7 @@ public class RootLayoutController implements Initializable {
 	@FXML
 	private void handleMenuSaveAsSVG() {
 		toggleButtonSaveAsSVG = setToggleButtonStyle(menuItemSaveAsSVG, toggleButtonSaveAsSVG);
-		ltTree.setSaveAsSVG(menuItemSaveAsSVG.isSelected());
+		dsTree.setSaveAsSVG(menuItemSaveAsSVG.isSelected());
 		markAsDirty();
 	}
 
@@ -925,7 +925,7 @@ public class RootLayoutController implements Initializable {
 	private void handleSaveAsSVG() {
 		menuItemSaveAsSVG.setSelected(!menuItemSaveAsSVG.isSelected());
 		toggleButtonSaveAsSVG = setToggleButtonStyle(menuItemSaveAsSVG, toggleButtonSaveAsSVG);
-		ltTree.setSaveAsSVG(menuItemSaveAsSVG.isSelected());
+		dsTree.setSaveAsSVG(menuItemSaveAsSVG.isSelected());
 		markAsDirty();
 		treeDescription.requestFocus();
 	}
@@ -988,21 +988,21 @@ public class RootLayoutController implements Initializable {
 				Constants.RESOURCE_LOCATION);
 		if (fileCreated != null) {
 			final String initialDescription = "(()())";
-			ltTree = new DiagSapTree();
-			applicationPreferences.getSavedTreeParameters(ltTree);
-			ltTree.setDescription(initialDescription);
+			dsTree = new DiagSapTree();
+			applicationPreferences.getSavedTreeParameters(dsTree);
+			dsTree.setDescription(initialDescription);
 			updateAllFontInfos();
 			treeDescription.replaceText(initialDescription);
 			treeDescription.moveTo(1);
 			treeDescription.requestFocus();
-			menuItemUseRightToLeftOrientation.setSelected(ltTree.isUseRightToLeftOrientation());
-			menuItemSaveAsPng.setSelected(ltTree.isSaveAsPng());
-			toggleButtonSaveAsPng.setSelected(ltTree.isSaveAsPng());
-			menuItemSaveAsSVG.setSelected(ltTree.isSaveAsSVG());
-			toggleButtonSaveAsSVG.setSelected(ltTree.isSaveAsSVG());
+			menuItemUseRightToLeftOrientation.setSelected(dsTree.isUseRightToLeftOrientation());
+			menuItemSaveAsPng.setSelected(dsTree.isSaveAsPng());
+			toggleButtonSaveAsPng.setSelected(dsTree.isSaveAsPng());
+			menuItemSaveAsSVG.setSelected(dsTree.isSaveAsSVG());
+			toggleButtonSaveAsSVG.setSelected(dsTree.isSaveAsSVG());
 			mainApp.updateStageTitle(fileCreated);
 			cleanDrawingArea();
-			mainApp.getXmlBackEndProvider().setLingTree(ltTree);
+			mainApp.getXmlBackEndProvider().setLingTree(dsTree);
 			try {
 				handleSaveTree();
 			} catch (IOException e) {
@@ -1011,12 +1011,12 @@ public class RootLayoutController implements Initializable {
 			}
 			computeHighlighting();
 		} else {
-			ltTree = null;
+			dsTree = null;
 		}
 	}
 
 	private void updateAllFontInfos() {
-		updateFontInfoValues(LexFontInfo.getInstance(), ltTree.getLexicalFontInfo());
+		updateFontInfoValues(LexFontInfo.getInstance(), dsTree.getLexicalFontInfo());
 	}
 
 	private void updateFontInfoValues(FontInfo fiUsedWhenDrawing, FontInfo fiFromTree) {
@@ -1117,7 +1117,7 @@ public class RootLayoutController implements Initializable {
 		}
 		GraphicImageSaver saver = GraphicImageSaver.getInstance();
 		saver.setFile(file);
-		saver.saveAsPNG(drawingArea, ltTree);
+		saver.saveAsPNG(drawingArea, dsTree);
 	}
 
 	private void saveTreeAsSVG() throws IOException {
@@ -1155,7 +1155,7 @@ public class RootLayoutController implements Initializable {
 	 */
 	@FXML
 	private void handleSaveTreeParameters() throws Exception {
-		applicationPreferences.setSavedTreeParameters(ltTree);
+		applicationPreferences.setSavedTreeParameters(dsTree);
 	}
 
 	/**
@@ -1234,8 +1234,8 @@ public class RootLayoutController implements Initializable {
 
 	@FXML
 	public void handleLexicalFontInfo() {
-		FontInfo fontInfo = showFontInfo(mainApp.getPrimaryStage(), ltTree.getLexicalFontInfo());
-		ltTree.setLexicalFontInfo(fontInfo);
+		FontInfo fontInfo = showFontInfo(mainApp.getPrimaryStage(), dsTree.getLexicalFontInfo());
+		dsTree.setLexicalFontInfo(fontInfo);
 		LexFontInfo.getInstance().setFont(fontInfo.getFont());
 		LexFontInfo.getInstance().setColor(fontInfo.getColor());
 		computeHighlighting();
@@ -1274,7 +1274,7 @@ public class RootLayoutController implements Initializable {
 			TreeSpacingParametersController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
 			controller.setMainApp(mainApp);
-			controller.setData(ltTree);
+			controller.setData(dsTree);
 			dialogStage.setResizable(false);
 			dialogStage.showAndWait();
 			if (controller.isOkClicked()) {
@@ -1299,7 +1299,7 @@ public class RootLayoutController implements Initializable {
 			BackgroundAndLineParametersController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
 			controller.setMainApp(mainApp);
-			controller.setData(ltTree);
+			controller.setData(dsTree);
 			dialogStage.setResizable(false);
 			dialogStage.showAndWait();
 			if (controller.isOkClicked()) {

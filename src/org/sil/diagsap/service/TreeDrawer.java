@@ -203,14 +203,29 @@ public class TreeDrawer {
 
 		contentBranches.clear();
 		infixedBaseBranches.clear();
-		collectContentBranchItems(node);
+		collectContentAndInfixedBaseBranchItems(node);
 		FontInfo fontInfo = LexFontInfo.getInstance();
 		double dXCoordinate = dsTree.getInitialXCoordinate();
 		dXCoordinate = drawContentBoxesWithUnderline(pane, fontInfo, dXCoordinate);
 		calculateX1AndX2OfNode(node);
 		drawNodes(node, pane);
+		calculateTreeHeightAndWidth(node);
 		pane.setStyle("-fx-background-color:"
 				+ StringUtilities.toRGBCode(dsTree.getBackgroundColor()) + ";");
+	}
+
+	protected void calculateTreeHeightAndWidth(DiagSapNode node) {
+		double xTreeWidth = calculateTreeWidth();
+		dsTree.setXSize(xTreeWidth);
+		double yTreeHeight = dUnderlineYCoordinate + node.getLevel() * dsTree.getVerticalGap();
+		dsTree.setYSize(yTreeHeight);
+	}
+
+	protected double calculateTreeWidth() {
+		ContentBranch lastContent = contentBranches.get(contentBranches.size()-1);
+		Text lastMorphTextBox = lastContent.getContentTextBox();
+		double xEnd = lastMorphTextBox.getX() + lastMorphTextBox.getBoundsInLocal().getWidth();
+		return xEnd;
 	}
 
 	protected double drawContentBoxesWithUnderline(Pane pane, FontInfo fontInfo, double dXCoordinate) {
@@ -249,14 +264,14 @@ public class TreeDrawer {
 		return contentTextBox;
 	}
 
-	protected void collectContentBranchItems(DiagSapNode node) {
+	protected void collectContentAndInfixedBaseBranchItems(DiagSapNode node) {
 		collectContentBranchItems(node.getLeftBranch().getItem());
 		collectContentBranchItems(node.getRightBranch().getItem());
 	}
 
 	protected void collectContentBranchItems(BranchItem item) {
 		if (item instanceof DiagSapNode) {
-			collectContentBranchItems((DiagSapNode)item);
+			collectContentAndInfixedBaseBranchItems((DiagSapNode)item);
 		} else if (item instanceof ContentBranch) {
 			contentBranches.add((ContentBranch)item);
 		} else if (item instanceof InfixedBaseBranch) {

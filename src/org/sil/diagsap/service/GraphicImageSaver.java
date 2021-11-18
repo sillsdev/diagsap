@@ -61,15 +61,16 @@ public class GraphicImageSaver {
 		}
     }
     
-    public void saveAsPNG(Pane drawingArea, DiagSapTree ltTree) {
-		WritableImage wim = new WritableImage((int) ltTree.getXSize() + 10,
-				(int) (ltTree.getYSize() + 10));
+    public void saveAsPNG(Pane drawingArea, DiagSapTree dsTree) {
+		WritableImage wim = new WritableImage((int) dsTree.getXSize() + 10,
+				(int) (dsTree.getYSize() + 10));
 		drawingArea.snapshot(null, wim);
 		File filePng = new File(sFilePath + ".png");
 		try {
 			BufferedImage bi = SwingFXUtils.fromFXImage(wim, null);
 			ImageIO.write(bi, "png", filePng);
 		} catch (Exception s) {
+			System.out.println("saveAsPNG exception: " + s.getMessage());
 		}
     }
 
