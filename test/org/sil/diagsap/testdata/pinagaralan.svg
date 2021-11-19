@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' standalone='no'?>
+<svg width='168.9296875' height='115.2734375' version='1.1' xmlns='http://www.w3.org/2000/svg' contentScriptType='text/javascript'>
+<script  id="clientEventHandlersJS">
+function OnClickLingTreeNode(node){}
+</script>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="10.0" y="20.0" font-family="Charis SIL" font-size="12.0" fill="#0000ff">p</text>
+<line x1="10.0" y1="25.2734375" x2="16.708984375" y2="25.2734375" stroke="#000000" stroke-width="1.0"/>
+<text x="36.708984375" y="20.0" font-family="Charis SIL" font-size="12.0" fill="#0000ff">in</text>
+<line x1="36.708984375" y1="25.2734375" x2="47.150390625" y2="25.2734375" stroke="#000000" stroke-width="1.0"/>
+<text x="67.150390625" y="20.0" font-family="Charis SIL" font-size="12.0" fill="#0000ff">ag</text>
+<line x1="67.150390625" y1="25.2734375" x2="79.5546875" y2="25.2734375" stroke="#000000" stroke-width="1.0"/>
+<text x="99.5546875" y="20.0" font-family="Charis SIL" font-size="12.0" fill="#0000ff">–arál</text>
+<line x1="99.5546875" y1="25.2734375" x2="126.021484375" y2="25.2734375" stroke="#000000" stroke-width="1.0"/>
+<text x="146.021484375" y="20.0" font-family="Charis SIL" font-size="12.0" fill="#0000ff">an</text>
+<line x1="146.021484375" y1="25.2734375" x2="158.9296875" y2="25.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="41.9296875" y1="105.2734375" x2="115.629150390625" y2="105.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="41.9296875" y1="105.2734375" x2="41.9296875" y2="25.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="78.78271484375" y1="85.2734375" x2="152.4755859375" y2="85.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="44.77734375" y1="65.2734375" x2="112.7880859375" y2="65.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="13.3544921875" y1="45.2734375" x2="73.3525390625" y2="45.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="13.3544921875" y1="45.2734375" x2="13.3544921875" y2="25.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="73.3525390625" y1="45.2734375" x2="73.3525390625" y2="25.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="44.77734375" y1="45.2734375" x2="44.77734375" y2="65.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="112.7880859375" y1="65.2734375" x2="112.7880859375" y2="25.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="78.78271484375" y1="85.2734375" x2="78.78271484375" y2="65.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="152.4755859375" y1="85.2734375" x2="152.4755859375" y2="25.2734375" stroke="#000000" stroke-width="1.0"/>
+<line x1="115.629150390625" y1="105.2734375" x2="115.629150390625" y2="85.2734375" stroke="#000000" stroke-width="1.0"/>
+</svg>
+

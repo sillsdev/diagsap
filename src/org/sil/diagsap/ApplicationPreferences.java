@@ -39,7 +39,6 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 	// Tree parameters to remember
 	static final String BACKGROUND_COLOR = "backgroundColor";
 	static final String HORIZONTAL_GAP = "horizontalGap";
-	static final String HORIZONTAL_OFFSET = "horizontalOffset";
 	static final String INITIAL_X_COORDINATE = "initialXCoordinate";
 	static final String INITIAL_Y_COORDINATE = "initialYCoordinate";
 	public static final String LAST_QUICK_REFERENCE_GUIDE = "lastQuickReferenceGuide";
@@ -174,7 +173,6 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 
 	public void getSavedTreeParameters(DiagSapTree ltTree) {
 		ltTree.setHorizontalGap(prefs.getDouble(HORIZONTAL_GAP, 20));
-		ltTree.setHorizontalOffset(prefs.getDouble(HORIZONTAL_OFFSET, 225));
 		ltTree.setInitialXCoordinate(prefs.getDouble(INITIAL_X_COORDINATE, 10));
 		ltTree.setInitialYCoordinate(prefs.getDouble(INITIAL_Y_COORDINATE, 20));
 		ltTree.setLineWidth(prefs.getDouble(LINE_WIDTH, 1));
@@ -197,7 +195,6 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 
 	public void setSavedTreeParameters(DiagSapTree ltTree) throws Exception {
 		setPreferencesKey(HORIZONTAL_GAP, ltTree.getHorizontalGap());
-		setPreferencesKey(HORIZONTAL_OFFSET, ltTree.getHorizontalOffset());
 		setPreferencesKey(INITIAL_X_COORDINATE, ltTree.getInitialXCoordinate());
 		setPreferencesKey(INITIAL_Y_COORDINATE, ltTree.getInitialYCoordinate());
 		setPreferencesKey(LINE_WIDTH, ltTree.getLineWidth());

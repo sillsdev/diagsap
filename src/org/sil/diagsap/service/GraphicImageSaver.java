@@ -39,7 +39,7 @@ public class GraphicImageSaver {
 		sFilePath = treeFile.getCanonicalPath();
 		if (sFilePath.endsWith("." + Constants.DIAGSAP_DATA_FILE_EXTENSION)) {
 			int len = sFilePath.length();
-			sFilePath = sFilePath.substring(0, len - Constants.DIAGSAP_DATA_FILE_EXTENSION.length());
+			sFilePath = sFilePath.substring(0, len - (Constants.DIAGSAP_DATA_FILE_EXTENSION.length()+1));
 		}
     }
     

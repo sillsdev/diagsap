@@ -33,7 +33,6 @@ public class DiagSapTree {
 	double dVerticalGap; // extra gap between levels
 
 	double dHorizontalGap; // extra gap between leaf nodes
-	double dHorizontalOffset; // current XCoord of last leaf node processed
 
 	FontInfo lexicalFontInfo;
 
@@ -49,14 +48,13 @@ public class DiagSapTree {
 	 * 
 	 */
 	public DiagSapTree() {
-		dInitialXCoordinate = 100;
-		dInitialYCoordinate = 100;
+		dInitialXCoordinate = 10;
+		dInitialYCoordinate = 20;
 		dVerticalGap = 20;
-		dHorizontalGap = 30;
-		dHorizontalOffset = 100;
+		dHorizontalGap = 20;
 		fUseRightToLeftOrientation = false;
 		lexicalFontInfo = LexFontInfo.getInstance();
-		lineWidth = 10;
+		lineWidth = 1;
 		lineColor = Color.BLACK;
 		backgroundColor = Color.WHITE;
 		version=Constants.CURRENT_DATABASE_VERSION;
@@ -123,15 +121,6 @@ public class DiagSapTree {
 
 	public void setHorizontalGap(double dHorizontalGap) {
 		this.dHorizontalGap = dHorizontalGap;
-	}
-
-	@XmlElement(name = "horizontalOffset")
-	public double getHorizontalOffset() {
-		return dHorizontalOffset;
-	}
-
-	public void setHorizontalOffset(double dHorizontalOffset) {
-		this.dHorizontalOffset = dHorizontalOffset;
 	}
 
 	@XmlElement(name = "saveAsPng")
