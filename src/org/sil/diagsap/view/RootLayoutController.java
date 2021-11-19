@@ -95,6 +95,7 @@ public class RootLayoutController implements Initializable {
 	boolean fIsDirty;
 	boolean fOpenParenJustTyped = false;
 	boolean fCloseParenJustTyped = false;
+	boolean fOpenWedgeJustTyped = false;
 	boolean fContentJustChangedSoDrawTree = false;
 
 	private List<KeyEvent> itemsKeyedDuringPause = new ArrayList<KeyEvent>();
@@ -280,6 +281,13 @@ public class RootLayoutController implements Initializable {
 					}
 					markAsDirty();
 					break;
+
+				case "<":
+					if (treeDescription.isEditable()) {
+						fOpenWedgeJustTyped = true;
+					}
+					markAsDirty();
+					break;
 				default:
 					if (event.isControlDown()) {
 						switch (sCharacter.codePointAt(0)) {
@@ -329,6 +337,9 @@ public class RootLayoutController implements Initializable {
 					TreeDescriptionUIService.setItemsKeyedDuringPause(itemsKeyedDuringPause);
 					TreeDescriptionUIService.processLeftParenthesis(treeDescription, false,
 							applicationPreferences.getShowMatchingParenDelay(), bundle, mainIcon);
+				} else if (fOpenWedgeJustTyped) {
+					fOpenWedgeJustTyped = false;
+					insertMatchingClosingWedge();
 				}
 				switch (event.getCode()) {
 				// ignore these for redisplaying the tree
@@ -1203,6 +1214,16 @@ public class RootLayoutController implements Initializable {
 			int i = treeDescription.getCaretPosition();
 			String contents = treeDescription.getText();
 			contents = contents.substring(0, i) + " )" + contents.substring(i);
+			treeDescription.replaceText(contents);
+			treeDescription.moveTo(i);
+		}
+	}
+
+	private void insertMatchingClosingWedge() {
+		if (menuItemDrawAsType.isSelected()) {
+			int i = treeDescription.getCaretPosition();
+			String contents = treeDescription.getText();
+			contents = contents.substring(0, i) + ">" + contents.substring(i);
 			treeDescription.replaceText(contents);
 			treeDescription.moveTo(i);
 		}
