@@ -13,6 +13,8 @@ public class DescriptionConstants {
 	public static final String CONTENT_AFTER_COMPLETED_TREE = "contentAfterCompletedTree";
 	public static final String MISSING_OPENING_PAREN = "missingOpeningParen";
 	public static final String MISSING_CLOSING_PAREN = "missingClosingParen";
+	public static final String MISSING_OPENING_WEDGE = "missingOpeningWedge";
+	public static final String MISSING_CLOSING_WEDGE = "missingClosingWedge";
 	public static final String MISSING_CONSTITUENT = "missingConstituent";
 	public static final String MISSING_CONTENT = "missingContent";
 	public static final String MISSING_CONTENT_AND_CLOSING_PAREN = "missingContentAndClosingParen";

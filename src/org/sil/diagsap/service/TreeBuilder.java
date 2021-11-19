@@ -182,6 +182,10 @@ public class TreeBuilder {
 			sSyntaxErrorMessage = bundle.getString("descriptionsyntaxerror.missing_closing_paren");
 			break;
 
+		case DescriptionConstants.MISSING_CLOSING_WEDGE:
+			sSyntaxErrorMessage = bundle.getString("descriptionsyntaxerror.missing_closing_wedge");
+			break;
+
 		case DescriptionConstants.MISSING_CONSTITUENT:
 			sSyntaxErrorMessage = bundle
 					.getString("descriptionsyntaxerror.missing_constituent");
@@ -199,6 +203,10 @@ public class TreeBuilder {
 
 		case DescriptionConstants.MISSING_OPENING_PAREN:
 			sSyntaxErrorMessage = bundle.getString("descriptionsyntaxerror.missing_opening_paren");
+			break;
+
+		case DescriptionConstants.MISSING_OPENING_WEDGE:
+			sSyntaxErrorMessage = bundle.getString("descriptionsyntaxerror.missing_opening_wedge");
 			break;
 
 		case DescriptionConstants.MISSING_RIGHT_BRANCH:

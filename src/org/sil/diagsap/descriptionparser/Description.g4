@@ -54,6 +54,7 @@ branch : '(' content ')'
        | '(' content {notifyErrorListeners("missingClosingParen");} content+ ')'
        | '(' content {notifyErrorListeners("missingClosingParen");}
        | content {notifyErrorListeners("missingClosingParen");} node
+       | {notifyErrorListeners("missingOpeningWedge");} content '>' content*
        ;
 
 content : //(TEXT | BACKSLASH)+
@@ -61,7 +62,9 @@ content : //(TEXT | BACKSLASH)+
         ;
 infixedbase : content infix content?;
 
-infix : '<' content '>';
+infix : '<' content '>'
+      | '<' content {notifyErrorListeners("missingClosingWedge");}
+      ;
 
 infixindex : '\\1'
            | '\\2'

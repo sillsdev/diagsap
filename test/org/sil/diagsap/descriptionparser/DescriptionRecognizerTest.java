@@ -126,6 +126,9 @@ public class DescriptionRecognizerTest {
 				DescriptionConstants.MISSING_CLOSING_PAREN, 9, 1);
 		checkInvalidDescription("((\\1)((p<in>ag) (–arál)) (an)))",	DescriptionConstants.MISSING_CLOSING_PAREN, 25, 1);
 		checkInvalidDescription("((\\1)(p<in>ag) (–arál)) (an)))", DescriptionConstants.MISSING_CLOSING_PAREN, 15, 3);
+		checkInvalidDescription("((\\1)(p<inag) (–arál)) (an)))", DescriptionConstants.MISSING_CLOSING_WEDGE, 12, 4);
+		checkInvalidDescription("((\\1)(pinag>) (–arál)) (an)))", DescriptionConstants.MISSING_OPENING_WEDGE, 6, 5);
+		checkInvalidDescription("((\\1)(((pin>ag) (–arál)) (an)))", DescriptionConstants.MISSING_OPENING_WEDGE, 8, 2);
 	}
 
 	private void checkInvalidDescription(String sDescription, String sFailedPortion, int iPos,
