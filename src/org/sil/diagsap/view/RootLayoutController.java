@@ -19,8 +19,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -103,7 +101,7 @@ public class RootLayoutController implements Initializable {
 	private String sAboutHeader;
 	private String sAboutContent;
 	private String sFileFilterDescription;
-	private String lingTreeFilterDescription;
+	private String diagSapFilterDescription;
 
 	private final String kPressedStyle = "buttonpressed";
 	private final String kUnPressedStyle = "buttonunpressed";
@@ -565,7 +563,7 @@ public class RootLayoutController implements Initializable {
 
 	public void setLocale(Locale currentLocale) {
 		this.currentLocale = currentLocale;
-		lingTreeFilterDescription = sFileFilterDescription + " ("
+		diagSapFilterDescription = sFileFilterDescription + " ("
 				+ Constants.DIAGSAP_DATA_FILE_EXTENSIONS + ")";
 		RESOURCE_FACTORY.setResources(ResourceBundle.getBundle(Constants.RESOURCE_LOCATION,
 				currentLocale));
@@ -999,7 +997,7 @@ public class RootLayoutController implements Initializable {
 		}
 		applicationPreferences.setLastOpenedDirectoryPath(sDirectoryPath);
 		File fileCreated = ControllerUtilities.doFileSaveAs(mainApp, currentLocale, false,
-				lingTreeFilterDescription, RESOURCE_FACTORY.getStringBinding("file.new").get(),
+				diagSapFilterDescription, RESOURCE_FACTORY.getStringBinding("file.new").get(),
 				Constants.DIAGSAP_DATA_FILE_EXTENSION, Constants.DIAGSAP_DATA_FILE_EXTENSIONS,
 				Constants.RESOURCE_LOCATION);
 		if (fileCreated != null) {
@@ -1081,7 +1079,7 @@ public class RootLayoutController implements Initializable {
 	}
 
 	public File doFileOpen(Boolean fCloseIfCanceled) {
-		File file = ControllerUtilities.getFileToOpen(mainApp, lingTreeFilterDescription,
+		File file = ControllerUtilities.getFileToOpen(mainApp, diagSapFilterDescription,
 				Constants.DIAGSAP_DATA_FILE_EXTENSIONS);
 		if (file != null) {
 			mainApp.loadTreeData(file);
@@ -1159,7 +1157,7 @@ public class RootLayoutController implements Initializable {
 	 */
 	@FXML
 	private void handleSaveTreeAs() {
-		ControllerUtilities.doFileSaveAs(mainApp, currentLocale, false, lingTreeFilterDescription,
+		ControllerUtilities.doFileSaveAs(mainApp, currentLocale, false, diagSapFilterDescription,
 				null, Constants.DIAGSAP_DATA_FILE_EXTENSION,
 				Constants.DIAGSAP_DATA_FILE_EXTENSIONS, Constants.RESOURCE_LOCATION);
 		// TODO: make sure we know what the new file path is
