@@ -1,4 +1,4 @@
-// Copyright (c) 2018 SIL International 
+// Copyright (c) 2021 SIL International 
 // This software is licensed under the LGPL, version 2.1 or later 
 // (http://www.gnu.org/licenses/lgpl-2.1.html) 
 /**
@@ -101,22 +101,19 @@ public class QuickReferenceGuideController implements Initializable {
 		formatTableHeader(sb);
 		formatTableRow(sb, "(", "quick.anewtreelevel");
 		formatTableRow(sb, ")", "quick.endatreelevel");
-		formatTableCategoryRow(sb, "quick.linetype");
-		formatTableRow(sb, "\\O", "quick.omitlineabove");
-		formatTableRow(sb, "\\T", "quick.triangleover");
-		formatTableDefaultRow(sb, "quick.default", "quick.lineovernode");
-		formatTableCategoryRow(sb, "quick.nodetype");
-		formatTableRow(sb, "\\L", "quick.lexicalnode");
-		formatTableRow(sb, "\\G", "quick.glossnode");
-		formatTableRow(sb, "\\E", "quick.emptynode");
-		formatTableDefaultRow(sb, "quick.default", "quick.nonterminalnode");
+		formatTableCategoryRow(sb, "quick.infixindex");
+		formatTableRow(sb, "\\1", "quick.indexone");
+		formatTableRow(sb, "\\2", "quick.indextwo");
+		formatTableRow(sb, "...", "quick.indexetc");
+		formatTableRow(sb, "\\9", "quick.indexnine");
+		formatTableCategoryRow(sb, "quick.infixedbase");
+		formatTableRow(sb, "<", "quick.infixbegin");
+		formatTableRow(sb, ">", "quick.infixend");
 		formatTableCategoryRow(sb, "quick.contentwithinanode");
-		formatTableRow(sb, "/s", "quick.subscript");
-		formatTableRow(sb, "/_", "quick.subscriptitalic");
-		formatTableRow(sb, "/S", "quick.superscript");
-		formatTableRow(sb, "/^", "quick.superscriptitalic");
 		formatTableRow(sb, "\\(", "quick.openparenthesis");
 		formatTableRow(sb, "\\)", "quick.closeparenthesis");
+		formatTableRow(sb, "\\<", "quick.openwedge");
+		formatTableRow(sb, "\\>", "quick.closewedge");
 		sb.append("</table>\n");
 	}
 
