@@ -23,6 +23,8 @@ import org.sil.utility.view.ControllerUtilities;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Screen;
@@ -36,6 +38,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -55,6 +58,8 @@ public class MainApp extends Application implements MainAppUtilities {
 	private XMLBackEndProvider xmlBackEndProvider;
 	private DiagSapTree dsTree;
 	private final String sOperatingSystem = System.getProperty("os.name");
+	double dividerPosition;
+	int dividerChangeCounter = 0;
 
 	static String[] userArgs;
 
@@ -93,8 +98,7 @@ public class MainApp extends Application implements MainAppUtilities {
 	public void stop() throws IOException {
 		applicationPreferences.setLastWindowParameters(ApplicationPreferences.LAST_WINDOW,
 				primaryStage);
-		double[] dividers = controller.getSplitPane().getDividerPositions();
-		applicationPreferences.setLastSplitPaneDividerPosition(dividers[0]);
+		applicationPreferences.setLastSplitPaneDividerPosition(dividerPosition);
 		applicationPreferences.setLastLocaleLanguage(locale.getLanguage());
 		if (controller.isDirty()) {
 			controller.askAboutSaving();
@@ -150,8 +154,17 @@ public class MainApp extends Application implements MainAppUtilities {
 
 			wrapTreeDescriptionInVirtualizedScrollPane();
 
-			double dividerPosition = applicationPreferences.getLastSplitPaneDividerPosition();
+			// The splitter can creep up or down between runs so we remember where it
+			// originally was and change it only when the user actually moves it.
+			// (It tends to change two times during startup.)
+			dividerPosition = applicationPreferences.getLastSplitPaneDividerPosition();
 			controller.getSplitPane().setDividerPosition(0, dividerPosition);
+			Divider divider = controller.getSplitPane().getDividers().get(0);
+			divider.positionProperty().addListener((observable, oldValue, newValue) -> {
+				if (dividerChangeCounter++ > 1) {
+					dividerPosition = newValue.doubleValue();
+				}
+			});
 
 			File file;
 			if (userArgs != null && userArgs.length > 0) {
