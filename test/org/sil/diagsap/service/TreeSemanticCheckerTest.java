@@ -8,13 +8,20 @@ package org.sil.diagsap.service;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.sil.diagsap.Constants;
 import org.sil.diagsap.descriptionparser.DescriptionConstants;
 import org.sil.diagsap.model.DiagSapTree;
 import org.sil.diagsap.service.TreeBuilder;
 import org.sil.diagsap.service.TreeSemanticChecker;
+import org.sil.utility.view.ObservableResourceFactory;
 
 /**
  * @author Andy Black
@@ -24,8 +31,12 @@ public class TreeSemanticCheckerTest extends ServiceBaseTest {
 
 	DiagSapTree dsTree;
 	String sDescriptionWithErrorLocationMarked;
-	String result;
 	TreeSemanticChecker semanticChecker;
+	List<SemanticErrorMessage> infixRelatedErrors = new ArrayList<SemanticErrorMessage>();
+	List<SemanticErrorMessage> twoConsecutiveNodes = new ArrayList<SemanticErrorMessage>();
+	SemanticErrorMessage errorMessage;
+	String message;
+	Object[] args;
 	
 	/* (non-Javadoc)
 	 * @see org.sil.diasap.service.ServiceBaseTest#setUp()
@@ -34,6 +45,8 @@ public class TreeSemanticCheckerTest extends ServiceBaseTest {
 	public void setUp() throws Exception {
 		super.setUp();
 		semanticChecker = TreeSemanticChecker.getInstance();
+		infixRelatedErrors.clear();
+		twoConsecutiveNodes.clear();
 	}
 
 	/* (non-Javadoc)
@@ -46,47 +59,124 @@ public class TreeSemanticCheckerTest extends ServiceBaseTest {
 
 	@Test
 	public void twoNodesWitinANodeTest() {
+		final String twoConsecutiveMessage = "descriptionsemanticerror.two_consecutive_nodes";
 		dsTree = TreeBuilder.parseAString("(((a) (b))((c)(d)))", origTree);
-		result = semanticChecker.checkTree(dsTree);
-		assertEquals("Two consecutive nodes found between \"((a)(b))\" and \"((c)(d))\".  This is not allowed; change one to a value, an infix index, or an infix base.\n", result);
+		semanticChecker.checkTree(dsTree);
+		twoConsecutiveNodes = semanticChecker.getTwoConsecutiveNodes();
+		assertEquals(1, twoConsecutiveNodes.size());
+		errorMessage = twoConsecutiveNodes.get(0);
+		message = errorMessage.getMessage();
+		assertEquals(twoConsecutiveMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(2, args.length);
+		assertEquals("((a)(b))", (String)args[0]);
+		assertEquals("((c)(d))", (String)args[1]);
+
 		dsTree = TreeBuilder.parseAString("((a)((b)(((c) (d))((e)(f)))))", origTree);
-		result = semanticChecker.checkTree(dsTree);
-		assertEquals("Two consecutive nodes found between \"((c)(d))\" and \"((e)(f))\".  This is not allowed; change one to a value, an infix index, or an infix base.\n", result);
+		semanticChecker.checkTree(dsTree);
+		twoConsecutiveNodes = semanticChecker.getTwoConsecutiveNodes();
+		assertEquals(1, twoConsecutiveNodes.size());
+		errorMessage = twoConsecutiveNodes.get(0);
+		message = errorMessage.getMessage();
+		assertEquals(twoConsecutiveMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(2, args.length);
+		assertEquals("((c)(d))", (String)args[0]);
+		assertEquals("((e)(f))", (String)args[1]);
 	}
 
 	@Test
 	public void mismatchedIndexIndexAndInfixTest() {
 		// infix index number wrong
+		final String indexWrongMessage = "descriptionsemanticerror.infix_index_has_no_matching_infix_base";
+		final String indexedBaseWrongMessage = "descriptionsemanticerror.infixed_base_has_no_index";
+		final String duplicateIndexMessage = "descriptionsemanticerror.infix_index_duplicated";
+		
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\3) ((p<in>a-)((m-)(ulod)))))))", origTree);
-		result = semanticChecker.checkTree(dsTree);
-		String expected = "The infix index \"\\3\" has no matching infix.  This is not allowed; change its number or add an infix base.\n"
-				+ "The infix \"(p<in>a-)\" has no matching index.\n";
-		assertEquals(expected, result);
+		semanticChecker.checkTree(dsTree);
+		infixRelatedErrors = semanticChecker.getInfixRelatedErrors();
+		assertEquals(2, infixRelatedErrors.size());
+		errorMessage = infixRelatedErrors.get(0);
+		message = errorMessage.getMessage();
+		assertEquals(indexWrongMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(1, args.length);
+		assertEquals("\\3", (String)args[0]);
+
+		errorMessage = infixRelatedErrors.get(1);
+		message = errorMessage.getMessage();
+		assertEquals(indexedBaseWrongMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(1, args.length);
+		assertEquals("(p<in>a-)", (String)args[0]);
 
 		// missing matching infix
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\2) ((pa-)((m-)(ulod)))))))", origTree);
-		result = semanticChecker.checkTree(dsTree);
-		expected = "The infix index \"\\2\" has no matching infix.  This is not allowed; change its number or add an infix base.\n";
-		assertEquals(expected, result);
+		semanticChecker.checkTree(dsTree);
+		infixRelatedErrors = semanticChecker.getInfixRelatedErrors();
+		assertEquals(1, infixRelatedErrors.size());
+		errorMessage = infixRelatedErrors.get(0);
+		message = errorMessage.getMessage();
+		assertEquals(indexWrongMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(1, args.length);
+		assertEquals("\\2", (String)args[0]);
 
 		// missing matching infix index
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((m-) ((p<in>a-)((m-)(ulod)))))))", origTree);
-		result = semanticChecker.checkTree(dsTree);
-		expected = "The infix \"(p<in>a-)\" has no matching index.\n";
-		assertEquals(expected, result);
+		semanticChecker.checkTree(dsTree);
+		infixRelatedErrors = semanticChecker.getInfixRelatedErrors();
+		assertEquals(1, infixRelatedErrors.size());
+		errorMessage = infixRelatedErrors.get(0);
+		message = errorMessage.getMessage();
+		assertEquals(indexedBaseWrongMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(1, args.length);
+		assertEquals("(p<in>a-)", (String)args[0]);
 
 		// duplicate index
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\1) ((p<in>a-)((m-)(ulod)))))))", origTree);
-		result = semanticChecker.checkTree(dsTree);
-		expected = "The infix index \"\\1\" appears more than once.  It must only be there one time.\n"
-				+ "The infix \"(p<in>a-)\" has no matching index.\n";
-		assertEquals(expected, result);
+		semanticChecker.checkTree(dsTree);
+		infixRelatedErrors = semanticChecker.getInfixRelatedErrors();
+		assertEquals(2, infixRelatedErrors.size());
+		errorMessage = infixRelatedErrors.get(0);
+		message = errorMessage.getMessage();
+		assertEquals(duplicateIndexMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(1, args.length);
+		assertEquals("\\1", (String)args[0]);
+
+		errorMessage = infixRelatedErrors.get(1);
+		message = errorMessage.getMessage();
+		assertEquals(indexedBaseWrongMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(1, args.length);
+		assertEquals("(p<in>a-)", (String)args[0]);
+
 		// three duplicated indexes
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\1) ((p<in>a-)((\\1) ((m-)(ul<on>od))))))))", origTree);
-		result = semanticChecker.checkTree(dsTree);
-		expected = "The infix index \"\\1\" appears more than once.  It must only be there one time.\n"
-				+ "The infix \"(p<in>a-)\" has no matching index.\n"
-				+ "The infix \"(ul<on>od)\" has no matching index.\n";
-		assertEquals(expected, result);
+		semanticChecker.checkTree(dsTree);
+		infixRelatedErrors = semanticChecker.getInfixRelatedErrors();
+		assertEquals(3, infixRelatedErrors.size());
+		errorMessage = infixRelatedErrors.get(0);
+		message = errorMessage.getMessage();
+		assertEquals(duplicateIndexMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(1, args.length);
+		assertEquals("\\1", (String)args[0]);
+
+		errorMessage = infixRelatedErrors.get(1);
+		message = errorMessage.getMessage();
+		assertEquals(indexedBaseWrongMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(1, args.length);
+		assertEquals("(p<in>a-)", (String)args[0]);
+
+		errorMessage = infixRelatedErrors.get(2);
+		message = errorMessage.getMessage();
+		assertEquals(indexedBaseWrongMessage, message);
+		args = errorMessage.getArgs();
+		assertEquals(1, args.length);
+		assertEquals("(ul<on>od)", (String)args[0]);
 	}
 }

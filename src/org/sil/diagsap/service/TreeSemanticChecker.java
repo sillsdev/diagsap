@@ -6,12 +6,10 @@
 
 package org.sil.diagsap.service;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import org.sil.diagsap.model.BranchItem;
@@ -19,8 +17,6 @@ import org.sil.diagsap.model.DiagSapNode;
 import org.sil.diagsap.model.DiagSapTree;
 import org.sil.diagsap.model.InfixIndexBranch;
 import org.sil.diagsap.model.InfixedBaseBranch;
-import org.sil.diagsap.Constants;
-import org.sil.utility.view.ObservableResourceFactory;
 
 /**
  * @author Andy Black
@@ -29,20 +25,11 @@ import org.sil.utility.view.ObservableResourceFactory;
  */
 public class TreeSemanticChecker {
 
-	// following lines from
-	// https://stackoverflow.com/questions/32464974/javafx-change-application-language-on-the-run
-	private static final ObservableResourceFactory RESOURCE_FACTORY = ObservableResourceFactory
-			.getInstance();
-	static {
-		RESOURCE_FACTORY.setResources(ResourceBundle.getBundle(Constants.RESOURCE_LOCATION,
-				new Locale("en")));
-	}
-
 	private static TreeSemanticChecker instance;
 
 	DiagSapTree origTree;
-	String infixRelatedErrors;
-	String twoConsecutiveNodes;
+	List<SemanticErrorMessage> infixRelatedErrors = new ArrayList<SemanticErrorMessage>();
+	List<SemanticErrorMessage> twoConsecutiveNodes = new ArrayList<SemanticErrorMessage>();
 	Locale locale;
 	List<InfixIndexBranch> infixIndexes = new ArrayList<InfixIndexBranch>();
 	List<InfixedBaseBranch> infixedBases = new ArrayList<InfixedBaseBranch>();
@@ -66,22 +53,26 @@ public class TreeSemanticChecker {
 		this.locale = locale;
 	}
 
-	public String checkTree(DiagSapTree dsTree) {
+	public List<SemanticErrorMessage> getInfixRelatedErrors() {
+		return infixRelatedErrors;
+	}
+
+	public List<SemanticErrorMessage> getTwoConsecutiveNodes() {
+		return twoConsecutiveNodes;
+	}
+
+	public void checkTree(DiagSapTree dsTree) {
 		origTree = dsTree;
-		initReturnMessages();
-		infixedBases.clear();
-		infixIndexes.clear();
+		initializeItems();
 		checkForTwoConsecutiveNodes(dsTree.getRootNode());
 		checkForMismatchedInfixIndexAndBase(dsTree.getRootNode());
-		StringBuilder sb = new StringBuilder();
-		sb.append(twoConsecutiveNodes);
-		sb.append(infixRelatedErrors);
-		return sb.toString();
 	}
 	
-	private void initReturnMessages() {
-		twoConsecutiveNodes = "";
-		infixRelatedErrors = "";
+	private void initializeItems() {
+		twoConsecutiveNodes.clear();
+		infixRelatedErrors.clear();
+		infixedBases.clear();
+		infixIndexes.clear();
 	}
 	
 	private void checkForTwoConsecutiveNodes(DiagSapNode node) {
@@ -93,7 +84,7 @@ public class TreeSemanticChecker {
 			String leftLocation = leftNode.reconstructDescription();
 			String rightLocation = rightNode.reconstructDescription();
 			Object[] args = { leftLocation, rightLocation };
-			twoConsecutiveNodes += formatMessage("descriptionsemanticerror.two_consecutive_nodes", args);
+			twoConsecutiveNodes.add(new SemanticErrorMessage("descriptionsemanticerror.two_consecutive_nodes", args));
 			}
 		if (leftItem instanceof DiagSapNode) {
 			checkForTwoConsecutiveNodes((DiagSapNode)leftItem);
@@ -111,7 +102,7 @@ public class TreeSemanticChecker {
 			if (index > numberOfInfixes) {
 				String sIndex = "\\" + index;
 				Object[] args = { sIndex };
-				infixRelatedErrors += formatMessage("descriptionsemanticerror.infix_index_has_no_matching_infix_base", args);
+				infixRelatedErrors.add(new SemanticErrorMessage("descriptionsemanticerror.infix_index_has_no_matching_infix_base", args));
 			}
 			List<InfixIndexBranch> indexDuplicates = infixIndexes.stream().filter(idx2 -> idx.getIndex() == idx2.getIndex()).collect(Collectors.toList());
 			if (indexDuplicates.size() > 1) {
@@ -122,7 +113,7 @@ public class TreeSemanticChecker {
 				if (firstDuplicateIndex == currentIndex) {
 					String sIndex = "\\" + index;
 					Object[] args = { sIndex };
-					infixRelatedErrors += formatMessage("descriptionsemanticerror.infix_index_duplicated", args);
+					infixRelatedErrors.add(new SemanticErrorMessage("descriptionsemanticerror.infix_index_duplicated", args));
 				}
 			}
 		});
@@ -132,7 +123,7 @@ public class TreeSemanticChecker {
 			Optional<InfixIndexBranch> opt = infixIndexes.stream().filter(idx -> idx.getIndex() == count).findFirst();
 			if (!opt.isPresent()) {
 				Object[] args = { base.reconstructDescription() };
-				infixRelatedErrors += formatMessage("descriptionsemanticerror.infixed_base_has_no_index", args);
+				infixRelatedErrors.add(new SemanticErrorMessage("descriptionsemanticerror.infixed_base_has_no_index", args));
 			}
 		}		
 	}
@@ -150,12 +141,5 @@ public class TreeSemanticChecker {
 		} else if (item instanceof InfixedBaseBranch) {
 			infixedBases.add((InfixedBaseBranch)item);
 		}
-	}
-
-	private String formatMessage(String stringProperty, Object[] args) {
-		MessageFormat msgFormatter = new MessageFormat("");
-		msgFormatter.setLocale(locale);
-		msgFormatter.applyPattern(RESOURCE_FACTORY.getStringBinding(stringProperty).get());
-		return msgFormatter.format(args);
 	}
 }
