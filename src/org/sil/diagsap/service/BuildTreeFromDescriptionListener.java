@@ -206,9 +206,7 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 		BranchItem leftItem = node.getLeftBranch().getItem();
 		adjustLevelOfBranchItem(node, leftItem);
 		BranchItem rightItem  = node.getRightBranch().getItem();
-		if (rightItem instanceof DiagSapNode) {
-			adjustLevelOfBranchItem(node, rightItem);
-		}
+		adjustLevelOfBranchItem(node, rightItem);
 	}
 
 	protected void adjustLevelOfBranchItem(DiagSapNode node, BranchItem branchItem) {
@@ -219,8 +217,7 @@ public class BuildTreeFromDescriptionListener extends DescriptionBaseListener {
 			adjustLevelsInTree((DiagSapNode)branchItem);
 		} else if (branchItem instanceof InfixedBaseBranch) {
 			InfixedBaseBranch base = (InfixedBaseBranch)branchItem;
-			int adjustedLevel = (maxLevelFound - base.getLevel()) + 1;
-			base.setLevel(adjustedLevel);
+			base.setLevel(1);
 		} else if (branchItem instanceof ContentBranch) {
 			// nothing to do
 		}

@@ -14,7 +14,6 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 
 import org.sil.diagsap.model.BranchItem;
 import org.sil.diagsap.model.ContentBranch;
@@ -246,9 +245,9 @@ public class TreeDrawer {
 		} else if (branchItem instanceof InfixedBaseBranch) {
 			InfixedBaseBranch infix = (InfixedBaseBranch)branchItem;
 			x = calculateXMidOfInfixedBase(infix);
-			node.setX1Coordinate(x);
-			if (infix.getContentAfter() != null) {
-				x = calculateXCoordinateOfContentMid(infix.getContentAfter());
+			if (isX1) {
+				node.setX1Coordinate(x);
+			} else {
 				node.setX2Coordinate(x);
 			}
 		} else if (branchItem instanceof InfixIndexBranch) {
@@ -361,18 +360,4 @@ public class TreeDrawer {
 		sb.append(tb.getText().replace("<", "&lt;").replace(">", "&gt;"));
 		sb.append("</text>\n");
 	}
-
-	private double pixelsToInches(double pixels) {
-		double dpi = Screen.getPrimary().getDpi();
-		return pixels * dpi;
-	}
-
-	private double pixelsToMM(double pixels) {
-		double dpi = Screen.getPrimary().getDpi();
-		// int res = Toolkit.getDefaultToolkit().getScreenResolution();
-		// NB: Toolkit is awt. We want FX
-		double inches = pixels / dpi;
-		return inches * 25.4; // there are 2.54 cm per inch so 25.4 mm per inch
-	}
-
 }

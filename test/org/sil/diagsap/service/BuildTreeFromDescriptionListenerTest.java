@@ -241,7 +241,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		branch = node.getRightBranch();
 		checkContentBranch(branch, "luto");
 		branch = node.getLeftBranch();
-		checkInfixBaseBranch(branch, "g", "in", null, 4);
+		checkInfixBaseBranch(branch, "g", "in", null, 1);
 
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))", origTree);
 		rootNode = dsTree.getRootNode();
@@ -252,7 +252,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		branch = rootNode.getRightBranch();
 		node = checkNodeBranch(branch, 5);
 		branch = node.getLeftBranch();
-		checkInfixBaseBranch(branch, "g", "in", null, 7);
+		checkInfixBaseBranch(branch, "g", "in", null, 1);
 		branch = node.getRightBranch();
 		node = checkNodeBranch(branch, 4);
 		branch = node.getLeftBranch();
@@ -271,6 +271,52 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		checkContentBranch(branch, "m-");
 		branch = node.getRightBranch();
 		checkContentBranch(branch, "ulod");
+
+		dsTree = TreeBuilder.parseAString("((\\1) ((m-)(ul<on>od)))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals(3, rootNode.getLevel());
+		branch = rootNode.getLeftBranch();
+		checkInfixIndexBranch(branch, 1);
+		branch = rootNode.getRightBranch();
+		node = checkNodeBranch(branch, 2);
+		branch = node.getLeftBranch();
+		checkContentBranch(branch, "m-");
+		branch = node.getRightBranch();
+		checkInfixBaseBranch(branch, "ul", "on", "od", 1);
+
+		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>m) ((pí-)((\\2) ((p<in>a-)((\\3) ((m-)(ul<on>od))))))))", origTree);
+		rootNode = dsTree.getRootNode();
+		assertNotNull(rootNode);
+		assertEquals(8, rootNode.getLevel());
+		branch = rootNode.getLeftBranch();
+		checkInfixIndexBranch(branch, 1);
+		branch = rootNode.getRightBranch();
+		node = checkNodeBranch(branch, 7);
+		branch = node.getLeftBranch();
+		checkInfixBaseBranch(branch, "g", "in", "m", 1);
+		branch = node.getRightBranch();
+		node = checkNodeBranch(branch, 6);
+		branch = node.getLeftBranch();
+		checkContentBranch(branch, "pí-");
+		branch = node.getRightBranch();
+		node = checkNodeBranch(branch, 5);
+		branch = node.getLeftBranch();
+		checkInfixIndexBranch(branch, 2);
+		branch = node.getRightBranch();
+		node = checkNodeBranch(branch, 4);
+		branch = node.getLeftBranch();
+		checkInfixBaseBranch(branch, "p", "in", "a-", 1);
+		branch = node.getRightBranch();
+		node = checkNodeBranch(branch, 3);
+		branch = node.getLeftBranch();
+		checkInfixIndexBranch(branch, 3);
+		branch = node.getRightBranch();
+		node = checkNodeBranch(branch, 2);
+		branch = node.getLeftBranch();
+		checkContentBranch(branch, "m-");
+		branch = node.getRightBranch();
+		checkInfixBaseBranch(branch, "ul", "on", "od", 1);
 	}
 
 	protected void checkInfixBaseBranch(Branch branch, String expectedContentBefore,

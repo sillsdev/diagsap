@@ -49,8 +49,10 @@ public class TreeDrawerTest extends ServiceBaseTest {
 		checkDrawSVG("((beauti) ((ful) (ly)))", "beauti-fully");
 		checkDrawSVG("(((beauti) (ful)) (ly))", "beautiful-ly");
 		checkDrawSVG("((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))", "ginpipinamulod");
+		checkDrawSVG("((\\1) ((g<in>m) ((pí-)((\\2) ((p<in>a-)((\\3) ((m-)(ul<on>od))))))))", "ginmpipinamulonod");
 		checkDrawSVG("((\\1)((i) ((g<in>) (luto))))", "iginluto");
 		checkDrawSVG("((institut) ((ion) ((al) ( ly))))", "institutionally");
+		checkDrawSVG("((\\1) ((m-)(ul<on>od)))", "mulonod");
 		checkDrawSVG("((\\1)(((p<in>ag) (–arál)) (an)))", "pinagaralan");
 		checkDrawSVG("(((un) (lock))(able)  )", "unlock-able");
 		checkDrawSVG("((un) ((lock)(able) ) )", "un-lockable");

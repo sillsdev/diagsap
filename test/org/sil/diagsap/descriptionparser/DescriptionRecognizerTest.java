@@ -59,6 +59,9 @@ public class DescriptionRecognizerTest {
 		checkValidDescription(
 				"((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))",
 				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content g) (infix < (content in) >)) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content pí-) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixindex \\2) ))) (rightbranch (branch ( (node (leftbranch (branch ( (infixedbase (content p) (infix < (content in) >) (content a-)) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content m-) ))) (rightbranch (branch ( (content ulod) )))) )))) )))) )))) )))) )))) ) <EOF>)");
+		checkValidDescription(
+				"((\\1) ((m-)(ul<on>od)))",
+				"(description ( (node (leftbranch (branch ( (infixindex \\1) ))) (rightbranch (branch ( (node (leftbranch (branch ( (content m-) ))) (rightbranch (branch ( (infixedbase (content ul) (infix < (content on) >) (content od)) )))) )))) ) <EOF>)");
 	}
 
 	private void checkValidDescription(String sDescription, String sANTLRTree) {
