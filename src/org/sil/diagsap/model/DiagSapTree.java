@@ -52,8 +52,11 @@ public class DiagSapTree {
 		dInitialYCoordinate = 20;
 		dVerticalGap = 20;
 		dHorizontalGap = 20;
+		dTextUnderlineGap = 2.5;
 		fUseRightToLeftOrientation = false;
 		lexicalFontInfo = LexFontInfo.getInstance();
+		lexicalFontInfo.setColor(Color.BLACK);
+		lexicalFontInfo.setFontFamily("Arial");
 		lineWidth = 1;
 		lineColor = Color.BLACK;
 		backgroundColor = Color.WHITE;
