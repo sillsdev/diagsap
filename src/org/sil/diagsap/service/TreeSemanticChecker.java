@@ -61,14 +61,18 @@ public class TreeSemanticChecker {
 		return twoConsecutiveNodes;
 	}
 
+	public int getNumberOfErrors() {
+		return twoConsecutiveNodes.size() + infixRelatedErrors.size();
+	}
+
 	public void checkTree(DiagSapTree dsTree) {
 		origTree = dsTree;
-		initializeItems();
+		initialize();
 		checkForTwoConsecutiveNodes(dsTree.getRootNode());
 		checkForMismatchedInfixIndexAndBase(dsTree.getRootNode());
 	}
 	
-	private void initializeItems() {
+	public void initialize() {
 		twoConsecutiveNodes.clear();
 		infixRelatedErrors.clear();
 		infixedBases.clear();

@@ -10,18 +10,13 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.sil.diagsap.Constants;
-import org.sil.diagsap.descriptionparser.DescriptionConstants;
 import org.sil.diagsap.model.DiagSapTree;
 import org.sil.diagsap.service.TreeBuilder;
 import org.sil.diagsap.service.TreeSemanticChecker;
-import org.sil.utility.view.ObservableResourceFactory;
 
 /**
  * @author Andy Black
@@ -94,6 +89,7 @@ public class TreeSemanticCheckerTest extends ServiceBaseTest {
 		
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\3) ((p<in>a-)((m-)(ulod)))))))", origTree);
 		semanticChecker.checkTree(dsTree);
+		assertEquals(2, semanticChecker.getNumberOfErrors());
 		infixRelatedErrors = semanticChecker.getInfixRelatedErrors();
 		assertEquals(2, infixRelatedErrors.size());
 		errorMessage = infixRelatedErrors.get(0);
@@ -113,6 +109,7 @@ public class TreeSemanticCheckerTest extends ServiceBaseTest {
 		// missing matching infix
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\2) ((pa-)((m-)(ulod)))))))", origTree);
 		semanticChecker.checkTree(dsTree);
+		assertEquals(1, semanticChecker.getNumberOfErrors());
 		infixRelatedErrors = semanticChecker.getInfixRelatedErrors();
 		assertEquals(1, infixRelatedErrors.size());
 		errorMessage = infixRelatedErrors.get(0);
@@ -125,6 +122,7 @@ public class TreeSemanticCheckerTest extends ServiceBaseTest {
 		// missing matching infix index
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((m-) ((p<in>a-)((m-)(ulod)))))))", origTree);
 		semanticChecker.checkTree(dsTree);
+		assertEquals(1, semanticChecker.getNumberOfErrors());
 		infixRelatedErrors = semanticChecker.getInfixRelatedErrors();
 		assertEquals(1, infixRelatedErrors.size());
 		errorMessage = infixRelatedErrors.get(0);
@@ -137,6 +135,7 @@ public class TreeSemanticCheckerTest extends ServiceBaseTest {
 		// duplicate index
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\1) ((p<in>a-)((m-)(ulod)))))))", origTree);
 		semanticChecker.checkTree(dsTree);
+		assertEquals(2, semanticChecker.getNumberOfErrors());
 		infixRelatedErrors = semanticChecker.getInfixRelatedErrors();
 		assertEquals(2, infixRelatedErrors.size());
 		errorMessage = infixRelatedErrors.get(0);
@@ -156,6 +155,7 @@ public class TreeSemanticCheckerTest extends ServiceBaseTest {
 		// three duplicated indexes
 		dsTree = TreeBuilder.parseAString("((\\1) ((g<in>) ((pí-)((\\1) ((p<in>a-)((\\1) ((m-)(ul<on>od))))))))", origTree);
 		semanticChecker.checkTree(dsTree);
+		assertEquals(3, semanticChecker.getNumberOfErrors());
 		infixRelatedErrors = semanticChecker.getInfixRelatedErrors();
 		assertEquals(3, infixRelatedErrors.size());
 		errorMessage = infixRelatedErrors.get(0);

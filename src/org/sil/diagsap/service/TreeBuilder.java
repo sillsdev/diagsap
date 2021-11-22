@@ -6,6 +6,7 @@
 
 package org.sil.diagsap.service;
 
+import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import org.antlr.v4.runtime.BailErrorStrategy;
@@ -34,8 +35,9 @@ public class TreeBuilder {
 	static int numberOfErrors;
 	static int characterPositionInLineOfError;
 	static int lineNumberOfError;
-	static String errorMessage;
+	static String errorMessage = "";
 	static String sDescription;
+	static TreeSemanticChecker semanticChecker;
 
 	public static int getNumberOfErrors() {
 		return numberOfErrors;
@@ -95,6 +97,9 @@ public class TreeBuilder {
 	}
 
 	public static DiagSapTree parseAString(String sInput, DiagSapTree origTree) {
+		semanticChecker = TreeSemanticChecker.getInstance();
+		semanticChecker.initialize();
+
 		sDescription = sInput;
 		CharStream input = CharStreams.fromString(sInput);
 		DescriptionLexer lexer = new DescriptionLexer(input);
@@ -148,8 +153,11 @@ public class TreeBuilder {
 		walker.walk(validator, parseTree); // initiate walk of tree with
 											// listener
 		DiagSapTree dsTree = validator.getTree();
-		TreeSemanticChecker semanticChecker = TreeSemanticChecker.getInstance();
 		semanticChecker.checkTree(dsTree);
+		if (semanticChecker.getNumberOfErrors() > 0) {
+			numberOfErrors += semanticChecker.getNumberOfErrors();
+//			return origTree;
+		}
 		restoreTreeParameters(origTree, dsTree);
 		return dsTree;
 	}
@@ -240,5 +248,29 @@ public class TreeBuilder {
 		sb.append(sMessage);
 		sb.append("\n\n");
 		return sb.toString();
+	}
+
+	public static String buildSemanticErrorMessage(ResourceBundle bundle) {
+		StringBuilder sb = new StringBuilder();
+		for (SemanticErrorMessage semError : semanticChecker.getTwoConsecutiveNodes()) {
+			String result = formatSemanticErrorMessagePortion(bundle, semError);
+			sb.append(result);
+		}
+		for (SemanticErrorMessage semError : semanticChecker.getInfixRelatedErrors()) {
+			String result = formatSemanticErrorMessagePortion(bundle, semError);
+			sb.append(result);
+		}
+		return sb.toString();
+	}
+
+	protected static String formatSemanticErrorMessagePortion(ResourceBundle bundle,
+			SemanticErrorMessage semError) {
+		String message = bundle.getString(semError.getMessage());
+		Object[] args = semError.getArgs();
+		MessageFormat msgFormatter = new MessageFormat("");
+		msgFormatter.setLocale(bundle.getLocale());
+		msgFormatter.applyPattern(message);
+		String result = msgFormatter.format(args);
+		return result;
 	}
 }

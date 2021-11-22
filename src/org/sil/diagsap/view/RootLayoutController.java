@@ -818,9 +818,18 @@ public class RootLayoutController implements Initializable {
 	}
 
 	private void reportErrorInDescriptionMessage() {
-		String sSyntaxErrorMessage = TreeBuilder.buildErrorMessage(bundle);
+		TextFlow textFlow;
 		cleanDrawingArea();
-		TextFlow textFlow = buildErrorMessageAsTextFlow(sSyntaxErrorMessage);
+		String sSemanticErrorMessage = TreeBuilder.buildSemanticErrorMessage(bundle);
+		if (sSemanticErrorMessage.length() > 0) {
+			Text tSemantic = new Text(sSemanticErrorMessage);
+			tSemantic.setFill(Color.RED);
+			tSemantic.setFont(defaultFont);
+			textFlow = new TextFlow(tSemantic);
+		} else {
+			String sSyntaxErrorMessage = TreeBuilder.buildErrorMessage(bundle);
+			textFlow = buildErrorMessageAsTextFlow(sSyntaxErrorMessage);
+		}
 		drawingArea.getChildren().add(textFlow);
 	}
 
