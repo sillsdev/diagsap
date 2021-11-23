@@ -23,18 +23,14 @@ import org.sil.utility.view.ControllerUtilities;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.SplitPane;
@@ -91,6 +87,7 @@ public class MainApp extends Application implements MainAppUtilities {
 			initRootLayout();
 		} catch (Exception e) {
 			e.printStackTrace();
+			MainApp.reportException(e, null);
 		}
 	}
 
@@ -191,9 +188,10 @@ public class MainApp extends Application implements MainAppUtilities {
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
+			MainApp.reportException(e, null);
 		} catch (Exception e) {
-			System.out.println("non-IO Exception caught!");
 			e.printStackTrace();
+			MainApp.reportException(e, null);
 		}
 	}
 
@@ -338,4 +336,18 @@ public class MainApp extends Application implements MainAppUtilities {
 		return xmlBackEndProvider;
 	}
 
+	public static void reportException(Exception ex, ResourceBundle bundle) {
+		String sTitle = "Error Found!";
+		String sHeader = "A serious error happened.";
+		String sContent = "Please copy the exception information below, email it to lingtree_support_lsdev@sil.org along with a description of what you were doing.";
+		String sLabel = "The exception stacktrace was:";
+		if (bundle != null) {
+			sTitle = bundle.getString("exception.title");
+			sHeader = bundle.getString("exception.header");
+			sContent = bundle.getString("exception.content");
+			sLabel = bundle.getString("exception.label");
+		}
+		ControllerUtilities.showExceptionInErrorDialog(ex, sTitle, sHeader, sContent, sLabel);
+		System.exit(1);
+	}
 }

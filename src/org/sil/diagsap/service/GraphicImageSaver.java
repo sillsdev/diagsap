@@ -21,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javax.imageio.ImageIO;
 
 import org.sil.diagsap.Constants;
+import org.sil.diagsap.MainApp;
 import org.sil.diagsap.model.DiagSapTree;
 
 /**
@@ -71,6 +72,7 @@ public class GraphicImageSaver {
 			ImageIO.write(bi, "png", filePng);
 		} catch (Exception s) {
 			System.out.println("saveAsPNG exception: " + s.getMessage());
+			MainApp.reportException(s, null);
 		}
     }
 

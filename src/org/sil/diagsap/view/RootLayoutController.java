@@ -691,8 +691,8 @@ public class RootLayoutController implements Initializable {
 				handleDrawTree();
 				handleSaveTree();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				MainApp.reportException(e, null);
 			}
 		}
 	}
@@ -736,6 +736,8 @@ public class RootLayoutController implements Initializable {
 					Desktop.getDesktop().open(myFile);
 				} catch (IOException ex) {
 					// no application registered for PDFs
+					MainApp.reportException(ex, null);
+					ex.printStackTrace();
 				}
 			}
 		}
@@ -983,8 +985,8 @@ public class RootLayoutController implements Initializable {
 		try {
 			mainApp.stop();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			MainApp.reportException(e, null);
 		}
 		System.exit(0);
 	}
@@ -1028,8 +1030,8 @@ public class RootLayoutController implements Initializable {
 			try {
 				handleSaveTree();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				MainApp.reportException(e, null);
 			}
 			computeHighlighting();
 		} else {
@@ -1067,6 +1069,7 @@ public class RootLayoutController implements Initializable {
 			dialogStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
+			MainApp.reportException(e, null);
 		}
 	}
 
@@ -1317,6 +1320,7 @@ public class RootLayoutController implements Initializable {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			MainApp.reportException(e, null);
 		}
 	}
 
@@ -1342,6 +1346,7 @@ public class RootLayoutController implements Initializable {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			MainApp.reportException(e, null);
 		}
 	}
 

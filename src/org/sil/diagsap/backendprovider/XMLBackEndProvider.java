@@ -16,6 +16,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.sil.diagsap.model.DiagSapTree;
 import org.sil.diagsap.Constants;
+import org.sil.diagsap.MainApp;
 import org.sil.utility.HandleExceptionMessage;
 
 /**
@@ -75,8 +76,7 @@ public class XMLBackEndProvider extends BackEndProvider {
 			lingTree.load(lingTree);
 		} catch (Exception e) { // catches ANY exception
 			e.printStackTrace();
-			HandleExceptionMessage.show(sFileError, sFileErrorLoadHeader, sFileErrorLoadContent
-					+ file.getPath(), true);
+			MainApp.reportException(e, null);
 		}
 	}
 
@@ -95,9 +95,7 @@ public class XMLBackEndProvider extends BackEndProvider {
 			m.marshal(lingTree, file);
 		} catch (Exception e) { // catches ANY exception
 			e.printStackTrace();
-			HandleExceptionMessage.show(sFileError, sFileErrorSaveHeader, sFileErrorSaveContent
-					+ file.getPath(), true);
+			MainApp.reportException(e, null);
 		}
 	}
-
 }
