@@ -509,7 +509,6 @@ public class RootLayoutController implements Initializable {
 		String syntagmeme = "-fx-font-family: Monospaced;\n-fx-fill: black;\n-fx-font-size:"
 				+ applicationPreferences.getTreeDescriptionFontSize() + "pt;";
 		String lexical = LexFontInfo.getInstance().getCss();
-
 		String cssStyleClass = syntagmeme;
 		for (Token token : tokens.getTokens()) {
 			// We keep the following output for when we want to see the set of
@@ -1016,7 +1015,7 @@ public class RootLayoutController implements Initializable {
 			dsTree.setDescription(initialDescription);
 			updateAllFontInfos();
 			treeDescription.replaceText(initialDescription);
-			treeDescription.moveTo(1);
+			treeDescription.moveTo(2);
 			treeDescription.requestFocus();
 			menuItemUseRightToLeftOrientation.setSelected(dsTree.isUseRightToLeftOrientation());
 			menuItemSaveAsPng.setSelected(dsTree.isSaveAsPng());

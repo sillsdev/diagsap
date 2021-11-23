@@ -15,11 +15,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sil.diagsap.model.DiagSapTree;
+import org.sil.lingtree.model.LexFontInfo;
 
 /**
  * @author Andy Black
@@ -28,12 +30,16 @@ import org.sil.diagsap.model.DiagSapTree;
 public class TreeDrawerTest extends ServiceBaseTest {
 
 	Pane drawingArea = new Pane();
+	LexFontInfo lexicalFontInfo;
 	/* (non-Javadoc)
 	 * @see org.sil.diagsap.service.ServiceBaseTest#setUp()
 	 */
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
+		lexicalFontInfo = LexFontInfo.getInstance();
+		lexicalFontInfo.setColor(Color.BLACK);
+		lexicalFontInfo.setFontFamily("Arial");
 	}
 
 	/* (non-Javadoc)

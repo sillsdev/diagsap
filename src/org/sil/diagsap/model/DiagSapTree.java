@@ -55,8 +55,6 @@ public class DiagSapTree {
 		dTextUnderlineGap = 2.5;
 		fUseRightToLeftOrientation = false;
 		lexicalFontInfo = LexFontInfo.getInstance();
-		lexicalFontInfo.setColor(Color.BLACK);
-		lexicalFontInfo.setFontFamily("Arial");
 		lineWidth = 1;
 		lineColor = Color.BLACK;
 		backgroundColor = Color.WHITE;

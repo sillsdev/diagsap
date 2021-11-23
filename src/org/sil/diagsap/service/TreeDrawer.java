@@ -74,7 +74,7 @@ public class TreeDrawer {
 	protected double drawContentBoxesWithUnderline(Pane pane, FontInfo fontInfo, double dXCoordinate) {
 		for (ContentBranch content: contentBranches) {
 			Text contentTextBox = drawContentTextBox(fontInfo, dXCoordinate, content);
-			pane.getChildren().add(content.getContentTextBox());
+			pane.getChildren().add(contentTextBox);
 			Line line = drawUnderline(dXCoordinate, contentTextBox);
 			pane.getChildren().add(line);
 			dXCoordinate = updateXCoordinate(dXCoordinate, contentTextBox);
