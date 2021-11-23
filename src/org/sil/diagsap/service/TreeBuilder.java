@@ -138,6 +138,10 @@ public class TreeBuilder {
 				// do nothing
 			}
 		}
+		if (parseTree == null) {
+			numberOfErrors = 1;
+			return origTree;
+		}
 		numberOfErrors = parser.getNumberOfSyntaxErrors();
 		if (numberOfErrors > 0) {
 			errListener = (VerboseListener) parser.getErrorListeners().get(0);

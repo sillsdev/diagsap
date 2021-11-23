@@ -108,6 +108,7 @@ public class DescriptionRecognizerTest {
 		checkInvalidDescription("(a", DescriptionConstants.MISSING_CLOSING_PAREN, 2, 1);
 		checkInvalidDescription("a)", DescriptionConstants.MISSING_OPENING_PAREN, 1, 1);
 		checkInvalidDescription("(a)", DescriptionConstants.MISSING_CONSTITUENT, 3, 1);
+		checkInvalidDescription("(a)(", "extraneous input '(' expecting <EOF>", 3, 2);
 		checkInvalidDescription("((a))b", DescriptionConstants.MISSING_RIGHT_BRANCH, 4, 2);
 		checkInvalidDescription("((a))(b", DescriptionConstants.MISSING_RIGHT_BRANCH, 4, 3);
 		checkInvalidDescription("((a)))", DescriptionConstants.MISSING_RIGHT_BRANCH, 4, 2);
@@ -122,7 +123,7 @@ public class DescriptionRecognizerTest {
 		checkInvalidDescription("(t \\1 (am (ci))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 1);
 		checkInvalidDescription("(t (am (ci))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 3);
 		checkInvalidDescription("((t (am (ci))", DescriptionConstants.MISSING_CLOSING_PAREN, 4, 5);
-		checkInvalidDescription("(a (\\1\\2noun))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 1);
+		checkInvalidDescription("(a (\\1\\2noun))", DescriptionConstants.MISSING_CLOSING_PAREN, 3, 3);
 		checkInvalidDescription("((a (\\1\\2noun))", DescriptionConstants.MISSING_CLOSING_PAREN, 4, 1);
 		checkInvalidDescription(
 				"((\\1)(\\2)(\\3)(\\4)(\\5)(\\6)(\\7)(\\8)(\\9)(((p<in>ag) (–arál)) (an)))",

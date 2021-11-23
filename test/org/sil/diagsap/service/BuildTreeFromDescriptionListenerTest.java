@@ -74,7 +74,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		checkErrorValues(origTree, dsTree, 2, 1, 4, DescriptionConstants.MISSING_RIGHT_BRANCH);
 
 		dsTree = TreeBuilder.parseAString("((a))(b", origTree);
-		checkErrorValues(origTree, dsTree, 2, 1, 4, DescriptionConstants.MISSING_RIGHT_BRANCH);
+		checkErrorValues(origTree, dsTree, 1, 1, 4, DescriptionConstants.MISSING_RIGHT_BRANCH);
 
 		dsTree = TreeBuilder.parseAString("((a)))", origTree);
 		checkErrorValues(origTree, dsTree, 2, 1, 4, DescriptionConstants.MISSING_RIGHT_BRANCH);
@@ -95,7 +95,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		checkErrorValues(origTree, dsTree, 1, 1, 8, DescriptionConstants.MISSING_CLOSING_PAREN);
 
 		dsTree = TreeBuilder.parseAString("(a b) (c))", origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 3, DescriptionConstants.MISSING_CLOSING_PAREN);
+		checkErrorValues(origTree, dsTree, 1, 1, 8, DescriptionConstants.MISSING_CLOSING_PAREN);
 
 		dsTree = TreeBuilder.parseAString("a (b (c))", origTree);
 		checkErrorValues(origTree, dsTree, 2, 1, 2, DescriptionConstants.MISSING_OPENING_PAREN);
@@ -113,7 +113,7 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		checkErrorValues(origTree, dsTree, 5, 1, 4, DescriptionConstants.MISSING_CLOSING_PAREN);
 
 		dsTree = TreeBuilder.parseAString("(a (\\1\\2noun))", origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 3, DescriptionConstants.MISSING_CLOSING_PAREN);
+		checkErrorValues(origTree, dsTree, 3, 1, 3, DescriptionConstants.MISSING_CLOSING_PAREN);
 
 		dsTree = TreeBuilder.parseAString("((a (\\1\\2noun))", origTree);
 		checkErrorValues(origTree, dsTree, 1, 1, 4, DescriptionConstants.MISSING_CLOSING_PAREN);
@@ -129,8 +129,8 @@ public class BuildTreeFromDescriptionListenerTest extends ServiceBaseTest {
 		
 		String sBad = "((\\1)(p<in>ag)) (–arál)) (an)))";
 		dsTree = TreeBuilder.parseAString(sBad, origTree);
-		checkErrorValues(origTree, dsTree, 1, 1, 17, DescriptionConstants.CONTENT_AFTER_COMPLETED_TREE);
-		String sDescriptionWithErrorLocationMarked = "((\\1)(p<in>ag)) ( << HERE >> –arál)) (an)))";
+		checkErrorValues(origTree, dsTree, 1, 1, 15, DescriptionConstants.MISSING_CLOSING_PAREN);
+		String sDescriptionWithErrorLocationMarked = "((\\1)(p<in>ag)) << HERE >>  (–arál)) (an)))";
 		assertEquals(sDescriptionWithErrorLocationMarked, TreeBuilder.getMarkedDescription(" << HERE >> "));
 
 		sBad = "((\\1)(p<in>ag) (–arál)) (an)))";
