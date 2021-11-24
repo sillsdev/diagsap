@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<project name="DiagSap" default="do-zip" basedir="."  xmlns:fx="javafx:com.sun.javafx.tools.ant">
+	<target name="do-zip">
+		<zip destfile="${basedir}/deploy/bundles/DiagSapSamples.zip" basedir="${basedir}/../doc/resources" includes="*.diagsap" excludes="*.png,*.svg,*.pdf"/>
+	</target>
+</project>
