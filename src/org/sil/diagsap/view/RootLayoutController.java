@@ -532,7 +532,13 @@ public class RootLayoutController implements Initializable {
 			if (token.getType() != -1) { // -1 is EOF
 				int iStart = token.getStartIndex();
 				int iStop = token.getStopIndex() + 1;
-				treeDescription.setStyle(iStart, iStop, cssStyleClass);
+				try {
+					treeDescription.setStyle(iStart, iStop, cssStyleClass);
+				} catch (Exception e) {
+					System.out.println("iStart=" + iStart + "; iStop=" + iStop);
+					e.printStackTrace();
+					MainApp.reportException(e, null);
+				}
 			}
 		}
 	}
