@@ -1017,7 +1017,7 @@ public class RootLayoutController implements Initializable {
 				Constants.DIAGSAP_DATA_FILE_EXTENSION, Constants.DIAGSAP_DATA_FILE_EXTENSIONS,
 				Constants.RESOURCE_LOCATION);
 		if (fileCreated != null) {
-			final String initialDescription = "(()())";
+			final String initialDescription = "((a)(b))";
 			dsTree = new DiagSapTree();
 			applicationPreferences.getSavedTreeParameters(dsTree);
 			dsTree.setDescription(initialDescription);
@@ -1228,7 +1228,18 @@ public class RootLayoutController implements Initializable {
 		if (menuItemDrawAsType.isSelected()) {
 			int i = treeDescription.getCaretPosition();
 			String contents = treeDescription.getText();
-			contents = contents.substring(0, i) + " )" + contents.substring(i);
+			contents = contents.substring(0, i) + "a)" + contents.substring(i);
+			int index = Math.min(i+2, contents.length()-1);
+			if (contents.substring(0, Math.max(0,i-1)).trim().equals("(")) {
+				// is at the front, insert '(' after it and ')' at end
+				if (index < contents.length()) {
+					contents = contents.substring(0, index) + "(" + contents.substring(index) + ")";
+				}
+			} else if (contents.substring(index).trim().equals(")")) {
+				// is at the end; insert "(" at beginning and ")" before it
+				int indexEnd = Math.max(0,  i-1);
+				contents = "(" + contents.substring(0, indexEnd) + ")" + contents.substring(indexEnd);
+			}
 			treeDescription.replaceText(contents);
 			treeDescription.moveTo(i);
 		}

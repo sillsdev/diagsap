@@ -70,13 +70,15 @@ num="xNewTree"
 num="xNewTree"
 ><chart
 ><img
-src="resources/NewTree.png"
+src="resources/NewTreeUI.png"
 width="450"
 ></img
 ></chart
 ></example
 ><p
->The file name where the tree information is stored is shown in the upper left part of the window. You key the description in the top pane, process the description, and then the tree appears in the bottom pane. See section <sectionRef
+>The file name where the tree information is stored is shown in the upper left part of the window. You key the description in the top pane, process the description, and then the tree appears in the bottom pane. Since each node in the tree has binary branching, it begins with two lexical forms as shown, using “a” and “b” for the forms.  You change them to be what you need.  We suggest starting from the innermost forms and building the tree outward.</p
+><p
+>See section <sectionRef
 sec="sEditDescription"
 ></sectionRef
 > for information on keying a tree description and processing a tree.</p
@@ -686,7 +688,70 @@ type="tDiagSap"
 >When using this mode, whenever you key an opening parenthesis, <object
 type="tDiagSap"
 ></object
-> will automatically insert a space and a closing parenthesis. The idea is to help you keep opening and closing parentheses matched. It will also automatically insert a closing wedge whenever you key an opening wedge.</p
+> will automatically insert a space, an “a” and a closing parenthesis. The idea is to help you keep opening and closing parentheses matched. It will also automatically insert a closing wedge whenever you key an opening wedge.</p
+><p
+>Furthermore, if you key an opening parenthesis after the initial opening parenthesis or before the final parenthesis, <object
+type="tDiagSap"
+></object
+> will also insert additional parentheses to keep the tree in its correct shape.  This is to help you build the tree one level at a time.  For example, suppose you are creating a tree for one possible reading of the word “unlockable.”  You begin with a new tree and change the “a” and “b” to “lock” and “able,“ respectively.  It will look like what is shown in example <exampleRef
+letter="xLockable"
+num="xLockable"
+></exampleRef
+>.</p
+><example
+num="xLockable"
+><chart
+><img
+src="resources/lockable.png"
+></img
+></chart
+></example
+><pc
+>If you then place the cursor after the initial opening parenthesis and type an opening parenthesis, it will look like what is in example <exampleRef
+letter="xA-lockable"
+num="xA-lockable"
+></exampleRef
+>.</pc
+><example
+num="xA-lockable"
+><chart
+><img
+src="resources/un-lockableUI.png"
+></img
+></chart
+></example
+><pc
+>You would replace the “a” with “un.”</pc
+><p
+>Alternatively, you could begin with a new tree and change the “a” and “b” to “un” and “lock,” respectively, so it would look like example <exampleRef
+letter="xUnlock"
+num="xUnlock"
+></exampleRef
+>.</p
+><example
+num="xUnlock"
+><chart
+><img
+src="resources/unlock.png"
+></img
+></chart
+></example
+><pc
+>If you then place the cursor just before the final opening parenthesis and type an opening parenthesis, it will look like what is in example <exampleRef
+letter="xUnlock-ableUI"
+num="xUnlock-ableUI"
+></exampleRef
+>.</pc
+><example
+num="xUnlock-ableUI"
+><chart
+><img
+src="resources/unlock-ableUI.png"
+></img
+></chart
+></example
+><pc
+>You would replace the “a” with “able.”</pc
 ><p
 >Sometimes the automatic drawing of the tree diagram will cause an error message to appear where the tree diagram normally shows; for example, if you have deleted a parenthesis and no longer have a matching opening or closing one, then there will be a message about a missing opening or closing parenthesis. As soon as the tree description is well-formed, the tree diagram will appear.</p
 ></section2
@@ -1180,6 +1245,11 @@ type="tDiagSap"
 >:</p
 ><ul
 ><li
+>The splitter bar between the description and the drawing may change between invocations of <object
+type="tDiagSap"
+></object
+>.  We hope to fix this.</li
+><li
 >When showing matching parentheses while using arrow keys (see section <sectionRef
 sec="sArrowKeysShowMatching"
 ></sectionRef
@@ -1204,7 +1274,7 @@ type="tDiagSap"
 > will crash and you will see an error dialog box asking you to copy the message and email it to <link
 href="mailto:lingtree_support_lsdev@sil.org"
 >lingtree_support_lsdev@sil.org</link
->.  Obviously, we know about this one but have yet to fix it.  You do not need to email it to us.  We will try and fix it in a later version.  If you do not use Undo, but instead re-type the opening wedge, there is no such crash.</li
+>. Obviously, we know about this one but have yet to fix it. You do not need to email it to us. We will try and fix it in a later version. If you do not use Undo, but instead re-type the opening wedge, there is no such crash.</li
 ></ul
 ></section1
 ><section1
