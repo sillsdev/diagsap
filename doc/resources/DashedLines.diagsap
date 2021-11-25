@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<diagSapTree dbversion="1">
+    <backgroundColor>#ffffff</backgroundColor>
+    <description>((\1)((p&lt;in&gt;a-)((m-)(ulod))))</description>
+    <horizontalGap>20.0</horizontalGap>
+    <initialXCoordinate>10.0</initialXCoordinate>
+    <initialYCoordinate>20.0</initialYCoordinate>
+    <lexicalFontInfo>
+        <color>#000000</color>
+        <fontFamily>Arial</fontFamily>
+        <fontSize>14.0</fontSize>
+        <fontType>Regular</fontType>
+    </lexicalFontInfo>
+    <lineColor>#000000</lineColor>
+    <lineWidth>1.0</lineWidth>
+    <saveAsPng>true</saveAsPng>
+    <saveAsSVG>true</saveAsSVG>
+    <textUnderlineGap>0.0</textUnderlineGap>
+    <useDashedLinesForSplitInfixedBase>true</useDashedLinesForSplitInfixedBase>
+    <useRightToLeftOrientation>false</useRightToLeftOrientation>
+    <verticalGap>20.0</verticalGap>
+</diagSapTree>

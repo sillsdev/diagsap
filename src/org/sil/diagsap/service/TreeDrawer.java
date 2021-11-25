@@ -9,6 +9,7 @@ package org.sil.diagsap.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -166,10 +167,13 @@ public class TreeDrawer {
 				double widthAfter = base.getContentAfter().getContentTextBox().getBoundsInLocal().getWidth();
 				double x2 = base.getContentAfter().getContentTextBox().getX() + widthAfter/2;
 				Line horizontalLine = createLine(x1, infixYCoordinate, x2, infixYCoordinate);
+				horizontalLine = makeLineBeDashed(horizontalLine);
 				pane.getChildren().add(horizontalLine);
 				verticalLine = createLine(x1, infixYCoordinate, x1, infixYCoordinate - dsTree.getVerticalGap());
+				verticalLine = makeLineBeDashed(verticalLine);
 				pane.getChildren().add(verticalLine);
 				Line verticalLine2 = createLine(x2, infixYCoordinate, x2, infixYCoordinate - dsTree.getVerticalGap());
+				verticalLine2 = makeLineBeDashed(verticalLine2);
 				pane.getChildren().add(verticalLine2);
 
 				double xMid = calculateXMidOfInfixedBase(base);
@@ -185,6 +189,14 @@ public class TreeDrawer {
 			verticalLine = createLine(x, yCoordinate, x, dUnderlineYCoordinate);
 			pane.getChildren().add(verticalLine);
 		}
+	}
+
+	private Line makeLineBeDashed(Line line) {
+		if (dsTree.isUseDashedLinesForSplitInfixedBase()) {
+			line.getStrokeDashArray().clear();
+			line.getStrokeDashArray().add(2.5 + (dsTree.getLineWidth() - 1));
+		}
+		return line;
 	}
 
 	public StringBuilder drawAsSVG(Pane pane, double treeWidth, double treeHeight) {
@@ -211,7 +223,7 @@ public class TreeDrawer {
 				createTextAsSVG(morphTextBox, dsTree.getLexicalFontInfo(), sb);
 			} else if (node instanceof Line) {
 				Line line = (Line)node;
-				createLineAsSVG(line.getStartX(), line.getStartY(), line.getEndX(), line.getEndY(), sb);
+				createLineAsSVG(line.getStartX(), line.getStartY(), line.getEndX(), line.getEndY(), line.getStrokeDashArray(), sb);
 			}
 		}
 	}
@@ -304,7 +316,7 @@ public class TreeDrawer {
 //		}
 	}
 
-	private void createLineAsSVG(double x1, double y1, double x2, double y2, StringBuilder sb) {
+	private void createLineAsSVG(double x1, double y1, double x2, double y2, ObservableList<Double> dasharray, StringBuilder sb) {
 		sb.append("<line x1=\"");
 		sb.append(x1);
 		sb.append("\" y1=\"");
@@ -317,6 +329,16 @@ public class TreeDrawer {
 		sb.append(StringUtilities.toRGBCode(dsTree.getLineColor()));
 		sb.append("\" stroke-width=\"");
 		sb.append(dsTree.getLineWidth());
+		int dashSize = dasharray.size();
+		if (dsTree.isUseDashedLinesForSplitInfixedBase() && dashSize > 0) {
+			sb.append("\" stroke-dasharray=\"");
+			for (int i = 0; i < dashSize; i++) {
+				sb.append(dasharray.get(i));
+				if (i < (dashSize-1)) {
+					sb.append(",");
+				}
+			}
+		}
 		sb.append("\"/>\n");
 		// Using mm does not work right
 		// sb.append(pixelsToMM(x1));

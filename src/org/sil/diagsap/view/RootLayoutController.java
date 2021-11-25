@@ -189,6 +189,8 @@ public class RootLayoutController implements Initializable {
 	@FXML
 	private Menu menuFormat;
 	@FXML
+	private CheckMenuItem menuItemUseDashedLinesForSplitInfixedBase;
+	@FXML
 	private CheckMenuItem menuItemUseRightToLeftOrientation;
 	@FXML
 	private MenuItem menuItemLexicalFont;
@@ -471,6 +473,8 @@ public class RootLayoutController implements Initializable {
 		menuTree.textProperty().bind(RESOURCE_FACTORY.getStringBinding("menu.tree"));
 		menuItemDrawTree.textProperty().bind(RESOURCE_FACTORY.getStringBinding("menu.drawtree"));
 		menuFormat.textProperty().bind(RESOURCE_FACTORY.getStringBinding("menu.format"));
+		menuItemUseDashedLinesForSplitInfixedBase.textProperty().bind(
+				RESOURCE_FACTORY.getStringBinding("menu.usedashedlinesforsplitinfixedbase"));
 		menuItemUseRightToLeftOrientation.textProperty().bind(
 				RESOURCE_FACTORY.getStringBinding("menu.userighttoleftorientation"));
 		menuItemLexicalFont.textProperty().bind(
@@ -587,6 +591,8 @@ public class RootLayoutController implements Initializable {
 		menuItemSaveAsSVG.setSelected(ltTree.isSaveAsSVG());
 		toggleButtonSaveAsSVG = setToggleButtonStyle(menuItemSaveAsSVG, toggleButtonSaveAsSVG);
 		ltTree.setSaveAsSVG(menuItemSaveAsSVG.isSelected());
+		menuItemUseDashedLinesForSplitInfixedBase.setSelected(ltTree.isUseDashedLinesForSplitInfixedBase());
+		ltTree.setUseDashedLinesForSplitInfixedBase(menuItemUseDashedLinesForSplitInfixedBase.isSelected());
 		menuItemUseRightToLeftOrientation.setSelected(ltTree.isUseRightToLeftOrientation());
 		ltTree.setUseRightToLeftOrientation(menuItemUseRightToLeftOrientation.isSelected());
 	}
@@ -899,6 +905,13 @@ public class RootLayoutController implements Initializable {
 		if (result.isPresent()) {
 			applicationPreferences.setShowMatchingParenDelay(result.get());
 		}
+	}
+
+	@FXML
+	private void handleMenuUseDashedLinesForSplitInfixedBase() {
+		dsTree.setUseDashedLinesForSplitInfixedBase(menuItemUseDashedLinesForSplitInfixedBase.isSelected());
+		handleDrawTree();
+		markAsDirty();
 	}
 
 	@FXML

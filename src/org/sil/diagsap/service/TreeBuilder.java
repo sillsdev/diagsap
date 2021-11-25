@@ -160,7 +160,6 @@ public class TreeBuilder {
 		semanticChecker.checkTree(dsTree);
 		if (semanticChecker.getNumberOfErrors() > 0) {
 			numberOfErrors += semanticChecker.getNumberOfErrors();
-//			return origTree;
 		}
 		restoreTreeParameters(origTree, dsTree);
 		return dsTree;
@@ -178,6 +177,7 @@ public class TreeBuilder {
 		dsTree.setSaveAsSVG(origTree.isSaveAsSVG());
 		dsTree.setVerticalGap(origTree.getVerticalGap());
 		dsTree.setTextUnderlineGap(origTree.getTextUnderlineGap());
+		dsTree.setUseDashedLinesForSplitInfixedBase(origTree.isUseDashedLinesForSplitInfixedBase());
 		dsTree.setUseRightToLeftOrientation(origTree.isUseRightToLeftOrientation());
 	}
 

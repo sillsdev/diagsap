@@ -52,22 +52,24 @@ public class TreeDrawerTest extends ServiceBaseTest {
 
 	@Test
 	public void drawAndproduceSVGTest() {
-		checkDrawSVG("((beauti) ((ful) (ly)))", "beauti-fully");
-		checkDrawSVG("(((beauti) (ful)) (ly))", "beautiful-ly");
-		checkDrawSVG("((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))", "ginpipinamulod");
-		checkDrawSVG("((\\1) ((g<in>m) ((pí-)((\\2) ((p<in>a-)((\\3) ((m-)(ul<on>od))))))))", "ginmpipinamulonod");
-		checkDrawSVG("((\\1)((i) ((g<in>) (luto))))", "iginluto");
-		checkDrawSVG("((institut) ((ion) ((al) ( ly))))", "institutionally");
-		checkDrawSVG("((\\1) ((m-)(ul<on>od)))", "mulonod");
-		checkDrawSVG("((\\1)(((p<in>ag) (–arál)) (an)))", "pinagaralan");
-		checkDrawSVG("(((un) (lock))(able)  )", "unlock-able");
-		checkDrawSVG("((un) ((lock)(able) ) )", "un-lockable");
-		checkDrawSVG("((((un) (lock))(able))(ness )  )", "unlock-able-ness");
-		checkDrawSVG("((un) (((lock)(able) ) (ness)))", "un-lockable-ness");
+		checkDrawSVG("((beauti) ((ful) (ly)))", "beauti-fully", false);
+		checkDrawSVG("(((beauti) (ful)) (ly))", "beautiful-ly", false);
+		checkDrawSVG("((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))", "ginpipinamulod", false);
+		checkDrawSVG("((\\1) ((g<in>m) ((pí-)((\\2) ((p<in>a-)((\\3) ((m-)(ul<on>od))))))))", "ginmpipinamulonod", false);
+		checkDrawSVG("((\\1)((i) ((g<in>) (luto))))", "iginluto", false);
+		checkDrawSVG("((institut) ((ion) ((al) ( ly))))", "institutionally", false);
+		checkDrawSVG("((\\1) ((m-)(ul<on>od)))", "mulonod", false);
+		checkDrawSVG("((\\1)(((p<in>ag) (–arál)) (an)))", "pinagaralan", false);
+		checkDrawSVG("(((un) (lock))(able)  )", "unlock-able", false);
+		checkDrawSVG("((un) ((lock)(able) ) )", "un-lockable", false);
+		checkDrawSVG("((((un) (lock))(able))(ness )  )", "unlock-able-ness", false);
+		checkDrawSVG("((un) (((lock)(able) ) (ness)))", "un-lockable-ness", false);
+		checkDrawSVG("((\\1) ((g<in>m) ((pí-)((\\2) ((p<in>a-)((\\3) ((m-)(ul<on>od))))))))", "ginmpipinamulonodDashed", true);
 	}
 
-	protected void checkDrawSVG(String sDescription, String sTestFilePath) {
+	protected void checkDrawSVG(String sDescription, String sTestFilePath, boolean useDashedLines) {
 		DiagSapTree origTree = new DiagSapTree();
+		origTree.setUseDashedLinesForSplitInfixedBase(useDashedLines);
 		DiagSapTree dsTree = TreeBuilder.parseAString(sDescription, origTree);
 		TreeDrawer drawer = new TreeDrawer(dsTree);
 		drawingArea.getChildren().clear();

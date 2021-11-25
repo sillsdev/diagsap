@@ -20,9 +20,9 @@ type="tDiagSap"
 ><emailAddress
 >lingtree_support@sil.org</emailAddress
 ><date
->November 24, 2021</date
+>November 25, 2021</date
 ><version
->Version 1.0.0</version
+>Version 1.1.0</version
 ><version
 >Copyright © 2021 SIL International</version
 ><contents
@@ -76,7 +76,7 @@ width="450"
 ></chart
 ></example
 ><p
->The file name where the tree information is stored is shown in the upper left part of the window. You key the description in the top pane, process the description, and then the tree appears in the bottom pane. Since each node in the tree has binary branching, it begins with two lexical forms as shown, using “a” and “b” for the forms.  You change them to be what you need.  We suggest starting from the innermost forms and building the tree outward.</p
+>The file name where the tree information is stored is shown in the upper left part of the window. You key the description in the top pane, process the description, and then the tree appears in the bottom pane. Since each node in the tree has binary branching, it begins with two lexical forms as shown, using “a” and “b” for the forms. You change them to be what you need. We suggest starting from the innermost forms and building the tree outward.</p
 ><p
 >See section <sectionRef
 sec="sEditDescription"
@@ -407,11 +407,49 @@ type="tMenuItem"
 ><p
 >Please note that these settings are associated with each individual tree diagram. Thus, you can set them to make a given tree diagram look its best.</p
 ><section2
+id="sUseDashedLines"
+><secTitle
+>Use dashed lines for split infixed base</secTitle
+><p
+>The first item under the main <object
+type="tMenuItem"
+>Format</object
+> menu item is <object
+type="tMenuItem"
+>Use dashed lines for split infixed base</object
+>. When this has a check mark before it, the horizontal and vertical lines connecting the infixed base's before and after portions will be drawn using dashed lines.  For example, the description in example <exampleRef
+letter="xDashedLines"
+num="xDashedLines"
+></exampleRef
+> will appear as in example <exampleRef
+letter="xDashedLinesTree"
+num="xDashedLinesTree"
+></exampleRef
+>.</p
+><example
+num="xDashedLines"
+><word
+><langData
+lang="lTreeExample"
+>((\1)((p&lt;in&gt;a-)((m-)(ulod))))</langData
+></word
+></example
+><example
+num="xDashedLinesTree"
+><chart
+><img
+XeLaTeXSpecial="scaled='1050'"
+src="resources/DashedLines.svg"
+></img
+></chart
+></example
+></section2
+><section2
 id="sRigtToLeft"
 ><secTitle
 >Draw a tree right-to-left</secTitle
 ><p
->The first item under the main <object
+>The second item under the main <object
 type="tMenuItem"
 >Format</object
 > menu item is <object
@@ -550,7 +588,7 @@ id="sTreeSpacing"
 ><secTitle
 >Tree spacing parameters</secTitle
 ><p
->The third item in the main <object
+>The fourth item in the main <object
 type="tMenuItem"
 >Format</object
 > menu item is <object
@@ -693,7 +731,7 @@ type="tDiagSap"
 >Furthermore, if you key an opening parenthesis after the initial opening parenthesis or before the final parenthesis, <object
 type="tDiagSap"
 ></object
-> will also insert additional parentheses to keep the tree in its correct shape.  This is to help you build the tree one level at a time.  For example, suppose you are creating a tree for one possible reading of the word “unlockable.”  You begin with a new tree and change the “a” and “b” to “lock” and “able,“ respectively.  It will look like what is shown in example <exampleRef
+> will also insert additional parentheses to keep the tree in its correct shape. This is to help you build the tree one level at a time. For example, suppose you are creating a tree for one possible reading of the word “unlockable.” You begin with a new tree and change the “a” and “b” to “lock” and “able,“ respectively. It will look like what is shown in example <exampleRef
 letter="xLockable"
 num="xLockable"
 ></exampleRef
@@ -1248,7 +1286,7 @@ type="tDiagSap"
 >The splitter bar between the description and the drawing may change between invocations of <object
 type="tDiagSap"
 ></object
->.  We hope to fix this.</li
+>. We hope to fix this.</li
 ><li
 >When showing matching parentheses while using arrow keys (see section <sectionRef
 sec="sArrowKeysShowMatching"

@@ -42,6 +42,7 @@ public class DiagSapTree {
 
 	boolean fSaveAsPng;
 	boolean fSaveAsSVG;
+	boolean fUseDashedLinesForSplitInfixedBase;
 	boolean fUseRightToLeftOrientation;
 
 	/**
@@ -53,6 +54,7 @@ public class DiagSapTree {
 		dVerticalGap = 20;
 		dHorizontalGap = 20;
 		dTextUnderlineGap = 2.5;
+		fUseDashedLinesForSplitInfixedBase = false;
 		fUseRightToLeftOrientation = false;
 		lexicalFontInfo = LexFontInfo.getInstance();
 		lineWidth = 1;
@@ -149,6 +151,15 @@ public class DiagSapTree {
 
 	public void setTextUnderlineGap(double dTextUnderlineGap) {
 		this.dTextUnderlineGap = dTextUnderlineGap;
+	}
+
+	@XmlElement(name = "useDashedLinesForSplitInfixedBase")
+	public boolean isUseDashedLinesForSplitInfixedBase() {
+		return fUseDashedLinesForSplitInfixedBase;
+	}
+
+	public void setUseDashedLinesForSplitInfixedBase(boolean useDashedLinesForSplitInfixedBase) {
+		this.fUseDashedLinesForSplitInfixedBase = useDashedLinesForSplitInfixedBase;
 	}
 
 	@XmlElement(name = "useRightToLeftOrientation")
