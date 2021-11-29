@@ -31,9 +31,8 @@ public class DiagSapTree {
 	double dYSize; // total height of tree
 	double dTextUnderlineGap; // extra gap between text and its underline
 	double dVerticalGap; // extra gap between levels
-
-	double dHorizontalGap; // extra gap between leaf nodes
-
+	double dHorizontalGap; // extra gap between lexical forms
+	double dMinimalGapBetweenVerticalLines; // minimal space between consecutive vertical lines
 	FontInfo lexicalFontInfo;
 
 	Color backgroundColor;
@@ -54,6 +53,7 @@ public class DiagSapTree {
 		dVerticalGap = 20;
 		dHorizontalGap = 20;
 		dTextUnderlineGap = 2.5;
+		dMinimalGapBetweenVerticalLines = 2.0;
 		fUseDashedLinesForSplitInfixedBase = false;
 		fUseRightToLeftOrientation = false;
 		lexicalFontInfo = LexFontInfo.getInstance();
@@ -124,6 +124,15 @@ public class DiagSapTree {
 
 	public void setHorizontalGap(double dHorizontalGap) {
 		this.dHorizontalGap = dHorizontalGap;
+	}
+
+	@XmlElement(name = "minimalGapBetweenVerticalLines")
+	public double getMinimalGapBetweenVerticalLines() {
+		return dMinimalGapBetweenVerticalLines;
+	}
+
+	public void setMinimalGapBetweenVerticalLines(double dGap) {
+		this.dMinimalGapBetweenVerticalLines = dGap;
 	}
 
 	@XmlElement(name = "saveAsPng")

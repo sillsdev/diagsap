@@ -38,6 +38,8 @@ public class TreeSpacingParametersController implements Initializable {
 	private TextField verticalGap;
 	@FXML
 	private TextField textUnderlineGap;
+	@FXML
+	private TextField minimalVerticalGapBetweenLines;
 
 	Stage dialogStage;
 	private boolean okClicked = false;
@@ -67,6 +69,7 @@ public class TreeSpacingParametersController implements Initializable {
 		horizontalGap.setTextFormatter(new TextFormatter<String>(filter));
 		verticalGap.setTextFormatter(new TextFormatter<String>(filter));
 		textUnderlineGap.setTextFormatter(new TextFormatter<String>(filter));
+		minimalVerticalGapBetweenLines.setTextFormatter(new TextFormatter<String>(filter));
 	}
 
 	/**
@@ -85,6 +88,7 @@ public class TreeSpacingParametersController implements Initializable {
 		horizontalGap.setText(String.valueOf(dsTree.getHorizontalGap()));
 		verticalGap.setText(String.valueOf(dsTree.getVerticalGap()));
 		textUnderlineGap.setText(String.valueOf(dsTree.getTextUnderlineGap()));
+		minimalVerticalGapBetweenLines.setText(String.valueOf(dsTree.getMinimalGapBetweenVerticalLines()));
 	}
 
 	public DiagSapTree getTree() {
@@ -119,6 +123,9 @@ public class TreeSpacingParametersController implements Initializable {
 		}
 		if (textUnderlineGap.getText().length() > 0) {
 			dsTree.setTextUnderlineGap(Double.valueOf(textUnderlineGap.getText()));
+		}
+		if (minimalVerticalGapBetweenLines.getText().length() > 0) {
+			dsTree.setMinimalGapBetweenVerticalLines(Double.valueOf(minimalVerticalGapBetweenLines.getText()));
 		}
 		okClicked = true;
 		dialogStage.close();

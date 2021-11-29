@@ -48,9 +48,11 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 	static final String LEXICAL_FONT_TYPE = "lexicalFontType";
 	static final String LINE_COLOR = "lineColor";
 	static final String LINE_WIDTH = "lineWidth";
+	static final String MINIMAL_VERTICAL_GAP_BETWEEN_LINES = "minimalVerticalGap";
 	static final String SAVE_AS_PNG = "saveAsPng";
 	static final String SAVE_AS_SVG = "saveAsSVG";
 	static final String TEXT_UNDERLINE_GAP = "textUnderlineGap";
+	static final String USE_DASHED_LINES_FOR_SPLIT_INFIX_BASE = "usedashedlines";
 	static final String VERTICAL_GAP = "verticalGap";
 
 	Preferences prefs;
@@ -137,6 +139,14 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 		setPreferencesKey(TREE_DESCRIPTION_FONT_SIZE, dSize);
 	}
 
+	public boolean getUseDashedLines() {
+		return prefs.getBoolean(USE_DASHED_LINES_FOR_SPLIT_INFIX_BASE, false);
+	}
+
+	public void setUseDashedLines(boolean fUseDashedLines) {
+		setPreferencesKey(USE_DASHED_LINES_FOR_SPLIT_INFIX_BASE, fUseDashedLines);
+	}
+
 	public Stage getLastWindowParameters(String sWindow, Stage stage, Double defaultHeight,
 			Double defaultWidth) {
 		Double value = prefs.getDouble(sWindow + HEIGHT, defaultHeight);
@@ -171,18 +181,20 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 		setPreferencesKey(LAST_SPLIT_PANE_POSITION, position);
 	}
 
-	public void getSavedTreeParameters(DiagSapTree ltTree) {
-		ltTree.setHorizontalGap(prefs.getDouble(HORIZONTAL_GAP, 20));
-		ltTree.setInitialXCoordinate(prefs.getDouble(INITIAL_X_COORDINATE, 10));
-		ltTree.setInitialYCoordinate(prefs.getDouble(INITIAL_Y_COORDINATE, 20));
-		ltTree.setLineWidth(prefs.getDouble(LINE_WIDTH, 1));
-		ltTree.setSaveAsPng(prefs.getBoolean(SAVE_AS_PNG, false));
-		ltTree.setSaveAsSVG(prefs.getBoolean(SAVE_AS_SVG, true));
-		ltTree.setTextUnderlineGap(prefs.getDouble(TEXT_UNDERLINE_GAP, 0));
-		ltTree.setVerticalGap(prefs.getDouble(VERTICAL_GAP, 20));
+	public void getSavedTreeParameters(DiagSapTree dsTree) {
+		dsTree.setHorizontalGap(prefs.getDouble(HORIZONTAL_GAP, 20));
+		dsTree.setInitialXCoordinate(prefs.getDouble(INITIAL_X_COORDINATE, 10));
+		dsTree.setInitialYCoordinate(prefs.getDouble(INITIAL_Y_COORDINATE, 20));
+		dsTree.setLineWidth(prefs.getDouble(LINE_WIDTH, 1));
+		dsTree.setMinimalGapBetweenVerticalLines(prefs.getDouble(MINIMAL_VERTICAL_GAP_BETWEEN_LINES, 2.0));
+		dsTree.setSaveAsPng(prefs.getBoolean(SAVE_AS_PNG, false));
+		dsTree.setSaveAsSVG(prefs.getBoolean(SAVE_AS_SVG, true));
+		dsTree.setTextUnderlineGap(prefs.getDouble(TEXT_UNDERLINE_GAP, 0));
+		dsTree.setVerticalGap(prefs.getDouble(VERTICAL_GAP, 20));
+		dsTree.setUseDashedLinesForSplitInfixedBase(prefs.getBoolean(USE_DASHED_LINES_FOR_SPLIT_INFIX_BASE, false));
 
-		ltTree.setBackgroundColor(Color.web(prefs.get(BACKGROUND_COLOR, "#ffffff")));
-		ltTree.setLineColor(Color.web(prefs.get(LINE_COLOR, "#000000")));
+		dsTree.setBackgroundColor(Color.web(prefs.get(BACKGROUND_COLOR, "#ffffff")));
+		dsTree.setLineColor(Color.web(prefs.get(LINE_COLOR, "#000000")));
 
 		final String sDefaultFamily = "Arial";
 		final String sDefaultType = "Regular";
@@ -190,22 +202,24 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 		FontInfo fontInfo = new FontInfo(prefs.get(LEXICAL_FONT_FAMILY, sDefaultFamily), prefs.getDouble(
 				LEXICAL_FONT_SIZE, 12), prefs.get(LEXICAL_FONT_TYPE, sDefaultType));
 		fontInfo.setColor(Color.web(prefs.get(LEXICAL_FONT_COLOR, sDefaultColor)));
-		ltTree.setLexicalFontInfo(fontInfo);
+		dsTree.setLexicalFontInfo(fontInfo);
 	}
 
-	public void setSavedTreeParameters(DiagSapTree ltTree) throws Exception {
-		setPreferencesKey(HORIZONTAL_GAP, ltTree.getHorizontalGap());
-		setPreferencesKey(INITIAL_X_COORDINATE, ltTree.getInitialXCoordinate());
-		setPreferencesKey(INITIAL_Y_COORDINATE, ltTree.getInitialYCoordinate());
-		setPreferencesKey(LINE_WIDTH, ltTree.getLineWidth());
-		setPreferencesKey(SAVE_AS_PNG, ltTree.isSaveAsPng());
-		setPreferencesKey(SAVE_AS_SVG, ltTree.isSaveAsSVG());
-		setPreferencesKey(TEXT_UNDERLINE_GAP, ltTree.getTextUnderlineGap());
-		setPreferencesKey(VERTICAL_GAP, ltTree.getVerticalGap());
+	public void setSavedTreeParameters(DiagSapTree dsTree) throws Exception {
+		setPreferencesKey(HORIZONTAL_GAP, dsTree.getHorizontalGap());
+		setPreferencesKey(INITIAL_X_COORDINATE, dsTree.getInitialXCoordinate());
+		setPreferencesKey(INITIAL_Y_COORDINATE, dsTree.getInitialYCoordinate());
+		setPreferencesKey(LINE_WIDTH, dsTree.getLineWidth());
+		setPreferencesKey(MINIMAL_VERTICAL_GAP_BETWEEN_LINES, dsTree.getMinimalGapBetweenVerticalLines());
+		setPreferencesKey(SAVE_AS_PNG, dsTree.isSaveAsPng());
+		setPreferencesKey(SAVE_AS_SVG, dsTree.isSaveAsSVG());
+		setPreferencesKey(TEXT_UNDERLINE_GAP, dsTree.getTextUnderlineGap());
+		setPreferencesKey(VERTICAL_GAP, dsTree.getVerticalGap());
+		setPreferencesKey(USE_DASHED_LINES_FOR_SPLIT_INFIX_BASE, dsTree.isUseDashedLinesForSplitInfixedBase());
 
-		setPreferencesKey(BACKGROUND_COLOR, ltTree.getBackgroundColor());
-		setPreferencesKey(LINE_COLOR, ltTree.getLineColor());
-		FontInfo fontInfo = ltTree.getLexicalFontInfo();
+		setPreferencesKey(BACKGROUND_COLOR, dsTree.getBackgroundColor());
+		setPreferencesKey(LINE_COLOR, dsTree.getLineColor());
+		FontInfo fontInfo = dsTree.getLexicalFontInfo();
 		setPreferencesKey(LEXICAL_FONT_COLOR, fontInfo.getColor());
 		setPreferencesKey(LEXICAL_FONT_FAMILY, fontInfo.getFontFamily());
 		setPreferencesKey(LEXICAL_FONT_SIZE, fontInfo.getFontSize());

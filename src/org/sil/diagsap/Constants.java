@@ -24,7 +24,7 @@ public class Constants {
 	public static final String SVG_HEADER="﻿<?xml version='1.0' standalone='no'?>\n" +
 			"<svg width='{0}' height='{1}' version='1.1' xmlns='http://www.w3.org/2000/svg' contentScriptType='text/javascript'>\n" +
 			"<script  id=\"clientEventHandlersJS\">\n" +
-			"function OnClickDoagSapNode(node){}\n" +
+			"function OnClickDiagSapNode(node){}\n" +
 			"</script>\n";
 	public static final String SVG_BACKGROUND_COLOR="<rect width=\"100%\" height=\"100%\" fill=\"{0}\"/>\n";
 	public static final String SVG_END_ELEMENT="</svg>\n";

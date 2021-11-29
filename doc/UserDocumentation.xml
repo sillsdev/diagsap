@@ -20,7 +20,7 @@ type="tDiagSap"
 ><emailAddress
 >lingtree_support@sil.org</emailAddress
 ><date
->November 25, 2021</date
+>November 29, 2021</date
 ><version
 >Version 1.1.0</version
 ><version
@@ -417,7 +417,7 @@ type="tMenuItem"
 > menu item is <object
 type="tMenuItem"
 >Use dashed lines for split infixed base</object
->. When this has a check mark before it, the horizontal and vertical lines connecting the infixed base's before and after portions will be drawn using dashed lines.  For example, the description in example <exampleRef
+>. When this has a check mark before it, the horizontal and vertical lines connecting the infixed base's before and after portions will be drawn using dashed lines. For example, the description in example <exampleRef
 letter="xDashedLines"
 num="xDashedLines"
 ></exampleRef

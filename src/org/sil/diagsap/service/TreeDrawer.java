@@ -22,7 +22,7 @@ import org.sil.diagsap.model.DiagSapNode;
 import org.sil.diagsap.model.DiagSapTree;
 import org.sil.diagsap.model.InfixIndexBranch;
 import org.sil.diagsap.model.InfixedBaseBranch;
-import org.sil.lingtree.Constants;
+import org.sil.diagsap.Constants;
 import org.sil.lingtree.model.FontInfo;
 import org.sil.lingtree.model.LexFontInfo;
 import org.sil.utility.StringUtilities;
@@ -277,6 +277,12 @@ public class TreeDrawer {
 		double x;
 		int index = ifxIndex.getIndex();
 		InfixedBaseBranch base = infixedBaseBranches.get(index - 1);
+		x = calculateXMidOfInfix(base);
+		return x;
+	}
+
+	protected double calculateXMidOfInfix(InfixedBaseBranch base) {
+		double x;
 		Text infixTextBox = base.getInfixContent().getContentTextBox();
 		double width = infixTextBox.getBoundsInLocal().getWidth();
 		double x1 = infixTextBox.getX();
@@ -284,15 +290,27 @@ public class TreeDrawer {
 		return x;
 	}
 
-	protected double calculateXMidOfInfixedBase(InfixedBaseBranch infix) {
-		double x;
-		double xInitial = infix.getContentBefore().getContentTextBox().getX();
-		Text rightmostTextBox = (infix.getContentAfter() != null) ? infix.getContentAfter()
-				.getContentTextBox() : infix.getContentBefore().getContentTextBox();
+	protected double calculateXMidOfInfixedBase(InfixedBaseBranch base) {
+		double xInfixMid = calculateXMidOfInfix(base);
+		Text leftmostTextBox = base.getContentBefore().getContentTextBox();
+		double xInitial = leftmostTextBox.getX() + (leftmostTextBox.getBoundsInLocal().getWidth()/2);
+		Text rightmostTextBox = (base.getContentAfter() != null) ? base.getContentAfter()
+				.getContentTextBox() : base.getContentBefore().getContentTextBox();
 		double xFinal = rightmostTextBox.getX()
-				+ rightmostTextBox.getBoundsInLocal().getWidth();
-		x = (xInitial + xFinal) / 2;
-		return x;
+				+ (rightmostTextBox.getBoundsInLocal().getWidth())/2;
+		double xMid = (xInitial + xFinal) / 2;
+		if (base.getContentAfter() != null) {
+			double diff = xMid - xInfixMid;
+			double minimalGap = dsTree.getMinimalGapBetweenVerticalLines();
+			if (Math.abs(diff) < minimalGap) {
+				if (diff < 0) {
+					xMid = xMid - dsTree.getLineWidth() - minimalGap;
+				} else {
+					xMid = xMid + dsTree.getLineWidth() + minimalGap;
+				}
+			}
+		}
+		return xMid;
 	}
 
 	private double calculateXCoordinateOfContentMid(ContentBranch contentBranch) {

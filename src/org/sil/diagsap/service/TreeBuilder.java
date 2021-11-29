@@ -177,6 +177,7 @@ public class TreeBuilder {
 		dsTree.setSaveAsSVG(origTree.isSaveAsSVG());
 		dsTree.setVerticalGap(origTree.getVerticalGap());
 		dsTree.setTextUnderlineGap(origTree.getTextUnderlineGap());
+		dsTree.setMinimalGapBetweenVerticalLines(origTree.getMinimalGapBetweenVerticalLines());
 		dsTree.setUseDashedLinesForSplitInfixedBase(origTree.isUseDashedLinesForSplitInfixedBase());
 		dsTree.setUseRightToLeftOrientation(origTree.isUseRightToLeftOrientation());
 	}
