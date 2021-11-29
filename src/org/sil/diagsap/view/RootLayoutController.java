@@ -779,14 +779,26 @@ public class RootLayoutController implements Initializable {
 
 	@FXML
 	protected void handleUndo() {
-		treeDescription.undo();
-		computeHighlighting();
+		try {
+			treeDescription.undo();
+			computeHighlighting();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			MainApp.reportException(e, null);
+		}
 	}
 
 	@FXML
 	protected void handleRedo() {
-		treeDescription.redo();
-		computeHighlighting();
+		try {
+			treeDescription.redo();
+			computeHighlighting();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			MainApp.reportException(e, null);
+		}
 	}
 
 	@FXML

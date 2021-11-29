@@ -1286,7 +1286,7 @@ type="tDiagSap"
 >The splitter bar between the description and the drawing may change between invocations of <object
 type="tDiagSap"
 ></object
->. We hope to fix this.</li
+>.</li
 ><li
 >When showing matching parentheses while using arrow keys (see section <sectionRef
 sec="sArrowKeysShowMatching"
@@ -1306,13 +1306,7 @@ sec="sDelayMatching"
 ><li
 >The ability to produce a right-to-left tree diagram is not yet implemented.</li
 ><li
->If you have an infix and delete the opening wedge and then do an Undo operation, <object
-type="tDiagSap"
-></object
-> will crash and you will see an error dialog box asking you to copy the message and email it to <link
-href="mailto:lingtree_support_lsdev@sil.org"
->lingtree_support_lsdev@sil.org</link
->. Obviously, we know about this one but have yet to fix it. You do not need to email it to us. We will try and fix it in a later version. If you do not use Undo, but instead re-type the opening wedge, there is no such crash.</li
+>Undo and redo do not always work as expected.</li
 ></ul
 ></section1
 ><section1
