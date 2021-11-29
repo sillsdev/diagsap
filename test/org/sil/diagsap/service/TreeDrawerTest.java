@@ -52,29 +52,30 @@ public class TreeDrawerTest extends ServiceBaseTest {
 
 	@Test
 	public void drawAndproduceSVGTest() {
-		checkDrawSVG("((beauti) ((ful) (ly)))", "beauti-fully", false);
-		checkDrawSVG("(((beauti) (ful)) (ly))", "beautiful-ly", false);
-		checkDrawSVG("((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))", "ginpipinamulod", false);
-		checkDrawSVG("((\\1) ((g<in>m) ((pí-)((\\2) ((p<in>a-)((\\3) ((m-)(ul<on>od))))))))", "ginmpipinamulonod", false);
-		checkDrawSVG("((\\1)((i) ((g<in>) (luto))))", "iginluto", false);
-		checkDrawSVG("((institut) ((ion) ((al) ( ly))))", "institutionally", false);
-		checkDrawSVG("((\\1) ((m-)(ul<on>od)))", "mulonod", false);
-		checkDrawSVG("((\\1)(((p<in>ag) (–arál)) (an)))", "pinagaralan", false);
-		checkDrawSVG("(((un) (lock))(able)  )", "unlock-able", false);
-		checkDrawSVG("((un) ((lock)(able) ) )", "un-lockable", false);
-		checkDrawSVG("((((un) (lock))(able))(ness )  )", "unlock-able-ness", false);
-		checkDrawSVG("((un) (((lock)(able) ) (ness)))", "un-lockable-ness", false);
-		checkDrawSVG("((\\1) ((g<in>m) ((pí-)((\\2) ((p<in>a-)((\\3) ((m-)(ul<on>od))))))))", "ginmpipinamulonodDashed", true);
+		checkDrawSVG("((beauti) ((ful) (ly)))", "beauti-fully", false, false);
+		checkDrawSVG("(((beauti) (ful)) (ly))", "beautiful-ly", false, false);
+		checkDrawSVG("((\\1) ((g<in>) ((pí-)((\\2) ((p<in>a-)((m-)(ulod)))))))", "ginpipinamulod", false, false);
+		checkDrawSVG("((\\1) ((g<in>m) ((pí-)((\\2) ((p<in>a-)((\\3) ((m-)(ul<on>od))))))))", "ginmpipinamulonod", false, false);
+		checkDrawSVG("((\\1)((i) ((g<in>) (luto))))", "iginluto", false, false);
+		checkDrawSVG("((institut) ((ion) ((al) ( ly))))", "institutionally", false, false);
+		checkDrawSVG("((\\1) ((m-)(ul<on>od)))", "mulonod", false, false);
+		checkDrawSVG("((\\1)(((p<in>ag) (–arál)) (an)))", "pinagaralan", false, false);
+		checkDrawSVG("(((un) (lock))(able)  )", "unlock-able", false, false);
+		checkDrawSVG("((un) ((lock)(able) ) )", "un-lockable", false, false);
+		checkDrawSVG("((((un) (lock))(able))(ness )  )", "unlock-able-ness", false, false);
+		checkDrawSVG("((un) (((lock)(able) ) (ness)))", "un-lockable-ness", false, false);
+		checkDrawSVG("((\\1) ((g<in>m) ((pí-)((\\2) ((p<in>a-)((\\3) ((m-)(ul<on>od))))))))", "ginmpipinamulonodDashed", true, false);
+		checkDrawSVG("(((אַי)((\\1)(((עַנפִ<נ>אַג) (אַרַל)) (א))))(בִת))", "hebrew", false, true);
 	}
 
-	protected void checkDrawSVG(String sDescription, String sTestFilePath, boolean useDashedLines) {
+	protected void checkDrawSVG(String sDescription, String sTestFilePath, boolean useDashedLines, boolean useRightToLeft) {
 		DiagSapTree origTree = new DiagSapTree();
 		origTree.setUseDashedLinesForSplitInfixedBase(useDashedLines);
+		origTree.setUseRightToLeftOrientation(useRightToLeft);
 		DiagSapTree dsTree = TreeBuilder.parseAString(sDescription, origTree);
 		TreeDrawer drawer = new TreeDrawer(dsTree);
 		drawingArea.getChildren().clear();
 		drawer.draw(drawingArea);
-		drawer.calculateTreeHeightAndWidth(dsTree.getRootNode());
 		StringBuilder sb = drawer.drawAsSVG(drawingArea, dsTree.getXSize(), dsTree.getYSize());
 		
 		File file = new File("test/org/sil/diagsap/testData/" + sTestFilePath + ".svg");

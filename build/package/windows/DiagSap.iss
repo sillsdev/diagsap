@@ -3,8 +3,8 @@
 [Setup]
 AppId={{fxApplication}}
 AppName=DiagSap
-AppVersion=1.1.0.0
-AppVerName=DiagSap version 1.1.0.0
+AppVersion=1.2.0.0
+AppVerName=DiagSap version 1.2.0.0
 AppPublisher=SIL International
 AppComments=DiagSap
 AppCopyright=Copyright © 2021 SIL International
@@ -23,13 +23,13 @@ DefaultGroupName=SIL International
 LicenseFile=
 ;WinXP or above
 MinVersion=0,5.1
-OutputBaseFilename=DiagSap-1.1.0.0
+OutputBaseFilename=DiagSap-1.2.0.0
 Compression=lzma
 SolidCompression=yes
 PrivilegesRequired=admin
 SetupIconFile=DiagSap\DiagSap.ico
 UninstallDisplayIcon={app}\DiagSap.ico
-UninstallDisplayName=DiagSap version 1.1.0.0
+UninstallDisplayName=DiagSap version 1.2.0.0
 WizardImageStretch=No
 WizardSmallImageFile=DiagSap-setup-icon.bmp
 ArchitecturesInstallIn64BitMode=x64

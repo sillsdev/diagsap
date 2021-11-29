@@ -22,7 +22,7 @@ type="tDiagSap"
 ><date
 >November 29, 2021</date
 ><version
->Version 1.1.0</version
+>Version 1.2.0</version
 ><version
 >Copyright © 2021 SIL International</version
 ><contents
@@ -455,84 +455,7 @@ type="tMenuItem"
 > menu item is <object
 type="tMenuItem"
 >Draw tree right-to-left</object
->. When this has a check mark before it, the tree will be drawn from right-to-left. (This is not currently implemented.) <comment
->For example, if the non-terminal, lexical, and gloss fonts and colors have been set as shown in example <exampleRef
-letter="xHebrewRTLTree"
-num="xHebrewRTLTree"
-></exampleRef
-> below, then the description given in <exampleRef
-letter="xHebrewRTL"
-num="xHebrewRTL"
-></exampleRef
-> looks like example <exampleRef
-letter="xHebrewRTLTree"
-num="xHebrewRTLTree"
-></exampleRef
-> when the <object
-type="tMenuItem"
->Draw tree right-to-left</object
-> is checked.</comment
-></p
-><example
-contentType="ctKeyColor"
-num="xHebrewRTL"
-><word
-><langData
-lang="lTreeExample"
->(S (PP (\T\L <langData
-lang="lHebrew"
->בְּרֵאשִׁית</langData
-> (\G in the beginning ) ) ) (VP (V (\L <langData
-lang="lHebrew"
->בָּרָא</langData
->(\G created )) ) (NP (N(\L <langData
-lang="lHebrew"
->אֱלֹהִים</langData
-> (\G God )) ) ) (NP (NP (DObj (\L <langData
-lang="lHebrew"
->אֵת</langData
-> (\G obj )) ) (N (\L <langData
-lang="lHebrew"
->הַשָּׁמַיִם</langData
-> (\G the heavens ))) ) (NP (DObj (\L <langData
-lang="lHebrew"
->וְאֵת</langData
-> (\G and.obj )) ) (N (\L <langData
-lang="lHebrew"
->הָאָרֶץ</langData
-> (\G the earth ) ) )) ) ))</langData
-></word
-></example
-><example
-contentType="ctKeyColor"
-num="xHebrewRTLTree"
-><chart
-><img
-XeLaTeXSpecial="scaled='1050'"
-src="resources/Hebrew.svg"
-></img
-></chart
-></example
-><pc
-contentType="ctKeyColor"
->The output looks like example <exampleRef
-letter="xHebrewLTRTree"
-num="xHebrewLTRTree"
-></exampleRef
-> when the <object
-type="tMenuItem"
->Draw tree right-to-left</object
-> is left unchecked.</pc
-><example
-contentType="ctKeyColor"
-num="xHebrewLTRTree"
-><chart
-><img
-XeLaTeXSpecial="scaled='1050'"
-src="resources/HebrewLTR.svg"
-></img
-></chart
-></example
+>. When this has a check mark before it, the tree will be drawn from right-to-left.</p
 ></section2
 ><section2
 id="sFontColor"
@@ -1303,8 +1226,6 @@ sec="sDelayMatching"
 >wait for the matching parenthesis to show before pressing the next arrow key.</li
 ></ul
 ></li
-><li
->The ability to produce a right-to-left tree diagram is not yet implemented.</li
 ><li
 >Undo and redo do not always work as expected.</li
 ></ul

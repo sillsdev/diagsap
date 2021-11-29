@@ -11,6 +11,7 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
@@ -50,10 +51,14 @@ public class TreeDrawer {
 		collectContentAndInfixedBaseBranchItems(node);
 		FontInfo fontInfo = LexFontInfo.getInstance();
 		double dXCoordinate = dsTree.getInitialXCoordinate();
+		pane.getChildren().clear();
 		dXCoordinate = drawContentBoxesWithUnderline(pane, fontInfo, dXCoordinate);
 		calculateX1AndX2OfNode(node);
 		drawNodes(node, pane);
 		calculateTreeHeightAndWidth(node);
+		if (dsTree.isUseRightToLeftOrientation()) {
+			adjustForRightToLeftBasedOnPane(pane);
+		}
 		pane.setStyle("-fx-background-color:"
 				+ StringUtilities.toRGBCode(dsTree.getBackgroundColor()) + ";");
 	}
@@ -319,19 +324,29 @@ public class TreeDrawer {
 		return x + (width/2);
 	}
 
-	public void adjustForRightToLeftOrientation()
-	{
+	private void adjustForRightToLeftBasedOnPane(Pane pane) {
 		double adjust = dsTree.getXSize() + dsTree.getInitialXCoordinate();
-		DiagSapNode node = dsTree.getRootNode();
-		adjustForRightToLeftOrientation(node, adjust);
+		for (Node node : pane.getChildrenUnmodifiable()) {
+			if (node instanceof Text) {
+				Text morphTextBox = (Text)node;
+				morphTextBox = adustTextBoxForRightToLeft(adjust, morphTextBox);
+			} else if (node instanceof Line) {
+				Line line = (Line)node;
+				line = adjustLineForRightToLeft(adjust, line);
+			}
+		}
 	}
 
-	private void adjustForRightToLeftOrientation(DiagSapNode node, double adjust) {
-		node.setX1Coordinate((adjust - node.getWidth()) - node.getX1Coordinate());
-		node.setXMid(adjust - node.getXMid());
-//		for (DiagSapNode daughterNode : node.getDaughters()) {
-//			adjustForRightToLeftOrientation(daughterNode, adjust);
-//		}
+	protected Line adjustLineForRightToLeft(double adjust, Line line) {
+		line.setStartX(adjust - line.getStartX());
+		line.setEndX(adjust - line.getEndX());
+		return line;
+	}
+
+	protected Text adustTextBoxForRightToLeft(double adjust, Text textBox) {
+		textBox.setX(adjust - (textBox.getX() + textBox.getBoundsInLocal().getWidth()));
+		textBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+		return textBox;
 	}
 
 	private void createLineAsSVG(double x1, double y1, double x2, double y2, ObservableList<Double> dasharray, StringBuilder sb) {
