@@ -3,7 +3,7 @@ DiagSap is a tool to create Philippine-style word diagrams (DiagSap is short for
 
 DiagSap can be used to produce diagrams such as the following:
 
-![unlock-able](./doc/resources/unlock-able.svg)<img src="./doc/resources/unlock-able.svg">
+![unlock-able](./doc/resources/unlock-able.svg)<!--- <img src="./doc/resources/unlock-able.svg"> --->
 
 ![un-lockable](./doc/resources/unlock-able.svg)<img src="./doc/resources/un-lockable.svg">
 
