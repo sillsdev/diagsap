@@ -52,6 +52,8 @@
                 <Menu fx:id="menuTree" mnemonicParsing="true" text="%menu.tree">
                   <items>
                     <MenuItem fx:id="menuItemDrawTree" accelerator="ctrl+d" mnemonicParsing="true" onAction="#handleDrawTree" text="%menu.drawtree" />
+					<SeparatorMenuItem />
+					<MenuItem fx:id="menuItemRestartTree" mnemonicParsing="true" onAction="#handleRestartTree" text="%menu.restarttree" />
                   </items>
                 </Menu>
                 <Menu fx:id="menuFormat" mnemonicParsing="true" text="%menu.format">

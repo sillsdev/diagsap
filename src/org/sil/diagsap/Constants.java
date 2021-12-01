@@ -20,6 +20,7 @@ public class Constants {
 			+ DIAGSAP_DATA_FILE_EXTENSION;
 	public static final String DIAGSAP_STARTER_FILE = "resources/starterFile.diagsap";
 	public static final String DEFAULT_DIRECTORY_NAME = "My DiagSap";
+	public static final String INITIAL_DESCRIPTION = "((a)(b))";
 
 	public static final String SVG_HEADER="﻿<?xml version='1.0' standalone='no'?>\n" +
 			"<svg width='{0}' height='{1}' version='1.1' xmlns='http://www.w3.org/2000/svg' contentScriptType='text/javascript'>\n" +

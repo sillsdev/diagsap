@@ -20,7 +20,7 @@ type="tDiagSap"
 ><emailAddress
 >lingtree_support@sil.org</emailAddress
 ><date
->November 29, 2021</date
+>December 1, 2021</date
 ><version
 >Version 1.2.0</version
 ><version
@@ -391,6 +391,19 @@ id="sParentheses"
 >Handling parentheses</secTitle
 ><p
 >If you need to put an opening or closing parenthesis in your tree, quote the parenthesis by using a backslash immediately before it. Similarly, if you need to put an opening or closing wedge in your tree, quote the wedge by using a backslash immediately before it.</p
+></section2
+><section2
+id="sRestartTree"
+><secTitle
+>Restarting a tree</secTitle
+><p
+>Sometimes you may decide that you want to just start all over when keying a tree description.  To do so, click on the <object
+type="tMenuItem"
+>Tree</object
+> menu item and then <object
+type="tMenuItem"
+>Erase Description; Start All Over</object
+>.  Whatever you have as your tree description will be removed and replaced with the standard initial “((a)(b))” description.</p
 ></section2
 ></section1
 ><section1

@@ -187,6 +187,8 @@ public class RootLayoutController implements Initializable {
 	@FXML
 	private MenuItem menuItemDrawTree;
 	@FXML
+	private MenuItem menuItemRestartTree;
+	@FXML
 	private Menu menuFormat;
 	@FXML
 	private CheckMenuItem menuItemUseDashedLinesForSplitInfixedBase;
@@ -802,6 +804,19 @@ public class RootLayoutController implements Initializable {
 	}
 
 	@FXML
+	public void handleRestartTree() {
+		dsTree.setDescription(Constants.INITIAL_DESCRIPTION);
+		updateAllFontInfos();
+		treeDescription.replaceText(Constants.INITIAL_DESCRIPTION);
+		treeDescription.moveTo(2);
+		treeDescription.requestFocus();
+		markAsDirty();
+		if (menuItemDrawAsType.isSelected()) {
+			handleDrawTree();
+		}
+	}
+
+	@FXML
 	public void handleDrawTree() {
 		cleanDrawingArea();
 		processTreeDrawing();
@@ -1042,12 +1057,11 @@ public class RootLayoutController implements Initializable {
 				Constants.DIAGSAP_DATA_FILE_EXTENSION, Constants.DIAGSAP_DATA_FILE_EXTENSIONS,
 				Constants.RESOURCE_LOCATION);
 		if (fileCreated != null) {
-			final String initialDescription = "((a)(b))";
 			dsTree = new DiagSapTree();
 			applicationPreferences.getSavedTreeParameters(dsTree);
-			dsTree.setDescription(initialDescription);
+			dsTree.setDescription(Constants.INITIAL_DESCRIPTION);
 			updateAllFontInfos();
-			treeDescription.replaceText(initialDescription);
+			treeDescription.replaceText(Constants.INITIAL_DESCRIPTION);
 			treeDescription.moveTo(2);
 			treeDescription.requestFocus();
 			menuItemUseRightToLeftOrientation.setSelected(dsTree.isUseRightToLeftOrientation());
