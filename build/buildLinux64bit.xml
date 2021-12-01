@@ -8,7 +8,7 @@
 
 	<property name="nativeBundles" value="deb"/>
 	<property name="processorType" value="-64bit"/>
-	<property name="mainFileName" value="DiagSap"/>
+	<property name="mainFileName" value="diagsap"/>
 
 	<target name="do-deploy" depends="nested.do-deploy"/>
 </project>
