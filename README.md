@@ -21,9 +21,12 @@ Click [HERE](https://drive.google.com/file/d/19qECdiQ8Wo6SZOCsJRr9Vi6JUoFP4KhP/v
 
 ### Linux
 Click [HERE](https://drive.google.com/file/d/1adVzMmusBQN45m2DU94BwUd8I9ceE4Tu/view?usp=sharing) to get the latest installer.  Use
-> 'sudo dpkg -i diagsap-64bit-1.2.0.0'
+> `sudo dpkg -i diagsap-64bit-1.2.0.0`
+
 to install and
-> 'sudo dpkg -r diagsap-64bit-1.2.0.0'
+
+> `sudo dpkg -r diagsap-64bit-1.2.0.0`
+
 to remove it.
 
 ## Samples
