@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <diagSapTree dbversion="1">
     <backgroundColor>#ffffff</backgroundColor>
-    <description>((a)((lock)(able)))</description>
+    <description>((un)((lock)(able)))</description>
     <horizontalGap>20.0</horizontalGap>
     <initialXCoordinate>10.0</initialXCoordinate>
     <initialYCoordinate>20.0</initialYCoordinate>
@@ -13,9 +13,11 @@
     </lexicalFontInfo>
     <lineColor>#000000</lineColor>
     <lineWidth>1.0</lineWidth>
+    <minimalGapBetweenVerticalLines>2.0</minimalGapBetweenVerticalLines>
     <saveAsPng>true</saveAsPng>
     <saveAsSVG>true</saveAsSVG>
     <textUnderlineGap>0.0</textUnderlineGap>
+    <useDashedLinesForSplitInfixedBase>false</useDashedLinesForSplitInfixedBase>
     <useRightToLeftOrientation>false</useRightToLeftOrientation>
     <verticalGap>20.0</verticalGap>
 </diagSapTree>
