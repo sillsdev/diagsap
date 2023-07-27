@@ -1,7 +1,7 @@
 ;This file will be executed next to the application bundle image
 ;I.e. current directory will contain folder DiagSap with application files
 [Setup]
-AppId={{fxApplication}}
+AppId={{95874C31-E5D3-432C-9AD0-BE4FE31008A6}
 AppName=DiagSap
 AppVersion=1.2.0.0
 AppVerName=DiagSap version 1.2.0.0
