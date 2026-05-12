@@ -1,4 +1,4 @@
-// Copyright (c) 2021 SIL International 
+// Copyright (c) 2021-2026 SIL International 
 // This software is licensed under the LGPL, version 2.1 or later 
 // (http://www.gnu.org/licenses/lgpl-2.1.html) 
 /**
@@ -10,14 +10,14 @@ import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
 import org.sil.diagsap.model.DiagSapTree;
 import org.sil.diagsap.Constants;
 import org.sil.diagsap.MainApp;
 import org.sil.utility.HandleExceptionMessage;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 
 /**
  * @author Andy Black

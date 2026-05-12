@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 SIL International
+ * Copyright (c) 2021-2026 SIL International
  * This software is licensed under the LGPL, version 2.1 or later
  * (http://www.gnu.org/licenses/lgpl-2.1.html)
  */
@@ -53,7 +53,6 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
-import org.controlsfx.dialog.FontSelectorDialogWithColor;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.sil.diagsap.ApplicationPreferences;
 import org.sil.diagsap.Constants;
@@ -74,9 +73,6 @@ import org.sil.utility.StringUtilities;
 import org.sil.utility.view.ControllerUtilities;
 import org.sil.utility.view.FilteringEventDispatcher;
 import org.sil.utility.view.ObservableResourceFactory;
-
-import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
-import com.sun.javafx.application.HostServicesDelegate;
 
 /**
  * @author Andy Black
@@ -105,6 +101,7 @@ public class RootLayoutController implements Initializable {
 
 	private final String kPressedStyle = "buttonpressed";
 	private final String kUnPressedStyle = "buttonunpressed";
+	private final String kMacOSInstallDirectory = "/Applications/DiagSap.app/Contents/app/";
 
 	@FXML
 	BorderPane mainPane;
@@ -631,35 +628,35 @@ public class RootLayoutController implements Initializable {
 	protected void createToolbarButtons(ResourceBundle bundle) {
 		tooltipToolbarFileNew = ControllerUtilities.createToolbarButtonWithImage("newAction.png",
 				buttonToolbarFileNew, tooltipToolbarFileNew, bundle.getString("tooltip.new"),
-				Constants.RESOURCE_SOURCE_LOCATION);
+				Constants.RESOURCE_SOURCE_LOCATION, MainApp.class);
 		tooltipToolbarFileNew.textProperty().bind(RESOURCE_FACTORY.getStringBinding("tooltip.new"));
 		tooltipToolbarFileOpen = ControllerUtilities.createToolbarButtonWithImage("openAction.png",
 				buttonToolbarFileOpen, tooltipToolbarFileOpen, bundle.getString("tooltip.open"),
-				Constants.RESOURCE_SOURCE_LOCATION);
+				Constants.RESOURCE_SOURCE_LOCATION, MainApp.class);
 		tooltipToolbarFileOpen.textProperty().bind(
 				RESOURCE_FACTORY.getStringBinding("tooltip.open"));
 		tooltipToolbarFileSave = ControllerUtilities.createToolbarButtonWithImage("saveAction.png",
 				buttonToolbarFileSave, tooltipToolbarFileSave, bundle.getString("tooltip.save"),
-				Constants.RESOURCE_SOURCE_LOCATION);
+				Constants.RESOURCE_SOURCE_LOCATION, MainApp.class);
 		tooltipToolbarFileSave.textProperty().bind(
 				RESOURCE_FACTORY.getStringBinding("tooltip.save"));
 		tooltipToolbarEditCut = ControllerUtilities.createToolbarButtonWithImage("cutAction.png",
 				buttonToolbarEditCut, tooltipToolbarEditCut, bundle.getString("tooltip.cut"),
-				Constants.RESOURCE_SOURCE_LOCATION);
+				Constants.RESOURCE_SOURCE_LOCATION, MainApp.class);
 		tooltipToolbarEditCut.textProperty().bind(RESOURCE_FACTORY.getStringBinding("tooltip.cut"));
 		tooltipToolbarEditCopy = ControllerUtilities.createToolbarButtonWithImage("copyAction.png",
 				buttonToolbarEditCopy, tooltipToolbarEditCopy, bundle.getString("tooltip.copy"),
-				Constants.RESOURCE_SOURCE_LOCATION);
+				Constants.RESOURCE_SOURCE_LOCATION, MainApp.class);
 		tooltipToolbarEditCopy.textProperty().bind(
 				RESOURCE_FACTORY.getStringBinding("tooltip.copy"));
 		tooltipToolbarEditPaste = ControllerUtilities.createToolbarButtonWithImage(
 				"pasteAction.png", buttonToolbarEditPaste, tooltipToolbarEditPaste,
-				bundle.getString("tooltip.paste"), Constants.RESOURCE_SOURCE_LOCATION);
+				bundle.getString("tooltip.paste"), Constants.RESOURCE_SOURCE_LOCATION, MainApp.class);
 		tooltipToolbarEditPaste.textProperty().bind(
 				RESOURCE_FACTORY.getStringBinding("tooltip.paste"));
 		tooltipToolbarDrawTree = ControllerUtilities.createToolbarButtonWithImage("drawTree.png",
 				buttonToolbarDrawTree, tooltipToolbarDrawTree,
-				bundle.getString("tooltip.drawtree"), Constants.RESOURCE_SOURCE_LOCATION);
+				bundle.getString("tooltip.drawtree"), Constants.RESOURCE_SOURCE_LOCATION, MainApp.class);
 		tooltipToolbarDrawTree.textProperty().bind(
 				RESOURCE_FACTORY.getStringBinding("tooltip.drawtree"));
 
@@ -727,7 +724,7 @@ public class RootLayoutController implements Initializable {
 		alert.setHeaderText(null);
 		alert.setContentText(sAboutContent);
 		Image silLogo = ControllerUtilities.getIconImageFromURL(
-				"file:resources/images/SILLogo.png", Constants.RESOURCE_SOURCE_LOCATION);
+				"file:resources/images/SILLogo.png", Constants.RESOURCE_SOURCE_LOCATION, MainApp.class);
 		alert.setGraphic(new ImageView(silLogo));
 		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(mainApp.getNewMainIconImage());
@@ -740,19 +737,32 @@ public class RootLayoutController implements Initializable {
 	}
 
 	protected void showFileToUser(String sFileToShow) {
-		if (!mainApp.getOperatingSystem().equals("Mac OS X")) {
-			HostServicesDelegate hostServices = HostServicesFactory.getInstance(mainApp);
-			hostServices.showDocument("file:" + sFileToShow);
-		} else {
-			if (Desktop.isDesktopSupported()) {
-				try {
-					File myFile = new File(sFileToShow);
-					Desktop.getDesktop().open(myFile);
-				} catch (IOException ex) {
-					// no application registered for PDFs
-					MainApp.reportException(ex, null);
-					ex.printStackTrace();
+		if (Desktop.isDesktopSupported()) {
+			try {
+				File myFile = new File(sFileToShow);
+				if (!myFile.exists()) {
+					// this can happen on Linux
+					String sUriOfProgram = ControllerUtilities.getUriOfProgram(MainApp.class);
+					String sPathToTry = sUriOfProgram.substring(5) + sFileToShow;
+					myFile = new File(sPathToTry);
 				}
+				String sOS = mainApp.getOperatingSystem().toLowerCase();
+				if (sOS.contains("linux")) {
+					Runtime.getRuntime().exec(new String[] { "xdg-open", myFile.getAbsolutePath() });
+				} else if (sOS.contains("mac")) {
+					if (!myFile.exists()) {
+						String sFullPath = kMacOSInstallDirectory + sFileToShow;
+						System.out
+								.println("File '" + sFileToShow + "' does not exist; trying it as '" + sFullPath + "'");
+						myFile = new File(sFullPath);
+					}
+					Desktop.getDesktop().open(myFile);
+				} else {
+					Desktop.getDesktop().open(myFile);
+				}
+			} catch (IOException ex) {
+				// no application registered for PDFs
+				MainApp.reportException(ex, null);
 			}
 		}
 	}
@@ -1103,8 +1113,7 @@ public class RootLayoutController implements Initializable {
 			String resource = "fxml/QuickReferenceGuide.fxml";
 			String title = RESOURCE_FACTORY.getStringBinding("quick.title").get();
 			FXMLLoader loader = ControllerUtilities.getLoader(mainApp, currentLocale, dialogStage,
-					title, RootLayoutController.class.getResource(resource),
-					Constants.RESOURCE_LOCATION);
+					title, RootLayoutController.class.getResource(resource), bundle);
 
 			QuickReferenceGuideController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
@@ -1361,7 +1370,7 @@ public class RootLayoutController implements Initializable {
 			String title = RESOURCE_FACTORY.getStringBinding("spacingdialog.title").get();
 			FXMLLoader loader = ControllerUtilities.getLoader(mainApp, currentLocale, dialogStage,
 					title, RootLayoutController.class.getResource(resource),
-					Constants.RESOURCE_LOCATION);
+					bundle);
 
 			TreeSpacingParametersController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
@@ -1387,7 +1396,7 @@ public class RootLayoutController implements Initializable {
 			String title = RESOURCE_FACTORY.getStringBinding("backlinedialog.title").get();
 			FXMLLoader loader = ControllerUtilities.getLoader(mainApp, currentLocale, dialogStage,
 					title, RootLayoutController.class.getResource(resource),
-					Constants.RESOURCE_LOCATION);
+					bundle);
 
 			BackgroundAndLineParametersController controller = loader.getController();
 			controller.setDialogStage(dialogStage);

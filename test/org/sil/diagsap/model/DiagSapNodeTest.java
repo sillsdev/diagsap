@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 SIL International
+ * Copyright (c) 2021-2026 SIL International
  * This software is licensed under the LGPL, version 2.1 or later
  * (http://www.gnu.org/licenses/lgpl-2.1.html)
  */
@@ -42,13 +42,13 @@ public class DiagSapNodeTest {
 	public void textBoxDimensionsTest() {
 		ContentBranch content = new ContentBranch("node");
 		Text textBox = content.getContentTextBox();
-		assertEquals(40.74609375, textBox.getBoundsInLocal().getWidth(), 0.0);
-		assertEquals(23.94140625, textBox.getBoundsInLocal().getHeight(), 0.0);
+		assertEquals(27.1640625, textBox.getBoundsInLocal().getWidth(), 0.0);
+		assertEquals(15.9609375, textBox.getBoundsInLocal().getHeight(), 0.0);
 
 		content.setContent("p<in>ag");
 		textBox = content.getContentTextBox();
-		assertEquals(69.5126953125, textBox.getBoundsInLocal().getWidth(), 0.0);
-		assertEquals(23.94140625, textBox.getBoundsInLocal().getHeight(), 0.0);
+		assertEquals(46.341796875, textBox.getBoundsInLocal().getWidth(), 0.0);
+		assertEquals(15.9609375, textBox.getBoundsInLocal().getHeight(), 0.0);
 }
 
 }

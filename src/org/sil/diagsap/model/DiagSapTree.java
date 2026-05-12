@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 SIL International
+ * Copyright (c) 2021-2026 SIL International
  * This software is licensed under the LGPL, version 2.1 or later
  * (http://www.gnu.org/licenses/lgpl-2.1.html)
  */
@@ -8,16 +8,16 @@ package org.sil.diagsap.model;
 
 import javafx.scene.paint.Color;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.sil.diagsap.Constants;
 import org.sil.lingtree.model.ColorXmlAdaptor;
 import org.sil.lingtree.model.FontInfo;
 import org.sil.lingtree.model.LexFontInfo;
+
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name = "diagSapTree")
 public class DiagSapTree {

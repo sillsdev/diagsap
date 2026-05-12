@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 SIL International
+ * Copyright (c) 2021-2026 SIL International
  * This software is licensed under the LGPL, version 2.1 or later
  * (http://www.gnu.org/licenses/lgpl-2.1.html)
  */
@@ -275,7 +275,7 @@ public class MainApp extends Application implements MainAppUtilities {
 	 */
 	public Image getNewMainIconImage() {
 		Image img = ControllerUtilities.getIconImageFromURL(kApplicationIconResource,
-				Constants.RESOURCE_SOURCE_LOCATION);
+				Constants.RESOURCE_SOURCE_LOCATION, MainApp.class);
 		return img;
 	}
 
