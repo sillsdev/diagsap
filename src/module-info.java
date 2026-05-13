@@ -37,7 +37,7 @@ module org.sil.diagsap {
 	requires transitive org.sil.utility;
 
 	// JUnit
-	requires junit;
+//	requires junit;
 
 	// Other modules/libraries
 	requires antlr;
