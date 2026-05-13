@@ -69,6 +69,7 @@ import org.sil.diagsap.service.NodeTypeDeterminer;
 import org.sil.lingtree.view.TreeDescriptionUIService;
 import org.sil.utility.ClipboardUtilities;
 import org.sil.utility.StringUtilities;
+//import org.sil.utility.service.ValidLocaleCollector;
 import org.sil.utility.service.keyboards.KeyboardChanger;
 import org.sil.utility.view.ControllerUtilities;
 import org.sil.utility.view.FilteringEventDispatcher;
@@ -1289,7 +1290,6 @@ public class RootLayoutController implements Initializable {
 		if (fIsDirty) {
 			askAboutSaving();
 		}
-
 		Map<String, ResourceBundle> validLocales = ControllerUtilities.getValidLocales(
 				currentLocale, Constants.RESOURCE_LOCATION);
 		ChoiceDialog<String> dialog = new ChoiceDialog<>(
