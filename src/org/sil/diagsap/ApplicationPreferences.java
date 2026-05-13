@@ -1,4 +1,4 @@
-// Copyright (c) 2021 SIL International
+// Copyright (c) 2021-2026 SIL International
 // This software is licensed under the LGPL, version 2.1 or later
 // (http://www.gnu.org/licenses/lgpl-2.1.html)
 package org.sil.diagsap;
@@ -7,9 +7,10 @@ import java.io.File;
 import java.util.prefs.Preferences;
 
 import org.sil.diagsap.model.DiagSapTree;
-import org.sil.lingtree.model.ColorXmlAdaptor;
-import org.sil.lingtree.model.FontInfo;
+import org.sil.diagsap.model.ColorXmlAdaptor;
+import org.sil.diagsap.model.FontInfo;
 import org.sil.utility.*;
+import org.sil.utility.service.keyboards.KeyboardInfo;
 
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -46,11 +47,19 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 	static final String LEXICAL_FONT_FAMILY = "lexicalFontFamily";
 	static final String LEXICAL_FONT_SIZE = "lexicalFontSize";
 	static final String LEXICAL_FONT_TYPE = "lexicalFontType";
+	static final String LEXICAL_KEYBOARD_LOCALE = "lexicalKeyboardLocale";
+	static final String LEXICAL_KEYBOARD_DESCRIPTION = "lexicalKeyboardDescription";
+	static final String LEXICAL_KEYBOARD_MAC_DESCRIPTION = "lexicalKeyboardMacDescription";
+	static final String LEXICAL_KEYBOARD_WINDOWS_LANG_ID = "lexicalKeyboardWindowsLangId";
 	static final String LINE_COLOR = "lineColor";
 	static final String LINE_WIDTH = "lineWidth";
 	static final String MINIMAL_VERTICAL_GAP_BETWEEN_LINES = "minimalVerticalGap";
 	static final String SAVE_AS_PNG = "saveAsPng";
 	static final String SAVE_AS_SVG = "saveAsSVG";
+	static final String SYNTAGMEME_KEYBOARD_LOCALE = "syntagmemeKeyboardLocale";
+	static final String SYNTAGMEME_KEYBOARD_DESCRIPTION = "syntagmemeKeyboardDescription";
+	static final String SYNTAGMEME_KEYBOARD_MAC_DESCRIPTION = "syntagmemeKeyboardMacDescription";
+	static final String SYNTAGMEME_KEYBOARD_WINDOWS_LANG_ID = "syntagmemeKeyboardWindowsLangId";
 	static final String TEXT_UNDERLINE_GAP = "textUnderlineGap";
 	static final String USE_DASHED_LINES_FOR_SPLIT_INFIX_BASE = "usedashedlines";
 	static final String VERTICAL_GAP = "verticalGap";
@@ -203,6 +212,22 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 				LEXICAL_FONT_SIZE, 12), prefs.get(LEXICAL_FONT_TYPE, sDefaultType));
 		fontInfo.setColor(Color.web(prefs.get(LEXICAL_FONT_COLOR, sDefaultColor)));
 		dsTree.setLexicalFontInfo(fontInfo);
+
+		final String sDefaultLocale = "en";
+		final String sDefaultDescription = "English";
+		final String sDefaultMacDescription = "US";
+		final int defaultWindowsLangId = 0;
+		KeyboardInfo ki = new KeyboardInfo(prefs.get(LEXICAL_KEYBOARD_LOCALE, sDefaultLocale),
+				prefs.get(LEXICAL_KEYBOARD_DESCRIPTION, sDefaultDescription), prefs.getInt(
+						LEXICAL_KEYBOARD_WINDOWS_LANG_ID, defaultWindowsLangId));
+		ki.setMacDescription(prefs.get(LEXICAL_KEYBOARD_MAC_DESCRIPTION, sDefaultMacDescription));
+		dsTree.setLexicalKeyboard(ki);
+
+		ki = new KeyboardInfo(prefs.get(SYNTAGMEME_KEYBOARD_LOCALE, sDefaultLocale),
+				prefs.get(SYNTAGMEME_KEYBOARD_DESCRIPTION, sDefaultDescription), prefs.getInt(
+						SYNTAGMEME_KEYBOARD_WINDOWS_LANG_ID, defaultWindowsLangId));
+		ki.setMacDescription(prefs.get(SYNTAGMEME_KEYBOARD_MAC_DESCRIPTION, sDefaultMacDescription));
+		dsTree.setSyntagmemeKeyboard(ki);
 	}
 
 	public void setSavedTreeParameters(DiagSapTree dsTree) throws Exception {
@@ -224,6 +249,17 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 		setPreferencesKey(LEXICAL_FONT_FAMILY, fontInfo.getFontFamily());
 		setPreferencesKey(LEXICAL_FONT_SIZE, fontInfo.getFontSize());
 		setPreferencesKey(LEXICAL_FONT_TYPE, fontInfo.getFontType());
+
+		KeyboardInfo ki = dsTree.getLexicalKeyboard();
+		setPreferencesKey(LEXICAL_KEYBOARD_LOCALE, ki.getSLocale());
+		setPreferencesKey(LEXICAL_KEYBOARD_DESCRIPTION, ki.getDescription());
+		setPreferencesKey(LEXICAL_KEYBOARD_MAC_DESCRIPTION, ki.getMacDescription());
+		setPreferencesKey(LEXICAL_KEYBOARD_WINDOWS_LANG_ID, ki.getWindowsLangID());
+		ki = dsTree.getSyntagmemeKeyboard();
+		setPreferencesKey(SYNTAGMEME_KEYBOARD_LOCALE, ki.getSLocale());
+		setPreferencesKey(SYNTAGMEME_KEYBOARD_DESCRIPTION, ki.getDescription());
+		setPreferencesKey(SYNTAGMEME_KEYBOARD_MAC_DESCRIPTION, ki.getMacDescription());
+		setPreferencesKey(SYNTAGMEME_KEYBOARD_WINDOWS_LANG_ID, ki.getWindowsLangID());
 	}
 
 	private void setPreferencesKey(String key, boolean value) {
@@ -253,6 +289,17 @@ public class ApplicationPreferences extends ApplicationPreferencesUtilities {
 		if (!StringUtilities.isNullOrEmpty(key)) {
 			if (key != null && value != null) {
 				prefs.putDouble(key, value);
+
+			} else {
+				prefs.remove(key);
+			}
+		}
+	}
+
+	private void setPreferencesKey(String key, int value) {
+		if (!StringUtilities.isNullOrEmpty(key)) {
+			if (key != null) {
+				prefs.putInt(key, value);
 
 			} else {
 				prefs.remove(key);

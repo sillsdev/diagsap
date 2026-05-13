@@ -1,0 +1,137 @@
+// Copyright (c) 2024-2026 SIL Global 
+// This software is licensed under the LGPL, version 2.1 or later 
+// (http://www.gnu.org/licenses/lgpl-2.1.html) 
+/**
+ * 
+ */
+package org.sil.diagsap.view;
+
+import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import org.sil.diagsap.model.DiagSapTree;
+import org.sil.diagsap.MainApp;
+import org.sil.utility.service.keyboards.KeyboardChanger;
+import org.sil.utility.service.keyboards.KeyboardInfo;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.StringConverter;
+
+/**
+ * @author Andy Black
+ *
+ */
+public class KeyboardChooserController implements Initializable {
+
+	@FXML
+	private Label prompt;
+	@FXML
+	private ComboBox<KeyboardInfo> syntagmeme = new ComboBox<KeyboardInfo>();
+	@FXML
+	private ComboBox<KeyboardInfo> lexical = new ComboBox<KeyboardInfo>();
+
+	KeyboardInfo lexicalKeyboardInfo = new KeyboardInfo(Locale.of("en"), "English"); 
+	KeyboardInfo syntagmemeKeyboardInfo = new KeyboardInfo(Locale.of("en"), "English"); 
+	private Text keyboardText = new Text();
+	
+	Stage dialogStage;
+	private boolean okClicked = false;
+	private DiagSapTree dsTree;
+	KeyboardChanger keyboardChanger;
+
+	/**
+	 * Initializes the controller class. This method is automatically called
+	 * after the fxml file has been loaded.
+	 */
+	public void initialize(URL location, ResourceBundle resources) {
+		keyboardChanger = KeyboardChanger.getInstance();
+		keyboardChanger.initKeyboardHandler(MainApp.class);
+		
+		ObservableList<KeyboardInfo> activeKeyboards = FXCollections
+				.observableArrayList(keyboardChanger.getActiveKeyboards());
+		lexical.setItems(activeKeyboards);
+		lexical.setConverter(new StringConverter<KeyboardInfo>() {
+			@Override
+			public String toString(KeyboardInfo object) { 
+				return object.getDescription();
+			}
+			@Override
+			public KeyboardInfo fromString(String string) {
+				return null;
+			}
+		});
+		lexical.valueProperty().addListener((observable, oldValue, newValue) -> {			
+			keyboardText.setText(newValue.getDescription());
+			lexicalKeyboardInfo = newValue;
+		});
+
+		syntagmeme.setItems(activeKeyboards);
+		syntagmeme.setConverter(new StringConverter<KeyboardInfo>() {
+			@Override
+			public String toString(KeyboardInfo object) { 
+				return object.getDescription();
+			}
+			@Override
+			public KeyboardInfo fromString(String string) {
+				return null;
+			}
+		});
+		syntagmeme.valueProperty().addListener((observable, oldValue, newValue) -> {			
+			keyboardText.setText(newValue.getDescription());
+			syntagmemeKeyboardInfo = newValue;
+		});
+	}
+
+	/**
+	 * Sets the stage of this dialog.
+	 * 
+	 * @param dialogStage
+	 */
+	public void setDialogStage(Stage dialogStage) {
+		this.dialogStage = dialogStage;
+	}
+
+	public void setData(DiagSapTree dsTree) {
+		this.dsTree = dsTree;
+		lexicalKeyboardInfo = dsTree.getLexicalKeyboard();
+		lexical.setValue(lexicalKeyboardInfo);
+		syntagmemeKeyboardInfo = dsTree.getSyntagmemeKeyboard();
+		syntagmeme.setValue(syntagmemeKeyboardInfo);
+	}
+
+	/**
+	 * Returns true if the user clicked OK, false otherwise.
+	 * 
+	 * @return
+	 */
+	public boolean isOkClicked() {
+		return okClicked;
+	}
+
+	/**
+	 * Called when the user clicks OK.
+	 */
+	@FXML
+	private void handleOk() {
+		dsTree.setLexicalKeyboard(lexicalKeyboardInfo);
+		dsTree.setSyntagmemeKeyboard(syntagmemeKeyboardInfo);
+		okClicked = true;
+		dialogStage.close();
+	}
+
+	/**
+	 * Called when the user clicks cancel.
+	 */
+	@FXML
+	private void handleCancel() {
+		dialogStage.close();
+	}
+}

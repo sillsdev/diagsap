@@ -62,14 +62,14 @@ import org.sil.diagsap.model.DiagSapTree;
 import org.sil.diagsap.service.GraphicImageSaver;
 import org.sil.diagsap.service.TreeBuilder;
 import org.sil.diagsap.service.TreeDrawer;
-import org.sil.diagsap.view.BackgroundAndLineParametersController;
-import org.sil.diagsap.view.QuickReferenceGuideController;
-import org.sil.diagsap.view.TreeSpacingParametersController;
-import org.sil.lingtree.model.FontInfo;
-import org.sil.lingtree.model.LexFontInfo;
+import org.sil.diagsap.model.FontInfo;
+import org.sil.diagsap.model.LexFontInfo;
+import org.sil.diagsap.model.NodeType;
+import org.sil.diagsap.service.NodeTypeDeterminer;
 import org.sil.lingtree.view.TreeDescriptionUIService;
 import org.sil.utility.ClipboardUtilities;
 import org.sil.utility.StringUtilities;
+import org.sil.utility.service.keyboards.KeyboardChanger;
 import org.sil.utility.view.ControllerUtilities;
 import org.sil.utility.view.FilteringEventDispatcher;
 import org.sil.utility.view.ObservableResourceFactory;
@@ -82,6 +82,7 @@ public class RootLayoutController implements Initializable {
 
 	MainApp mainApp;
 	private Locale currentLocale;
+	KeyboardChanger keyboardChanger;
 	ResourceBundle bundle;
 	DiagSapTree dsTree;
 	String sDescription;
@@ -200,6 +201,8 @@ public class RootLayoutController implements Initializable {
 	@FXML
 	private MenuItem menuItemSaveTreeParameters;
 	@FXML
+	private MenuItem menuItemKeyboards;
+	@FXML
 	private Menu menuSettings;
 	@FXML
 	private MenuItem menuItemDescriptionFontSize;
@@ -249,6 +252,21 @@ public class RootLayoutController implements Initializable {
 		createToolbarButtons(bundle);
 		initMenuItemsForLocalization();
 		statusBarKey.textProperty().bind(RESOURCE_FACTORY.getStringBinding("label.key"));
+
+		keyboardChanger = KeyboardChanger.getInstance();
+		keyboardChanger.initKeyboardHandler(MainApp.class);
+		treeDescription.caretPositionProperty().addListener((observable, oldValue, newValue) -> {
+			String sPrevious = treeDescription.getText(0, newValue);
+			NodeType ntype = NodeTypeDeterminer.determineNodeTypeFrom(sPrevious);
+			switch (ntype) {
+			case Lex:
+				keyboardChanger.tryToChangeKeyboardTo(dsTree.getLexicalKeyboard(), MainApp.class);
+				break;
+			case Syntagmeme:
+				keyboardChanger.tryToChangeKeyboardTo(dsTree.getSyntagmemeKeyboard(), MainApp.class);
+				break;
+			}
+		});
 
 		// we use OnKeyTyped because it tells us the character keyed
 		// regardless of the keyboard used
@@ -552,6 +570,7 @@ public class RootLayoutController implements Initializable {
 
 	public void setMainApp(MainApp mainApp) {
 		this.mainApp = mainApp;
+		keyboardChanger.setStage(mainApp.getPrimaryStage());
 		this.applicationPreferences = mainApp.getApplicationPreferences();
 		menuItemDrawAsType.setSelected(applicationPreferences.getDrawAsType());
 		menuItemShowMatchingParenWithArrowKeys.setSelected(applicationPreferences
@@ -1238,6 +1257,28 @@ public class RootLayoutController implements Initializable {
 		applicationPreferences.setSavedTreeParameters(dsTree);
 	}
 
+	@FXML
+	private void handleKeyboards() {
+		try {
+			// Load the fxml file and create a new stage for the popup.
+			Stage dialogStage = new Stage();
+			String resource = "fxml/KeyboardChooser.fxml";
+			String title = RESOURCE_FACTORY.getStringBinding("keyboarddialog.title").get();
+			FXMLLoader loader = ControllerUtilities.getLoader(mainApp, currentLocale, dialogStage,
+					title, RootLayoutController.class.getResource(resource), bundle);
+
+			KeyboardChooserController controller = loader.getController();
+			controller.setDialogStage(dialogStage);
+			controller.setData(dsTree);
+			dialogStage.setResizable(false);
+			dialogStage.showAndWait();
+			if (controller.isOkClicked()) {
+				markAsDirty();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * Change interface language.
 	 */

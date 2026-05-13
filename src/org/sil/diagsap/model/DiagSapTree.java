@@ -10,8 +10,7 @@ import javafx.scene.paint.Color;
 
 import org.sil.diagsap.Constants;
 import org.sil.lingtree.model.ColorXmlAdaptor;
-import org.sil.lingtree.model.FontInfo;
-import org.sil.lingtree.model.LexFontInfo;
+import org.sil.utility.service.keyboards.KeyboardInfo;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -35,6 +34,9 @@ public class DiagSapTree {
 	double dMinimalGapBetweenVerticalLines; // minimal space between consecutive vertical lines
 	FontInfo lexicalFontInfo;
 
+	KeyboardInfo lexicalKeyboard;
+	KeyboardInfo syntagmemeKeyboard;
+
 	Color backgroundColor;
 	Color lineColor;
 	double lineWidth;
@@ -57,6 +59,8 @@ public class DiagSapTree {
 		fUseDashedLinesForSplitInfixedBase = false;
 		fUseRightToLeftOrientation = false;
 		lexicalFontInfo = LexFontInfo.getInstance();
+		lexicalKeyboard = LexicalKeyboard.getInstance();
+		syntagmemeKeyboard = SyntagmemeKeyboard.getInstance();
 		lineWidth = 1;
 		lineColor = Color.BLACK;
 		backgroundColor = Color.WHITE;
@@ -238,6 +242,24 @@ public class DiagSapTree {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@XmlElement(name = "lexicalKeyboard")
+	public KeyboardInfo getLexicalKeyboard() {
+		return lexicalKeyboard;
+	}
+
+	public void setLexicalKeyboard(KeyboardInfo lexicalKeyboard) {
+		this.lexicalKeyboard = lexicalKeyboard;
+	}
+
+	@XmlElement(name = "synTagmemeKeyboard")
+	public KeyboardInfo getSyntagmemeKeyboard() {
+		return syntagmemeKeyboard;
+	}
+
+	public void setSyntagmemeKeyboard(KeyboardInfo syntagmemeKeyboard) {
+		this.syntagmemeKeyboard = syntagmemeKeyboard;
 	}
 
 	/**

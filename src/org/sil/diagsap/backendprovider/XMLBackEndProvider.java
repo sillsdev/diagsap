@@ -25,7 +25,7 @@ import jakarta.xml.bind.Unmarshaller;
  */
 public class XMLBackEndProvider extends BackEndProvider {
 
-	DiagSapTree lingTree;
+	DiagSapTree dsTree;
 	String sFileError;
 	String sFileErrorLoadHeader;
 	String sFileErrorLoadContent;
@@ -36,7 +36,7 @@ public class XMLBackEndProvider extends BackEndProvider {
 	 * @param lingTree
 	 */
 	public XMLBackEndProvider(DiagSapTree lingTree, Locale locale) {
-		this.lingTree = lingTree;
+		this.dsTree = lingTree;
 		setResourceStrings(locale);
 	}
 
@@ -50,11 +50,11 @@ public class XMLBackEndProvider extends BackEndProvider {
 	}
 
 	public DiagSapTree getLingTree() {
-		return lingTree;
+		return dsTree;
 	}
 
 	public void setLingTree(DiagSapTree lingTree) {
-		this.lingTree = lingTree;
+		this.dsTree = lingTree;
 	}
 
 	final boolean useXMLClasses = false;
@@ -71,9 +71,9 @@ public class XMLBackEndProvider extends BackEndProvider {
 			JAXBContext context = JAXBContext.newInstance(DiagSapTree.class);
 			Unmarshaller um = context.createUnmarshaller();
 			// Reading XML from the file and unmarshalling.
-			lingTree = (DiagSapTree) um.unmarshal(file);
-			lingTree.clear();
-			lingTree.load(lingTree);
+			dsTree = (DiagSapTree) um.unmarshal(file);
+			dsTree.clear();
+			dsTree.load(dsTree);
 		} catch (Exception e) { // catches ANY exception
 			e.printStackTrace();
 			MainApp.reportException(e, null);
@@ -92,7 +92,7 @@ public class XMLBackEndProvider extends BackEndProvider {
 			Marshaller m = context.createMarshaller();
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			// Marshalling and saving XML to the file.
-			m.marshal(lingTree, file);
+			m.marshal(dsTree, file);
 		} catch (Exception e) { // catches ANY exception
 			e.printStackTrace();
 			MainApp.reportException(e, null);

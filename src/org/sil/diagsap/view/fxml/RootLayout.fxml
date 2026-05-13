@@ -63,6 +63,8 @@
 					<SeparatorMenuItem />
 					<MenuItem fx:id="menuItemLexicalFont" mnemonicParsing="true" onAction="#handleLexicalFontInfo" text="%menu.lexicalfont" />
 					<SeparatorMenuItem />
+					<MenuItem fx:id="menuItemKeyboards" mnemonicParsing="true" onAction="#handleKeyboards" text="%menu.keyboards" />
+					<SeparatorMenuItem />
 					<MenuItem fx:id="menuItemTreeSpacingParameter" mnemonicParsing="true" onAction="#handleTreeSpacingParameters" text="%menu.treespacingparameters" />
 					<MenuItem fx:id="menuItemBackgroundAndLineParameters" mnemonicParsing="true" onAction="#handleBackgroundAndLineParameters" text="%menu.backgroundandlineparameters" />
 					<SeparatorMenuItem />

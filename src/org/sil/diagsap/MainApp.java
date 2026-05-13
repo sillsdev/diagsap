@@ -75,8 +75,7 @@ public class MainApp extends Application implements MainAppUtilities {
 	public void start(Stage primaryStage) {
 		try {
 			applicationPreferences = new ApplicationPreferences(this);
-			locale = new Locale(applicationPreferences.getLastLocaleLanguage());
-
+			locale = Locale.of(applicationPreferences.getLastLocaleLanguage());
 			dsTree = new DiagSapTree();
 			xmlBackEndProvider = new XMLBackEndProvider(dsTree, locale);
 			this.primaryStage = primaryStage;
