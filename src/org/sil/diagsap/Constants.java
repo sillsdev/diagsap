@@ -10,7 +10,7 @@ package org.sil.diagsap;
  *
  */
 public class Constants {
-	public static final String VERSION_NUMBER = "1.2.0";
+	public static final String VERSION_NUMBER = "1.3.0";
 	public static final int CURRENT_DATABASE_VERSION = 1;
 
 	public static final String RESOURCE_LOCATION = "org.sil.diagsap.resources.DiagSap";

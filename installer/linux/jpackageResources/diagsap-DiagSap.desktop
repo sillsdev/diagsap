@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=DiagSap
+Comment=Linguistic Tree Editor
+Exec=/opt/sil/diagsap/bin/DiagSap
+Path=/opt/sil/diagsap/bin
+Icon=/opt/sil/diagsap/lib/DiagSap.png
+Terminal=false
+Type=Application
+Categories=Education
+MimeType=text/diagsap
