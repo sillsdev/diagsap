@@ -28,8 +28,8 @@ if [ ! -d input/resources ]; then
 else
  rm -r input/resources/* > /dev/null
 fi
-cp -R ../../src/org/sil/diagsap/resources input/resources
-cp DiagSap.png input/DIagSap.png > /dev/null
+cp -R ../../resources input/resources
+cp DiagSap.png input/DiagSap.png > /dev/null
 
 echo "	Jar file"
 ./CreateJar.sh

@@ -28,8 +28,8 @@ if [ ! -d input/resources ]; then
 else
  rm -r input/resources/* > /dev/null
 fi
-cp -r ../../src/org/sil/diagsap/resources input
-cp ../../src/org/sil/diagsap/resources/images/DiagSap.icns input/DiagSap.icns > /dev/null
+cp -r ../../resources input
+cp DiagSap.icns input/DiagSap.icns > /dev/null
 chmod +x input/resources/Keyboards/macOS/*
 
 echo "	Jar file"
