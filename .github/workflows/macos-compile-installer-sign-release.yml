@@ -101,10 +101,10 @@ jobs:
       # If a notarization fails, uncomment the following and replace the GUID with the one from
       # notarization output
       # Get notarization log of last run
-      - name: Get notarization log
-        run: |
-          echo Before trying to get notarization log of last run
-          xcrun notarytool log 5d8e1f2c-d62e-4e79-b400-49c2b79db2a6 --apple-id ${{ secrets.SIL_APPLE_NOTARIZATION_USERNAME }} --team-id "3YE4W86L3G" --password ${{ secrets.SIL_APPLE_NOTARIZATION_PASSWORD }}
+#      - name: Get notarization log
+#        run: |
+#          echo Before trying to get notarization log of last run
+#          xcrun notarytool log 5d8e1f2c-d62e-4e79-b400-49c2b79db2a6 --apple-id ${{ secrets.SIL_APPLE_NOTARIZATION_USERNAME }} --team-id "3YE4W86L3G" --password ${{ secrets.SIL_APPLE_NOTARIZATION_PASSWORD }}
 
       - name: Add certificate to Keychain
         env:
@@ -183,6 +183,8 @@ jobs:
           #ls -l ../../../..
           codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../../../../installer/macos/entitlements.plist resources/Keyboards/macOS/xkbswitch -v
           #codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../../../../installer/macos/entitlements.plist org/sil/diagsap/resources/Keyboards/macOS/xkbswitch -v
+          # need to remove macOS keyboard executable from lingtree jar file or it won't notarize
+          7z d -tzip libs/lingtree-1.7.0.jar org/sil/lingtree/resources/Keyboards/macOS/xkbswitch
           echo before updating xkbswitch in diagsap.jar
           jar --version
           jar uf diagsap.jar resources/Keyboards/macOS/xkbswitch resources/Keyboards/macOS/xkbswitch
