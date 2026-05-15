@@ -20,11 +20,11 @@ type="tDiagSap"
 ><emailAddress
 >lingtree_support@sil.org</emailAddress
 ><date
->December 1, 2021</date
+>May 15, 2026</date
 ><version
->Version 1.2.0</version
+>Version 1.3.0</version
 ><version
->Copyright © 2021 SIL International</version
+>Copyright © 2021-2026 SIL International</version
 ><contents
 ></contents
 ></frontMatter
@@ -337,8 +337,14 @@ src="resources/pinagaralan.svg"
 ></example
 ><p
 >In example <exampleRef
+contentType="ctRegular"
 letter="xBasic2"
 num="xBasic2"
+></exampleRef
+><exampleRef
+contentType="ctKeyColor"
+letter="xBasic2Color"
+num="xBasic2Color"
 ></exampleRef
 >, notice that the infix material is indicated by typing an opening wedge ‘&lt;’, the infix form, and then a closing wedge ‘&gt;.’ The node level of the infix is indicated by the <langData
 lang="lTreeExample"
@@ -397,13 +403,13 @@ id="sRestartTree"
 ><secTitle
 >Restarting a tree</secTitle
 ><p
->Sometimes you may decide that you want to just start all over when keying a tree description.  To do so, click on the <object
+>Sometimes you may decide that you want to just start all over when keying a tree description. To do so, click on the <object
 type="tMenuItem"
 >Tree</object
 > menu item and then <object
 type="tMenuItem"
 >Erase Description; Start All Over</object
->.  Whatever you have as your tree description will be removed and replaced with the standard initial “((a)(b))” description.</p
+>. Whatever you have as your tree description will be removed and replaced with the standard initial “((a)(b))” description.</p
 ></section2
 ></section1
 ><section1
@@ -518,6 +524,64 @@ href="https://www.w3schools.com/cssref/css_colors.asp"
 >.</p
 ><p
 >When you click on the main dialog's OK button, the tree description and tree diagram will reflect the new font and color information.</p
+></section2
+><section2
+id="sKeyboards"
+><secTitle
+>Set keyboards</secTitle
+><p
+>The next item under the main <object
+type="tMenuItem"
+>Format</object
+> menu item is <object
+type="tMenuItem"
+>Set keyboards</object
+>. Currently, this is fully available on Windows and mostly available on <object
+type="tmacOS"
+></object
+>.<endnote
+id="nKeymanOnMac"
+><p
+>On <object
+type="tmacOS"
+></object
+>, <object
+type="tTool"
+>Keyman</object
+> keyboards are handled as a unit. That is, if you have two or more of them, you will need to select the Keyman option with the dialog shown in <exampleRef
+letter="xSetKeyboards"
+num="xSetKeyboards"
+></exampleRef
+>. <object
+type="tLingTree"
+></object
+> will use whichever is the currently selected Keyman keyboard. This is an issue with <object
+type="tmacOS"
+></object
+>.</p
+></endnote
+> When you select this menu item, it brings up a dialog that looks like what is in <exampleRef
+letter="xSetKeyboards"
+num="xSetKeyboards"
+></exampleRef
+>.</p
+><example
+num="xSetKeyboards"
+><chart
+><img
+XeLaTeXSpecial="scaled='550'"
+src="resources/SetKeyboards.png"
+width="450"
+></img
+></chart
+></example
+><pc
+>You can control which keyboard is to be used with the various kinds of items in the tree description. Click on the drop-down arrow to select one of the available keyboards on your computer.</pc
+><p
+>Note that whenever you move or copy a <object
+type="tDiagSap"
+></object
+> description file from one computer to another, you will need to manually set each keyboard before they will be in effect.</p
 ></section2
 ><section2
 id="sTreeSpacing"
@@ -1241,6 +1305,28 @@ sec="sDelayMatching"
 ></li
 ><li
 >Undo and redo do not always work as expected.</li
+><li
+>On <object
+type="tmacOS"
+></object
+>: if you double click a tree description file in <object
+type="tTool"
+>Finder</object
+>, then <object
+type="tDiagSap"
+></object
+> will open the last opened file, not the one you clicked on. This is due to a communication problem between the <object
+type="tmacOS"
+></object
+> operating system and the Java language <object
+type="tDiagSap"
+></object
+> is written in.</li
+><li
+>When you move a <object
+type="tDiagSap"
+></object
+> file from one computer to another, you may well need to reset the keyboards manually. This is because the keyboard settings may be different on the two machines.</li
 ></ul
 ></section1
 ><section1
@@ -1421,6 +1507,15 @@ color="red"
 font-family="Arial"
 font-size="12pt"
 id="tLexical"
+></type
+><type
+before="LingTree"
+color="navy"
+id="tLingTree"
+></type
+><type
+before="macOS"
+id="tmacOS"
 ></type
 ><type
 color="maroon"

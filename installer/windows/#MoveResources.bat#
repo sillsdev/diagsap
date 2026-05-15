@@ -1,8 +1,0 @@
-@echo off
-REM Work-around to get exe to find resource and doc files
-xcopy output\DiagSap\app\resources output\DiagSap\resources /E/s/i > nul
-rmdir output\DiagSap\app\resources /S /q > nul
-xcopy output\DiagSap\app\doc output\DiagSap\doc /E/s/i > nul
-rmdir output\DiagSap\app\doc /S /q > nul
-REM does not do the copy:
-REM copy %JAVA_HOME%\bin\java.exe output\DiagSap /B /Y > nul

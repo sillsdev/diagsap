@@ -101,10 +101,10 @@ jobs:
       # If a notarization fails, uncomment the following and replace the GUID with the one from
       # notarization output
       # Get notarization log of last run
-      - name: Get notarization log
-        run: |
-          echo Before trying to get notarization log of last run
-          xcrun notarytool log c60e7975-af50-4294-974e-dbb0002cedf4 --apple-id ${{ secrets.SIL_APPLE_NOTARIZATION_USERNAME }} --team-id "3YE4W86L3G" --password ${{ secrets.SIL_APPLE_NOTARIZATION_PASSWORD }}
+#      - name: Get notarization log
+#        run: |
+#          echo Before trying to get notarization log of last run
+#          xcrun notarytool log c60e7975-af50-4294-974e-dbb0002cedf4 --apple-id ${{ secrets.SIL_APPLE_NOTARIZATION_USERNAME }} --team-id "3YE4W86L3G" --password ${{ secrets.SIL_APPLE_NOTARIZATION_PASSWORD }}
 
       - name: Add certificate to Keychain
         env:
@@ -222,6 +222,21 @@ jobs:
           codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/MacOS/DiagSap -v
           # libjli.dylib is there two times; remove the non -standard one
           rm -f DiagSap.app/Contents/runtime/Contents/MacOS/libjli.dylib
+          # when manually setting the --add-modules, we also need to sign these
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/jar
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/jarsigner
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/java
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/javac
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/javadoc
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/jconsole
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/jdb
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/jfr
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/jrunscript
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/jshell
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/jwebserver
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/keytool
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/rmiregistry
+          codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app/Contents/runtime/Contents/Home/bin/serialver
           # -------------  sign the main app itself
           #echo sign DiagSap.app
           codesign --force --sign "${{ vars.SIL_APPLE_CODESIGN_IDENTITY }}" --timestamp --options runtime --entitlements ../../installer/macos/entitlements.plist DiagSap.app -v

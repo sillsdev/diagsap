@@ -62,7 +62,6 @@ import org.sil.diagsap.model.DiagSapTree;
 import org.sil.diagsap.service.GraphicImageSaver;
 import org.sil.diagsap.service.TreeBuilder;
 import org.sil.diagsap.service.TreeDrawer;
-import org.sil.diagsap.service.ValidLocaleCollector;
 import org.sil.diagsap.model.FontInfo;
 import org.sil.diagsap.model.LexFontInfo;
 import org.sil.diagsap.model.NodeType;
@@ -1291,11 +1290,7 @@ public class RootLayoutController implements Initializable {
 		if (fIsDirty) {
 			askAboutSaving();
 		}
-		// For some reason, using the lib version does not work with JDK25
-		// so we're including the code here
-//		Map<String, ResourceBundle> validLocales = ControllerUtilities.getValidLocales(
-//				currentLocale, Constants.RESOURCE_LOCATION);
-		Map<String, ResourceBundle> validLocales = getValidLocales(
+		Map<String, ResourceBundle> validLocales = ControllerUtilities.getValidLocales(
 				currentLocale, Constants.RESOURCE_LOCATION);
 		ChoiceDialog<String> dialog = new ChoiceDialog<>(
 				currentLocale.getDisplayLanguage(currentLocale), validLocales.keySet());
@@ -1315,20 +1310,6 @@ public class RootLayoutController implements Initializable {
 				currentLocale = selectedLocale;
 			}
 		});
-	}
-
-	public Map<String, ResourceBundle> getValidLocales(Locale currentLocale, String resourceLocation) {
-		ValidLocaleCollector collector = new ValidLocaleCollector(currentLocale, resourceLocation);
-		collector.collectValidLocales();
-		Map<String, ResourceBundle> validLocales = collector.getValidLocales();
-		return validLocales;
-	}
-
-	public Map<String, ResourceBundle> getValidLocales(Locale currentLocale, ResourceBundle bundle) {
-		ValidLocaleCollector collector = new ValidLocaleCollector(currentLocale, bundle.getBaseBundleName());
-		collector.collectValidLocales();
-		Map<String, ResourceBundle> validLocales = collector.getValidLocales();
-		return validLocales;
 	}
 
 	private void insertMatchingClosingParenthesis() {
