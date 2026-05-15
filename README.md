@@ -11,21 +11,31 @@ DiagSap can be used to produce diagrams such as the following:
 
 ## Download
 
-You can download 64bit installers for Windows, Mac OS X, and Linux.  The latest version is 1.2.0.
+You can download 64bit installers for Windows, Mac OS X, and Linux.  The latest version is 1.3.0.
 
 ### Windows
-Click [HERE](https://drive.google.com/file/d/1KftLCRffZcZy998mmI_4O9jXtsAHa1ox/view?usp=sharing) to get the latest installer.  Run it as Administrator.
+Click [HERE](https://software.sil.org/downloads/r/lingtree/DiagSap/DiagSap-1.3.0.exe) to get the latest installer.
 
-### Mac OS X
-Click [HERE](https://drive.google.com/file/d/19qECdiQ8Wo6SZOCsJRr9Vi6JUoFP4KhP/view?usp=sharing) to get the latest installer.
+### macOS
+Click [HERE](https://software.sil.org/downloads/r/lingtree/DiagSap/DiagSap-1.3.0.dmg) to get the latest installer.
 
-### Linux
-Click [HERE](https://drive.google.com/file/d/1adVzMmusBQN45m2DU94BwUd8I9ceE4Tu/view?usp=sharing) to get the latest installer.  Use
-> `sudo dpkg -i diagsap-64bit-1.2.0.0`
+### Linux (22.04)
+Click [HERE](https://software.sil.org/downloads/r/lingtree/DiagSap/DiagSap-1.3.0-22.04.deb) to get the latest installer.  Use
+> `sudo dpkg -i DiagSap-1.3.0-22.04`
 
 to install and
 
-> `sudo dpkg -r diagsap-64bit-1.2.0.0`
+> `sudo dpkg -r diagsap`
+
+to remove it.
+
+### Linux (24.04)
+Click [HERE](https://software.sil.org/downloads/r/lingtree/DiagSap/DiagSap-1.3.0-24.04.deb) to get the latest installer.  Use
+> `sudo dpkg -i DiagSap-1.3.0-24.04`
+
+to install and
+
+> `sudo dpkg -r diagsap`
 
 to remove it.
 
