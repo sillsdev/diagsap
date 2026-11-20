@@ -168,11 +168,7 @@ jobs:
           mkdir dmgContents
           cp -R /Volumes/DiagSap dmgContents
           cd dmgContents/DiagSap
-          echo dmg contents
-          ls -lR
           cd DiagSap.app/Contents/app/
-          #pwd
-          #ls -lR resources
           #jar xf diagsap.jar resources/Keyboards/macOS/xkbswitch org/sil/diagsap/resources/Keyboards/macOS/xkbswitch
           chmod a+w resources/Keyboards/macOS/xkbswitch
           #chmod a+w org/sil/diagsap/resources/Keyboards/macOS/xkbswitch
